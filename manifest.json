@@ -2,7 +2,7 @@
   "name": "APK List",
   "short_name": "APKList",
   "start_url": "/",
-  "display": "standalone",
+  "display": "browser",
   "background_color": "#ffffff",
   "theme_color": "#007bff",
   "icons": [
