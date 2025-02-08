@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>bsmod</title>
+    <title>Telegram APK List</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
@@ -22,14 +22,30 @@
             border-radius: 5px; font-size: 14px;
         }
         .no-results { color: #999; margin-top: 10px; font-size: 14px; }
+        .partner-link-container {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+        }
+        .partner-link {
+            font-size: 16px;
+            color: #007bff;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Available APKs</h1>
+        <h1>bsmod</h1>
         <input type="text" id="searchBox" placeholder="Search by name or description...">
         <div class="app-list" id="appList"></div>
         <p class="no-results" id="noResults" style="display: none;">No matching results</p>
+    </div>
+
+    <!-- Partner link section -->
+    <div class="partner-link-container">
+        <a href="https://dl.natesworks.com" target="_blank" class="partner-link">Partner</a>
     </div>
 
     <script>
@@ -52,10 +68,10 @@
                         const appCard = document.createElement('div');
                         appCard.classList.add('app-card');
                         appCard.innerHTML = `
-                            
+                            <img src="${app.icon}" alt="${app.name}">
                             <div class="app-info">
                                 <h3>${app.name}</h3>
-                                
+                                <p>${app.description}</p>
                             </div>
                             <a href="${app.link}" target="_blank" class="download-btn">Download</a>
                         `;
