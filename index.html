@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>APK List</title>
-    <link rel="icon" type="image/png" href="icon.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="APK List">
-    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007bff">
+    <link rel="icon" href="icon-192x192.png">
+    
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
@@ -25,23 +25,18 @@
         }
         .no-results { color: #999; margin-top: 10px; font-size: 14px; }
         .partner-link-container {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f1f1f1;
-            border-radius: 5px;
+            margin-top: 20px; padding: 10px; background-color: #f1f1f1; border-radius: 5px;
         }
         .partner-link {
-            font-size: 16px;
-            color: #007bff;
-            text-decoration: none;
+            font-size: 16px; color: #007bff; text-decoration: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>bsmod</h1>
-        <p id="modCount">Loading...</p>  <!-- Mod数表示 -->
-        <input type="text" id="searchBox" placeholder="Search...">
+        <h1>APK List</h1>
+        <p id="modCount">Loading...</p>
+        <input type="text" id="searchBox" placeholder="Search by name...">
         <div class="app-list" id="appList"></div>
         <p class="no-results" id="noResults" style="display: none;">No matching results</p>
     </div>
@@ -61,8 +56,7 @@
                 const noResults = document.getElementById('noResults');
                 const modCount = document.getElementById('modCount');
 
-                // Mod数を表示
-                modCount.textContent = `Total Mods: ${data.length}`;
+                modCount.textContent = `${data.length} mods available`;
 
                 function displayApps(filteredData) {
                     appList.innerHTML = "";
