@@ -4,19 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>APK List</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="APK List">
+    <link rel="apple-touch-icon" href="icon.png">
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
-        input { width: 94%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
+        input { width: 94%; padding: 8px; margin-bottom: 15px; font-size: 14px; }
         .app-list { display: flex; flex-direction: column; gap: 15px; }
         .app-card {
             display: flex; align-items: center; background: #fff; padding: 10px;
             border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
         }
-        .app-card img { width: 50px; height: 50px; border-radius: 10px; margin-right: 15px; }
         .app-info { text-align: left; flex-grow: 1; }
         .app-info h3 { margin: 0; font-size: 16px; }
-        .app-info p { margin: 5px 0; color: #666; font-size: 14px; }
         .download-btn {
             padding: 5px 10px; background: #007bff; color: white; text-decoration: none;
             border-radius: 5px; font-size: 14px;
@@ -33,25 +35,20 @@
             color: #007bff;
             text-decoration: none;
         }
-        .mod-count {
-            font-size: 18px;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>APK List</h1>
-        <div class="mod-count" id="modCount">Loading mods count...</div>
-        <input type="text" id="searchBox" placeholder="Search by name or description...">
+        <h1>bsmod</h1>
+        <p id="modCount">Loading...</p>  <!-- Mod数表示 -->
+        <input type="text" id="searchBox" placeholder="Search...">
         <div class="app-list" id="appList"></div>
         <p class="no-results" id="noResults" style="display: none;">No matching results</p>
     </div>
 
     <!-- Partner link section -->
     <div class="partner-link-container">
-        <a href="https://brawlmods.natesworks.com/" target="_blank" class="partner-link">Partner</a>
+        <a href="https://dl.natesworks.com" target="_blank" class="partner-link">Partner</a>
     </div>
 
     <script>
@@ -64,8 +61,8 @@
                 const noResults = document.getElementById('noResults');
                 const modCount = document.getElementById('modCount');
 
-                // Display the number of mods
-                modCount.innerText = `Total mods: ${data.length}`;
+                // Mod数を表示
+                modCount.textContent = `Total Mods: ${data.length}`;
 
                 function displayApps(filteredData) {
                     appList.innerHTML = "";
@@ -90,8 +87,7 @@
                 searchBox.addEventListener('input', () => {
                     const searchTerm = searchBox.value.toLowerCase();
                     const filteredData = data.filter(app => 
-                        app.name.toLowerCase().includes(searchTerm) || 
-                        app.description.toLowerCase().includes(searchTerm)
+                        app.name.toLowerCase().includes(searchTerm)
                     );
                     displayApps(filteredData);
                 });
