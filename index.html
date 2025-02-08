@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram APK List</title>
+    <title>APK List</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
@@ -68,10 +68,9 @@
                         const appCard = document.createElement('div');
                         appCard.classList.add('app-card');
                         appCard.innerHTML = `
-                            <img src="${app.icon}" alt="${app.name}">
+                            
                             <div class="app-info">
                                 <h3>${app.name}</h3>
-                                <p>${app.description}</p>
                             </div>
                             <a href="${app.link}" target="_blank" class="download-btn">Download</a>
                         `;
