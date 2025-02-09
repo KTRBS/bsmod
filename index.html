@@ -7,8 +7,8 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
-        input { width: 90%; padding: 8px; margin-bottom: 15px; font-size: 14px; }
-        .app-list { display: flex; flex-direction: column; gap: 10px; }
+        input { width: 90%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
+        .app-list { display: flex; flex-direction: column; gap: 15px; }
         .app-card {
             display: flex; align-items: center; background: #fff; padding: 10px;
             border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
@@ -20,85 +20,10 @@
             border-radius: 5px; font-size: 14px;
         }
         .downloaded { opacity: 0.6; }
-        .no-results { color: #999; margin-top: 10px; font-size: 14px; }
-        .info { margin-top: 20px; font-size: 14px; color: #555; }
+        .footer { margin-top: 20px; font-size: 14px; color: #666; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>bsmod</h1>
-        <p id="modCount"></p>
-        <p id="lastUpdated" class="info"></p>
-        <p id="resourcesUpdated" class="info"></p>
-        <input type="text" id="searchBox" placeholder="Search by name...">
-        <div class="app-list" id="appList"></div>
-        <p class="no-results" id="noResults" style="display: none;">No matching results</p>
-    </div>
-
-    <script>
-        async function loadApps() {
-            try {
-                const response = await fetch('apps.json');
-                const data = await response.json();
-                const appList = document.getElementById('appList');
-                const searchBox = document.getElementById('searchBox');
-                const noResults = document.getElementById('noResults');
-                const modCount = document.getElementById('modCount');
-                const lastUpdated = document.getElementById('lastUpdated');
-                const resourcesUpdated = document.getElementById('resourcesUpdated');
-
-                // 更新日を設定
-                lastUpdated.textContent = `Last Updated: ${formatDate(data.lastUpdated)}`;
-                resourcesUpdated.textContent = `Resources Update: ${formatDate(data.resourcesUpdated)}`;
-
-                function formatDate(dateStr) {
-                    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                    const [year, month, day] = dateStr.split('-');
-                    return `${months[parseInt(month) - 1]} ${day}, ${year}`;
-                }
-
-                function displayApps(filteredData) {
-                    appList.innerHTML = "";
-                    modCount.textContent = `Total Mods: ${filteredData.length}`;
-
-                    if (filteredData.length === 0) {
-                        noResults.style.display = "block";
-                        return;
-                    }
-                    noResults.style.display = "none";
-
-                    filteredData.forEach(app => {
-                        const appCard = document.createElement('div');
-                        appCard.classList.add('app-card');
-                        appCard.innerHTML = `
-                            <div class="app-info">
-                                <h3>${app.name}</h3>
-                            </div>
-                            <a href="${app.link}" target="_blank" class="download-btn">Download</a>
-                        `;
-                        const downloadBtn = appCard.querySelector('.download-btn');
-                        downloadBtn.addEventListener('click', () => {
-                            downloadBtn.classList.add('downloaded');
-                        });
-                        appList.appendChild(appCard);
-                    });
-                }
-
-                searchBox.addEventListener('input', () => {
-                    const searchTerm = searchBox.value.toLowerCase();
-                    const filteredData = data.apps.filter(app => 
-                        app.name.toLowerCase().includes(searchTerm)
-                    );
-                    displayApps(filteredData);
-                });
-
-                displayApps(data.apps);
-            } catch (error) {
-                console.error('Error loading data:', error);
-            }
-        }
-
-        window.onload = loadApps;
-    </script>
-</body>
-</html>
+        <p id="modCount"></p
