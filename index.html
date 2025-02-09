@@ -8,7 +8,7 @@
         body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
         input { width: 80%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
-        .app-list { display: flex; flex-direction: column; gap: 15px; }
+        .app-list { display: flex; flex-direction: column; gap: 15px; margin-top: 10px; }
         .app-card {
             display: flex; align-items: center; background: #fff; padding: 10px;
             border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
@@ -21,6 +21,17 @@
         }
         .downloaded { opacity: 0.6; }
         .footer { margin-top: 20px; font-size: 14px; color: #666; }
+        .partner-link-container {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+        }
+        .partner-link {
+            font-size: 16px;
+            color: #007bff;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -30,6 +41,12 @@
         <p id="lastUpdated">Loading...</p>
         <input type="text" id="searchBox" placeholder="Search by name...">
         <div class="app-list" id="appList"></div>
+
+        <!-- Partner link section -->
+        <div class="partner-link-container">
+            <a href="https://dl.natesworks.com" target="_blank" class="partner-link">Partner</a>
+        </div>
+
         <p class="footer">Resources Update</p>
     </div>
 
