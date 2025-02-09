@@ -39,7 +39,8 @@
     <div class="container">
         <h1>APK List</h1>
         <p id="modCount">Loading...</p>
-        <p id="lastUpdated">Last updated: Loading...</p>
+        <p id="lastUpdated">Website update: Loading...</p>
+        <p id="resourcesUpdated">Resources update: Loading...</p>
         <input type="text" id="searchBox" placeholder="Search APKs...">
         <div class="app-list" id="appList"></div>
         <p class="no-results" id="noResults" style="display: none;">No matching results</p>
@@ -60,13 +61,16 @@
                 const noResults = document.getElementById('noResults');
                 const modCount = document.getElementById('modCount');
                 const lastUpdated = document.getElementById('lastUpdated');
+                const resourcesUpdated = document.getElementById('resourcesUpdated');
 
                 // アプリの数を表示
                 modCount.textContent = `Total APKs: ${data.length}`;
 
-                // 最終更新日を表示
-                const latestUpdate = new Date().toLocaleDateString();
+                // 最終更新日をアルファベット表記で表示
+                const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                const latestUpdate = new Date().toLocaleDateString('en-US', options);
                 lastUpdated.textContent = `Last updated: ${latestUpdate}`;
+                resourcesUpdated.textContent = `Resources update: ${latestUpdate}`;
 
                 function displayApps(filteredData) {
                     appList.innerHTML = "";
