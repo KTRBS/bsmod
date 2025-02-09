@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>APK List</title>
-    <link rel="apple-touch-icon" href="icon-512x512.png">
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
-        input { width: 94%; padding: 8px; margin-bottom: 15px; font-size: 14px; }
-        .app-list { display: flex; flex-direction: column; gap: 10px; }
+        input { width: 80%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
+        .app-list { display: flex; flex-direction: column; gap: 15px; }
         .app-card {
             display: flex; align-items: center; background: #fff; padding: 10px;
             border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
@@ -20,53 +19,49 @@
             padding: 5px 10px; background: #007bff; color: white; text-decoration: none;
             border-radius: 5px; font-size: 14px;
         }
-        .no-results { color: #999; margin-top: 10px; font-size: 14px; }
-        .partner-link-container {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f1f1f1;
-            border-radius: 5px;
-        }
-        .partner-link {
-            font-size: 16px;
-            color: #007bff;
-            text-decoration: none;
-        }
+        .downloaded { opacity: 0.6; }
+        .footer { margin-top: 20px; font-size: 14px; color: #666; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>APK List</h1>
+        <h1>bsmod</h1>
         <p id="modCount">Loading...</p>
-        <input type="text" id="searchBox" placeholder="Search APKs...">
+        <p id="lastUpdated">Loading...</p>
+        <input type="text" id="searchBox" placeholder="Search by name...">
         <div class="app-list" id="appList"></div>
-        <p class="no-results" id="noResults" style="display: none;">No matching results</p>
-    </div>
-
-    <!-- Partner link section -->
-    <div class="partner-link-container">
-        <a href="https://brawlmods.natesworks.com/" target="_blank" class="partner-link">Partner</a>
+        <p class="footer">Resources Update</p>
     </div>
 
     <script>
+        async function loadConfig() {
+            try {
+                const response = await fetch('config.json');
+                const config = await response.json();
+                document.getElementById('lastUpdated').textContent = "Last Updated: " + config.lastUpdated;
+            } catch (error) {
+                console.error('Error loading config:', error);
+                document.getElementById('lastUpdated').textContent = "Last Updated: Error loading";
+            }
+        }
+
         async function loadApps() {
             try {
                 const response = await fetch('apps.json');
                 const data = await response.json();
                 const appList = document.getElementById('appList');
                 const searchBox = document.getElementById('searchBox');
-                const noResults = document.getElementById('noResults');
                 const modCount = document.getElementById('modCount');
 
-                modCount.textContent = `Total APKs: ${data.length}`;
+                modCount.textContent = `Total Mods: ${data.length}`;
 
                 function displayApps(filteredData) {
                     appList.innerHTML = "";
                     if (filteredData.length === 0) {
-                        noResults.style.display = "block";
+                        appList.innerHTML = "<p>No matching results</p>";
                         return;
                     }
-                    noResults.style.display = "none";
+
                     filteredData.forEach(app => {
                         const appCard = document.createElement('div');
                         appCard.classList.add('app-card');
@@ -76,25 +71,33 @@
                             </div>
                             <a href="${app.link}" target="_blank" class="download-btn">Download</a>
                         `;
+
+                        const downloadBtn = appCard.querySelector('.download-btn');
+                        downloadBtn.addEventListener('click', () => {
+                            downloadBtn.classList.add('downloaded');
+                        });
+
                         appList.appendChild(appCard);
                     });
                 }
 
                 searchBox.addEventListener('input', () => {
                     const searchTerm = searchBox.value.toLowerCase();
-                    const filteredData = data.filter(app => 
-                        app.name.toLowerCase().includes(searchTerm)
-                    );
+                    const filteredData = data.filter(app => app.name.toLowerCase().includes(searchTerm));
                     displayApps(filteredData);
                 });
 
                 displayApps(data);
             } catch (error) {
-                console.error('Error loading data:', error);
+                console.error('Error loading apps:', error);
+                document.getElementById('modCount').textContent = "Total Mods: Error loading";
             }
         }
 
-        window.onload = loadApps;
+        window.onload = async () => {
+            await loadConfig();
+            await loadApps();
+        };
     </script>
 </body>
 </html>
