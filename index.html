@@ -20,7 +20,7 @@
             border-radius: 5px; font-size: 14px;
         }
         .downloaded { opacity: 0.6; }
-        .footer { margin-top: 20px; font-size: 14px; color: #666; }
+        .footer { margin-top: 10px; font-size: 14px; color: #666; }
         .partner-link-container {
             margin-top: 20px;
             padding: 10px;
@@ -39,6 +39,7 @@
         <h1>bsmod</h1>
         <p id="modCount">Loading...</p>
         <p id="lastUpdated">Loading...</p>
+        <p id="resourcesUpdate">Loading...</p>
         <input type="text" id="searchBox" placeholder="Search by name...">
         <div class="app-list" id="appList"></div>
 
@@ -46,8 +47,6 @@
         <div class="partner-link-container">
             <a href="https://dl.natesworks.com" target="_blank" class="partner-link">Partner</a>
         </div>
-
-        <p class="footer">Resources Update</p>
     </div>
 
     <script>
@@ -56,9 +55,11 @@
                 const response = await fetch('config.json');
                 const config = await response.json();
                 document.getElementById('lastUpdated').textContent = "Last Updated: " + config.lastUpdated;
+                document.getElementById('resourcesUpdate').textContent = "Resources Update: " + config.resourcesUpdate;
             } catch (error) {
                 console.error('Error loading config:', error);
                 document.getElementById('lastUpdated').textContent = "Last Updated: Error loading";
+                document.getElementById('resourcesUpdate').textContent = "Resources Update: Error loading";
             }
         }
 
