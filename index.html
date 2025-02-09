@@ -18,8 +18,9 @@
         .app-info h3 { margin: 0; font-size: 16px; }
         .download-btn {
             padding: 5px 10px; background: #007bff; color: white; text-decoration: none;
-            border-radius: 5px; font-size: 14px;
+            border-radius: 5px; font-size: 14px; transition: opacity 0.3s;
         }
+        .downloaded { opacity: 0.6; } /* 押されたボタンを白っぽくする */
         .no-results { color: #999; margin-top: 10px; font-size: 14px; }
         .partner-link-container {
             margin-top: 20px;
@@ -38,6 +39,7 @@
     <div class="container">
         <h1>APK List</h1>
         <p id="modCount">Loading...</p>
+        <p id="lastUpdated">Last updated: Loading...</p>
         <input type="text" id="searchBox" placeholder="Search APKs...">
         <div class="app-list" id="appList"></div>
         <p class="no-results" id="noResults" style="display: none;">No matching results</p>
@@ -57,8 +59,14 @@
                 const searchBox = document.getElementById('searchBox');
                 const noResults = document.getElementById('noResults');
                 const modCount = document.getElementById('modCount');
+                const lastUpdated = document.getElementById('lastUpdated');
 
+                // アプリの数を表示
                 modCount.textContent = `Total APKs: ${data.length}`;
+
+                // 最終更新日を表示
+                const latestUpdate = new Date().toLocaleDateString();
+                lastUpdated.textContent = `Last updated: ${latestUpdate}`;
 
                 function displayApps(filteredData) {
                     appList.innerHTML = "";
@@ -70,13 +78,19 @@
                     filteredData.forEach(app => {
                         const appCard = document.createElement('div');
                         appCard.classList.add('app-card');
+                        const buttonId = `btn-${app.name.replace(/\s+/g, '-')}`;
                         appCard.innerHTML = `
                             <div class="app-info">
                                 <h3>${app.name}</h3>
                             </div>
-                            <a href="${app.link}" target="_blank" class="download-btn">Download</a>
+                            <a id="${buttonId}" href="${app.link}" target="_blank" class="download-btn">Download</a>
                         `;
                         appList.appendChild(appCard);
+
+                        // ボタンを押したら白っぽくする
+                        document.getElementById(buttonId).addEventListener("click", function() {
+                            this.classList.add("downloaded");
+                        });
                     });
                 }
 
