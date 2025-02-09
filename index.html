@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>APK List</title>
-    <link rel="apple-touch-icon" href="icon-512x512.png">
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
-        input { width: 94%; padding: 8px; margin-bottom: 15px; font-size: 14px; }
+        input { width: 90%; padding: 8px; margin-bottom: 15px; font-size: 14px; }
         .app-list { display: flex; flex-direction: column; gap: 10px; }
         .app-card {
             display: flex; align-items: center; background: #fff; padding: 10px;
@@ -18,37 +17,22 @@
         .app-info h3 { margin: 0; font-size: 16px; }
         .download-btn {
             padding: 5px 10px; background: #007bff; color: white; text-decoration: none;
-            border-radius: 5px; font-size: 14px; transition: opacity 0.3s;
+            border-radius: 5px; font-size: 14px;
         }
-        .downloaded { opacity: 0.6; } /* 押されたボタンを白っぽくする */
-        .no-results { color: #999; margin-top: 10px; font-size: 14px; display: none; }
-        .partner-link-container {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f1f1f1;
-            border-radius: 5px;
-        }
-        .partner-link {
-            font-size: 16px;
-            color: #007bff;
-            text-decoration: none;
-        }
+        .downloaded { opacity: 0.6; }
+        .no-results { color: #999; margin-top: 10px; font-size: 14px; }
+        .info { margin-top: 20px; font-size: 14px; color: #555; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>APK List</h1>
-        <p id="modCount">Loading...</p>
-        <p id="lastUpdated">Website updated: Loading...</p>
-        <p id="resourcesUpdated">Resources update: Loading...</p>
-        <input type="text" id="searchBox" placeholder="Search APKs...">
+        <h1>bsmod</h1>
+        <p id="modCount"></p>
+        <p id="lastUpdated" class="info"></p>
+        <p id="resourcesUpdated" class="info"></p>
+        <input type="text" id="searchBox" placeholder="Search by name...">
         <div class="app-list" id="appList"></div>
-        <p class="no-results" id="noResults">No matching results</p>
-    </div>
-
-    <!-- Partner link section -->
-    <div class="partner-link-container">
-        <a href="https://brawlmods.natesworks.com/" target="_blank" class="partner-link">Partner</a>
+        <p class="no-results" id="noResults" style="display: none;">No matching results</p>
     </div>
 
     <script>
@@ -63,53 +47,52 @@
                 const lastUpdated = document.getElementById('lastUpdated');
                 const resourcesUpdated = document.getElementById('resourcesUpdated');
 
-                // アプリの数を表示
-                modCount.textContent = `Total APKs: ${data.length}`;
+                // 更新日を設定
+                lastUpdated.textContent = `Last Updated: ${formatDate(data.lastUpdated)}`;
+                resourcesUpdated.textContent = `Resources Update: ${formatDate(data.resourcesUpdated)}`;
 
-                // 最終更新日をアルファベット表記で表示
-                const options = { year: 'numeric', month: 'short', day: 'numeric' };
-                const latestUpdate = new Date().toLocaleDateString('en-US', options);
-                lastUpdated.textContent = `Website updated date: ${latestUpdate}`;
-                resourcesUpdated.textContent = `Resources update: ${latestUpdate}`;
+                function formatDate(dateStr) {
+                    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    const [year, month, day] = dateStr.split('-');
+                    return `${months[parseInt(month) - 1]} ${day}, ${year}`;
+                }
 
                 function displayApps(filteredData) {
                     appList.innerHTML = "";
+                    modCount.textContent = `Total Mods: ${filteredData.length}`;
+
                     if (filteredData.length === 0) {
                         noResults.style.display = "block";
                         return;
                     }
                     noResults.style.display = "none";
+
                     filteredData.forEach(app => {
                         const appCard = document.createElement('div');
                         appCard.classList.add('app-card');
-                        const buttonId = `btn-${app.name.replace(/\s+/g, '-')}`;
                         appCard.innerHTML = `
                             <div class="app-info">
                                 <h3>${app.name}</h3>
                             </div>
-                            <a id="${buttonId}" href="${app.link}" target="_blank" class="download-btn">Download</a>
+                            <a href="${app.link}" target="_blank" class="download-btn">Download</a>
                         `;
-                        appList.appendChild(appCard);
-
-                        // ボタンを押したら白っぽくする
-                        document.getElementById(buttonId).addEventListener("click", function() {
-                            this.classList.add("downloaded");
+                        const downloadBtn = appCard.querySelector('.download-btn');
+                        downloadBtn.addEventListener('click', () => {
+                            downloadBtn.classList.add('downloaded');
                         });
+                        appList.appendChild(appCard);
                     });
                 }
 
-                // 検索機能
                 searchBox.addEventListener('input', () => {
                     const searchTerm = searchBox.value.toLowerCase();
-                    const filteredData = data.filter(app => 
+                    const filteredData = data.apps.filter(app => 
                         app.name.toLowerCase().includes(searchTerm)
                     );
                     displayApps(filteredData);
                 });
 
-                // 初回表示（全アプリを表示）
-                displayApps(data);
-
+                displayApps(data.apps);
             } catch (error) {
                 console.error('Error loading data:', error);
             }
