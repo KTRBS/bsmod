@@ -8,16 +8,16 @@
         body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
         input { width: 94%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
-        .app-list { display: flex; flex-direction: column; gap: 15px; }
-        .app-card {
+        .app-list, .partner-list { display: flex; flex-direction: column; gap: 15px; }
+        .app-card, .partner-card {
             display: flex; align-items: center; background: #fff; padding: 10px;
             border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
             margin-bottom: 15px;
         }
-        .app-info { text-align: left; flex-grow: 1; }
-        .app-info h3 { margin: 0; font-size: 16px; }
-        .app-info p { margin: 5px 0; color: #666; font-size: 14px; }
-        .download-btn {
+        .app-info, .partner-info { text-align: left; flex-grow: 1; }
+        .app-info h3, .partner-info h3 { margin: 0; font-size: 16px; }
+        .app-info p, .partner-info p { margin: 5px 0; color: #666; font-size: 14px; }
+        .download-btn, .partner-link {
             padding: 5px 10px; background: #007bff; color: white; text-decoration: none;
             border-radius: 5px; font-size: 14px;
         }
@@ -61,6 +61,10 @@
         <p id="searchResults" class="hidden">Search Results: <span id="searchCount">0</span></p>
         <div class="app-list" id="appList"></div>
         <p class="no-results hidden" id="noResults">No matching results</p>
+        
+        <!-- Partner Section -->
+        <h2>Partners</h2>
+        <div class="partner-list" id="partnerList"></div>
     </div>
 
     <!-- Discord Server Link -->
@@ -129,22 +133,3 @@
                     lastUpdated.classList.add("hidden");
                     resourcesUpdated.classList.add("hidden");
                 });
-
-                toggleMods.addEventListener('change', () => {
-                    appList.style.display = toggleMods.checked ? 'none' : 'block';
-                });
-
-                totalMods.querySelector('span').textContent = data.length;
-                lastUpdated.querySelector('span').textContent = "2024-02-08"; // config.json から動的取得も可能
-                resourcesUpdated.querySelector('span').textContent = "2024-02-08";
-
-                displayApps(data);
-            } catch (error) {
-                console.error('Error loading data:', error);
-            }
-        }
-
-        window.onload = loadApps;
-    </script>
-</body>
-</html>
