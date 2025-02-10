@@ -33,37 +33,26 @@
             color: #007bff;
             text-decoration: none;
         }
-        /* Discord Button */
         .discord-btn {
-            margin-top: 80px;
+            margin-top: 149px;  /* Discordボタンを149px下に移動 */
             padding: 10px 20px;
-            background-color: #7289DA; /* Discord Color */
+            background-color: #7289DA; /* Discordの色 */
             color: white;
             font-size: 16px;
             text-decoration: none;
             border-radius: 5px;
-        }
-        .mod-count, .last-update {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-        .search-result-count {
-            font-size: 14px;
-            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>bsmod</h1>
-        
-        <!-- File count and last updated info -->
-        <div class="mod-count" id="totalMods" style="display: block;">Total Mods: 0</div>
-        <div class="last-update" id="lastUpdate" style="display: block;">Last Update: Loading...</div>
-
-        <input type="text" id="searchBox" placeholder="Search by name or description..." />
-        <div class="search-result-count" id="searchResultCount" style="display: none;">Search Results: 0</div>
-        <div class="app-list" id="appList" style="display: none;"></div>
+        <div id="fileInfo">
+            <p>Total Mods: <span id="totalMods">Loading...</span></p>
+            <p>Last Updated: <span id="lastUpdated">Loading...</span></p>
+        </div>
+        <input type="text" id="searchBox" placeholder="Search by name or description...">
+        <div class="app-list" id="appList"></div>
         <p class="no-results" id="noResults" style="display: none;">No matching results</p>
     </div>
 
@@ -72,8 +61,8 @@
         <a href="https://dl.natesworks.com" target="_blank" class="partner-link">Partner</a>
     </div>
 
-    <!-- Discord Server Button -->
-    <a href="https://discord.gg/your-discord-server-link" target="_blank" class="discord-btn">Join Our Discord Server</a>
+    <!-- Discord server button -->
+    <a href="https://discord.com/your-discord-server-link" target="_blank" class="discord-btn">Join our Discord Server</a>
 
     <script>
         async function loadApps() {
@@ -84,58 +73,42 @@
                 const searchBox = document.getElementById('searchBox');
                 const noResults = document.getElementById('noResults');
                 const totalMods = document.getElementById('totalMods');
-                const searchResultCount = document.getElementById('searchResultCount');
-                const lastUpdate = document.getElementById('lastUpdate');
-
-                // Update total mods count and last update info
-                totalMods.textContent = `Total Mods: ${data.length}`;
-                lastUpdate.textContent = `Last Update: ${data[0]?.lastUpdated || "N/A"}`;
+                const lastUpdated = document.getElementById('lastUpdated');
 
                 function displayApps(filteredData) {
                     appList.innerHTML = "";
                     if (filteredData.length === 0) {
                         noResults.style.display = "block";
-                    } else {
-                        noResults.style.display = "none";
-                        filteredData.forEach(app => {
-                            const appCard = document.createElement('div');
-                            appCard.classList.add('app-card');
-                            appCard.innerHTML = `
-                                <div class="app-info">
-                                    <h3>${app.name}</h3>
-                                </div>
-                                <a href="${app.link}" target="_blank" class="download-btn">Download</a>
-                            `;
-                            appList.appendChild(appCard);
-                        });
+                        return;
                     }
-                    // Update search result count
-                    searchResultCount.textContent = `Search Results: ${filteredData.length}`;
+                    noResults.style.display = "none";
+                    filteredData.forEach(app => {
+                        const appCard = document.createElement('div');
+                        appCard.classList.add('app-card');
+                        appCard.innerHTML = `
+                            <div class="app-info">
+                                <h3>${app.name}</h3>
+                            </div>
+                            <a href="${app.link}" target="_blank" class="download-btn">Download</a>
+                        `;
+                        appList.appendChild(appCard);
+                    });
                 }
 
-                // Hide search results initially
-                appList.style.display = "none";
-                searchResultCount.style.display = "none";
+                // Update Total Mods and Last Updated Date
+                totalMods.textContent = data.length;
+                lastUpdated.textContent = "2024-02-08"; // Example date, replace with real data
 
-                // Handle search input
                 searchBox.addEventListener('input', () => {
                     const searchTerm = searchBox.value.toLowerCase();
                     const filteredData = data.filter(app => 
                         app.name.toLowerCase().includes(searchTerm) || 
-                        app.description?.toLowerCase().includes(searchTerm) // Optional check for description
+                        app.description.toLowerCase().includes(searchTerm)
                     );
-                    // Show the search results section only after search
-                    if (searchTerm.trim() !== "") {
-                        appList.style.display = "block";
-                        searchResultCount.style.display = "block";
-                        displayApps(filteredData);
-                    } else {
-                        appList.style.display = "none";
-                        searchResultCount.style.display = "none";
-                    }
+                    displayApps(filteredData);
                 });
 
-                displayApps(data); // Initial display when the page loads
+                displayApps(data);
             } catch (error) {
                 console.error('Error loading data:', error);
             }
