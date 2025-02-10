@@ -51,7 +51,7 @@
             <p>Total Mods: <span id="totalMods">Loading...</span></p>
             <p>Last Updated: <span id="lastUpdated">Loading...</span></p>
         </div>
-        <input type="text" id="searchBox" placeholder="Search by name or description...">
+        <input type="text" id="searchBox" placeholder="Search by name...">
         <div class="app-list" id="appList"></div>
         <p class="no-results" id="noResults" style="display: none;">No matching results</p>
     </div>
@@ -99,11 +99,11 @@
                 totalMods.textContent = data.length;
                 lastUpdated.textContent = "2024-02-08"; // Example date, replace with real data
 
+                // Search functionality
                 searchBox.addEventListener('input', () => {
                     const searchTerm = searchBox.value.toLowerCase();
                     const filteredData = data.filter(app => 
-                        app.name.toLowerCase().includes(searchTerm) || 
-                        app.description.toLowerCase().includes(searchTerm)
+                        app.name.toLowerCase().includes(searchTerm) // Search only by name
                     );
                     displayApps(filteredData);
                 });
