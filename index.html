@@ -122,7 +122,7 @@
                     const searchTerm = searchBox.value.toLowerCase();
                     const filteredData = data.filter(app => 
                         app.name.toLowerCase().includes(searchTerm) || 
-                        app.description.toLowerCase().includes(searchTerm)
+                        app.description?.toLowerCase().includes(searchTerm) // Optional check for description
                     );
                     // Show the search results section only after search
                     if (searchTerm.trim() !== "") {
