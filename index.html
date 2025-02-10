@@ -23,25 +23,27 @@
         }
         .no-results { color: #999; margin-top: 10px; font-size: 14px; }
         
+        /* チェックボックスとラベルの配置 */
         .checkbox-container {
             display: flex;
+            justify-content: flex-start;
             align-items: center;
-            gap: 3px;  /* チェックボックスとラベルの間隔を小さく */
+            gap: 5px;  /* チェックボックスとラベルの間隔を小さく設定 */
             margin-bottom: 10px;
         }
-
+        
         .checkbox-container input {
-            margin: 0;  /* チェックボックスのデフォルトのマージンを削除 */
+            margin: 0;  /* チェックボックスの余白を削除 */
         }
 
         .checkbox-container label {
             font-size: 14px;
-            margin-left: 0;  /* ラベルの左マージンを削除して、チェックボックスにぴったりつける */
         }
 
         .partner-link-container {
             margin-top: 20px;
         }
+
         .partner-link {
             display: inline-block;
             padding: 10px 20px;
@@ -51,9 +53,11 @@
             border-radius: 5px;
             font-size: 16px;
         }
+
         .discord-container {
             margin-top: 20px;
         }
+
         .discord-link {
             display: inline-block;
             padding: 10px 20px;
@@ -63,29 +67,20 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        }
-        .telegram-container {
-            margin-top: 20px;
-        }
-        .telegram-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+
         .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>APK List</h1>
+
+        <!-- チェックボックスとラベル -->
         <div class="checkbox-container">
             <input type="checkbox" id="toggleMods">
             <label for="toggleMods">Hide mod list</label>
         </div>
+
         <input type="text" id="searchBox" placeholder="Search by name...">
         <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
         <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-08</span></p>
@@ -103,10 +98,6 @@
     <!-- Discord Server Link -->
     <div class="discord-container">
         <a href="https://discord.gg/yourserver" target="_blank" class="discord-link">Discord Server</a>
-    </div>
-    
-    <div class="telegram-container">
-        <a href="https://t.me/AllModsBrawlStars" target="_blank" class="telegram-link">Telegram Channel</a>
     </div>
 
     <script>
