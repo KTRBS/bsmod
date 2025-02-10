@@ -35,7 +35,7 @@
         }
         /* Discord Button */
         .discord-btn {
-            margin-top: 40px;
+            margin-top: 80px;
             padding: 10px 20px;
             background-color: #7289DA; /* Discord Color */
             color: white;
@@ -43,7 +43,7 @@
             text-decoration: none;
             border-radius: 5px;
         }
-        .mod-count {
+        .mod-count, .last-update {
             font-size: 16px;
             margin-bottom: 10px;
         }
@@ -57,12 +57,13 @@
     <div class="container">
         <h1>bsmod</h1>
         
-        <!-- Total mods count -->
-        <div class="mod-count" id="totalMods">Total Mods: 0</div>
+        <!-- File count and last updated info -->
+        <div class="mod-count" id="totalMods" style="display: block;">Total Mods: 0</div>
+        <div class="last-update" id="lastUpdate" style="display: block;">Last Update: Loading...</div>
 
-        <input type="text" id="searchBox" placeholder="Search by name or description...">
-        <div class="search-result-count" id="searchResultCount">Search Results: 0</div>
-        <div class="app-list" id="appList"></div>
+        <input type="text" id="searchBox" placeholder="Search by name or description..." />
+        <div class="search-result-count" id="searchResultCount" style="display: none;">Search Results: 0</div>
+        <div class="app-list" id="appList" style="display: none;"></div>
         <p class="no-results" id="noResults" style="display: none;">No matching results</p>
     </div>
 
@@ -84,9 +85,11 @@
                 const noResults = document.getElementById('noResults');
                 const totalMods = document.getElementById('totalMods');
                 const searchResultCount = document.getElementById('searchResultCount');
+                const lastUpdate = document.getElementById('lastUpdate');
 
-                // Update total mods count
+                // Update total mods count and last update info
                 totalMods.textContent = `Total Mods: ${data.length}`;
+                lastUpdate.textContent = `Last Update: ${data[0]?.lastUpdated || "N/A"}`;
 
                 function displayApps(filteredData) {
                     appList.innerHTML = "";
@@ -110,13 +113,26 @@
                     searchResultCount.textContent = `Search Results: ${filteredData.length}`;
                 }
 
+                // Hide search results initially
+                appList.style.display = "none";
+                searchResultCount.style.display = "none";
+
+                // Handle search input
                 searchBox.addEventListener('input', () => {
                     const searchTerm = searchBox.value.toLowerCase();
                     const filteredData = data.filter(app => 
                         app.name.toLowerCase().includes(searchTerm) || 
                         app.description.toLowerCase().includes(searchTerm)
                     );
-                    displayApps(filteredData);
+                    // Show the search results section only after search
+                    if (searchTerm.trim() !== "") {
+                        appList.style.display = "block";
+                        searchResultCount.style.display = "block";
+                        displayApps(filteredData);
+                    } else {
+                        appList.style.display = "none";
+                        searchResultCount.style.display = "none";
+                    }
                 });
 
                 displayApps(data); // Initial display when the page loads
