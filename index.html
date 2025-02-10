@@ -23,20 +23,18 @@
         }
         .no-results { color: #999; margin-top: 10px; font-size: 14px; }
         .checkbox-container {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            gap: 5px;
-            margin-bottom: 10px;
+          display: flex;
+         align-items: center;
+         gap: 0px; /* 要素間の間隔を完全になくす */
+         margin-bottom: 10px;
         }
-        {
-        width: 150px;
-        margin-left: 0;
-        }
-        .checkbox-container label {
-            margin-left: 10px;
-            font-size: 14px;
-        }
+
+#filterText {
+    width: 150px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-left: none; /* チェックボックスとの境界を目立たなくする */
+}
         .partner-link-container {
             margin-top: 20px;
         }
