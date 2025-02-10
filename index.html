@@ -22,19 +22,19 @@
             border-radius: 5px; font-size: 14px;
         }
         .no-results { color: #999; margin-top: 10px; font-size: 14px; }
+        
         .checkbox-container {
-          display: flex;
-         align-items: center;
-         gap: 0px; /* 要素間の間隔を完全になくす */
-         margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 3px;  /* チェックボックスとラベルの間隔を小さく */
+            margin-bottom: 10px;
         }
 
-#filterText {
-    width: 150px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-left: none; /* チェックボックスとの境界を目立たなくする */
-}
+        .checkbox-container label {
+            font-size: 14px;
+            margin-left: 2px;  /* ラベルとチェックボックスの間隔を少し調整 */
+        }
+
         .partner-link-container {
             margin-top: 20px;
         }
@@ -66,10 +66,9 @@
     <div class="container">
         <h1>APK List</h1>
         <div class="checkbox-container">
-    <input type="checkbox" id="toggleMods">
-    <label for="toggleMods">Hide mod list</label>
-    
-</div>
+            <input type="checkbox" id="toggleMods">
+            <label for="toggleMods">Hide mod list</label>
+        </div>
         <input type="text" id="searchBox" placeholder="Search by name...">
         <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
         <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-08</span></p>
