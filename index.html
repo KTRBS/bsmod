@@ -36,15 +36,16 @@
 <body>
     <div class="container">
         <h1>bsmod</h1>
-        <input type="text" id="searchBox" placeholder="Search by name...">
-        
-        <!-- Total Mods & Search Results -->
+
+        <!-- Total Mods & Updates (検索バーの上) -->
         <p id="totalMods"></p>
-        <p id="searchResults" style="display: none;"></p>
-        
-        <!-- Last Updated & Resources Update -->
         <p id="lastUpdated"></p>
         <p id="resourcesUpdate"></p>
+
+        <input type="text" id="searchBox" placeholder="Search by name...">
+
+        <!-- Search Results (検索バーの下) -->
+        <p id="searchResults" style="display: none;"></p>
 
         <div class="app-list" id="appList"></div>
         <p class="no-results" id="noResults" style="display: none;">No matching results</p>
