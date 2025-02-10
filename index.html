@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +14,6 @@
             border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
             margin-bottom: 15px;
         }
-        .app-card img { width: 50px; height: 50px; border-radius: 10px; margin-right: 15px; }
         .app-info { text-align: left; flex-grow: 1; }
         .app-info h3 { margin: 0; font-size: 16px; }
         .app-info p { margin: 5px 0; color: #666; font-size: 14px; }
@@ -23,17 +22,6 @@
             border-radius: 5px; font-size: 14px;
         }
         .no-results { color: #999; margin-top: 10px; font-size: 14px; }
-        .partner-link-container {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f1f1f1;
-            border-radius: 5px;
-        }
-        .partner-link {
-            font-size: 16px;
-            color: #007bff;
-            text-decoration: none;
-        }
         .checkbox-container {
             display: flex;
             justify-content: flex-start;
@@ -44,27 +32,40 @@
             margin-left: 5px;
             font-size: 14px;
         }
+        .discord-container {
+            margin-top: 149px;
+        }
+        .discord-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #5865F2;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>APK List</h1>
         <div class="checkbox-container">
-            <input type="checkbox" id="toggleMods" checked>
-            <label for="toggleMods">一覧を非表示</label>
+            <input type="checkbox" id="toggleMods">
+            <label for="toggleMods">Hide List</label>
         </div>
-        <input type="text" id="searchBox" placeholder="Search by name or description...">
+        <input type="text" id="searchBox" placeholder="Search by name...">
         <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
         <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-08</span></p>
         <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2024-02-08</span></p>
-        <p id="searchResults" style="display: none;">Search Results: <span id="searchCount">0</span></p>
+        <p id="searchResults" class="hidden">Search Results: <span id="searchCount">0</span></p>
         <div class="app-list" id="appList"></div>
-        <p class="no-results" id="noResults" style="display: none;">No matching results</p>
+        <p class="no-results hidden" id="noResults">No matching results</p>
     </div>
 
-    <!-- Partner link section -->
-    <div class="partner-link-container">
-        <a href="https://discord.gg/yourserver" target="_blank" class="partner-link">Discord Server</a>
+    <!-- Discord Server Link -->
+    <div class="discord-container">
+        <a href="https://discord.gg/yourserver" target="_blank" class="discord-link">Discord Server</a>
     </div>
 
     <script>
@@ -75,19 +76,20 @@
                 const appList = document.getElementById('appList');
                 const searchBox = document.getElementById('searchBox');
                 const noResults = document.getElementById('noResults');
-                const totalMods = document.getElementById('modCount');
-                const lastUpdated = document.getElementById('updateDate');
-                const resourcesUpdated = document.getElementById('resourcesUpdateDate');
+                const totalMods = document.getElementById('totalMods');
+                const lastUpdated = document.getElementById('lastUpdated');
+                const resourcesUpdated = document.getElementById('resourcesUpdated');
                 const searchResults = document.getElementById('searchResults');
                 const searchCount = document.getElementById('searchCount');
+                const toggleMods = document.getElementById('toggleMods');
 
                 function displayApps(filteredData) {
                     appList.innerHTML = "";
                     if (filteredData.length === 0) {
-                        noResults.style.display = "block";
+                        noResults.classList.remove("hidden");
                         return;
                     }
-                    noResults.style.display = "none";
+                    noResults.classList.add("hidden");
                     filteredData.forEach(app => {
                         const appCard = document.createElement('div');
                         appCard.classList.add('app-card');
@@ -99,33 +101,42 @@
                         `;
                         appList.appendChild(appCard);
                     });
+                }
 
-                    searchCount.textContent = filteredData.length;
-                    searchResults.style.display = "block";
+                function resetView() {
+                    totalMods.classList.remove("hidden");
+                    lastUpdated.classList.remove("hidden");
+                    resourcesUpdated.classList.remove("hidden");
+                    searchResults.classList.add("hidden");
                 }
 
                 searchBox.addEventListener('input', () => {
                     const searchTerm = searchBox.value.toLowerCase();
-                    const filteredData = data.filter(app => 
-                        app.name.toLowerCase().includes(searchTerm) || 
-                        app.description.toLowerCase().includes(searchTerm)
-                    );
-                    displayApps(filteredData);
-                });
-
-                totalMods.textContent = data.length;
-                lastUpdated.textContent = "2024-02-08"; // ここをconfigから動的に更新する場合、変数にする
-                resourcesUpdated.textContent = "2024-02-08"; // 同じくconfigから更新
-
-                // チェックボックスで表示非表示を切り替え
-                const toggleMods = document.getElementById('toggleMods');
-                toggleMods.addEventListener('change', () => {
-                    if (toggleMods.checked) {
-                        appList.style.display = 'none';
-                    } else {
-                        appList.style.display = 'block';
+                    if (searchTerm === "") {
+                        resetView();
+                        displayApps(data);
+                        return;
                     }
+
+                    const filteredData = data.filter(app => 
+                        app.name.toLowerCase().includes(searchTerm)
+                    );
+
+                    displayApps(filteredData);
+                    searchResults.classList.remove("hidden");
+                    searchCount.textContent = filteredData.length;
+                    totalMods.classList.add("hidden");
+                    lastUpdated.classList.add("hidden");
+                    resourcesUpdated.classList.add("hidden");
                 });
+
+                toggleMods.addEventListener('change', () => {
+                    appList.style.display = toggleMods.checked ? 'none' : 'block';
+                });
+
+                totalMods.querySelector('span').textContent = data.length;
+                lastUpdated.querySelector('span').textContent = "2024-02-08"; // config.json から動的取得も可能
+                resourcesUpdated.querySelector('span').textContent = "2024-02-08";
 
                 displayApps(data);
             } catch (error) {
