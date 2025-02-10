@@ -7,7 +7,7 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
-        input { width: 100%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
+        input { width: 94%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
         .app-list { display: flex; flex-direction: column; gap: 15px; }
         .app-card {
             display: flex; align-items: center; background: #fff; padding: 10px;
@@ -35,7 +35,7 @@
         }
         /* Discord Button */
         .discord-btn {
-            margin-top: 20px;
+            margin-top: 40px;
             padding: 10px 20px;
             background-color: #7289DA; /* Discord Color */
             color: white;
@@ -43,12 +43,25 @@
             text-decoration: none;
             border-radius: 5px;
         }
+        .mod-count {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .search-result-count {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>bsmod</h1>
+        
+        <!-- Total mods count -->
+        <div class="mod-count" id="totalMods">Total Mods: 0</div>
+
         <input type="text" id="searchBox" placeholder="Search by name or description...">
+        <div class="search-result-count" id="searchResultCount">Search Results: 0</div>
         <div class="app-list" id="appList"></div>
         <p class="no-results" id="noResults" style="display: none;">No matching results</p>
     </div>
@@ -69,8 +82,12 @@
                 const appList = document.getElementById('appList');
                 const searchBox = document.getElementById('searchBox');
                 const noResults = document.getElementById('noResults');
+                const totalMods = document.getElementById('totalMods');
+                const searchResultCount = document.getElementById('searchResultCount');
 
-                // Function to display the filtered list
+                // Update total mods count
+                totalMods.textContent = `Total Mods: ${data.length}`;
+
                 function displayApps(filteredData) {
                     appList.innerHTML = "";
                     if (filteredData.length === 0) {
@@ -89,9 +106,10 @@
                             appList.appendChild(appCard);
                         });
                     }
+                    // Update search result count
+                    searchResultCount.textContent = `Search Results: ${filteredData.length}`;
                 }
 
-                // Search functionality
                 searchBox.addEventListener('input', () => {
                     const searchTerm = searchBox.value.toLowerCase();
                     const filteredData = data.filter(app => 
