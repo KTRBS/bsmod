@@ -7,8 +7,8 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
-        input { width: 94%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
-        .app-list { display: flex; flex-direction: column; gap: 15px; margin-top: 10px; }
+        input { width: 90%; padding: 8px; margin-bottom: 15px; font-size: 14px; }
+        .app-list { display: flex; flex-direction: column; gap: 10px; }
         .app-card {
             display: flex; align-items: center; background: #fff; padding: 10px;
             border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
@@ -19,8 +19,7 @@
             padding: 5px 10px; background: #007bff; color: white; text-decoration: none;
             border-radius: 5px; font-size: 14px;
         }
-        .downloaded { opacity: 0.6; }
-        .footer { margin-top: 10px; font-size: 14px; color: #666; }
+        .no-results { color: #999; margin-top: 10px; font-size: 14px; }
         .partner-link-container {
             margin-top: 20px;
             padding: 10px;
@@ -37,16 +36,23 @@
 <body>
     <div class="container">
         <h1>bsmod</h1>
-        <p id="modCount">Loading...</p>
-        <p id="lastUpdated">Loading...</p>
-        <p id="resourcesUpdate">Loading...</p>
         <input type="text" id="searchBox" placeholder="Search by name...">
-        <div class="app-list" id="appList"></div>
+        
+        <!-- Total Mods & Search Results -->
+        <p id="totalMods"></p>
+        <p id="searchResults" style="display: none;"></p>
+        
+        <!-- Last Updated & Resources Update -->
+        <p id="lastUpdated"></p>
+        <p id="resourcesUpdate"></p>
 
-        <!-- Partner link section -->
-        <div class="partner-link-container">
-            <a href="https://brawlmods.natesworks.com/" target="_blank" class="partner-link">Partner</a>
-        </div>
+        <div class="app-list" id="appList"></div>
+        <p class="no-results" id="noResults" style="display: none;">No matching results</p>
+    </div>
+
+    <!-- Partner link section -->
+    <div class="partner-link-container">
+        <a href="https://dl.natesworks.com" target="_blank" class="partner-link">Partner</a>
     </div>
 
     <script>
@@ -55,7 +61,7 @@
                 const response = await fetch('config.json');
                 const config = await response.json();
                 document.getElementById('lastUpdated').textContent = "Last Updated: " + config.lastUpdated;
-                document.getElementById('resourcesUpdate').textContent = "Resources Update: " + config.resourcesUpdate;
+                document.getElementById('resourcesUpdate').textContent = "Resources Update: " + config.resourcesUpdated;
             } catch (error) {
                 console.error('Error loading config:', error);
                 document.getElementById('lastUpdated').textContent = "Last Updated: Error loading";
@@ -69,16 +75,36 @@
                 const data = await response.json();
                 const appList = document.getElementById('appList');
                 const searchBox = document.getElementById('searchBox');
-                const modCount = document.getElementById('modCount');
+                const noResults = document.getElementById('noResults');
+                const totalMods = document.getElementById('totalMods');
+                const searchResults = document.getElementById('searchResults');
+                const lastUpdated = document.getElementById('lastUpdated');
+                const resourcesUpdate = document.getElementById('resourcesUpdate');
 
-                modCount.textContent = `Total Mods: ${data.length}`;
+                totalMods.textContent = "Total Mods: " + data.length;
 
                 function displayApps(filteredData) {
                     appList.innerHTML = "";
+                    
+                    // 検索時の表示制御
+                    if (searchBox.value.trim() !== "") {
+                        lastUpdated.style.display = "none";
+                        resourcesUpdate.style.display = "none";
+                        totalMods.style.display = "none";
+                        searchResults.style.display = "block";
+                        searchResults.textContent = "Search Results: " + filteredData.length;
+                    } else {
+                        lastUpdated.style.display = "block";
+                        resourcesUpdate.style.display = "block";
+                        totalMods.style.display = "block";
+                        searchResults.style.display = "none";
+                    }
+
                     if (filteredData.length === 0) {
-                        appList.innerHTML = "<p>No matching results</p>";
+                        noResults.style.display = "block";
                         return;
                     }
+                    noResults.style.display = "none";
 
                     filteredData.forEach(app => {
                         const appCard = document.createElement('div');
@@ -89,32 +115,27 @@
                             </div>
                             <a href="${app.link}" target="_blank" class="download-btn">Download</a>
                         `;
-
-                        const downloadBtn = appCard.querySelector('.download-btn');
-                        downloadBtn.addEventListener('click', () => {
-                            downloadBtn.classList.add('downloaded');
-                        });
-
                         appList.appendChild(appCard);
                     });
                 }
 
                 searchBox.addEventListener('input', () => {
                     const searchTerm = searchBox.value.toLowerCase();
-                    const filteredData = data.filter(app => app.name.toLowerCase().includes(searchTerm));
+                    const filteredData = data.filter(app => 
+                        app.name.toLowerCase().includes(searchTerm)
+                    );
                     displayApps(filteredData);
                 });
 
                 displayApps(data);
             } catch (error) {
-                console.error('Error loading apps:', error);
-                document.getElementById('modCount').textContent = "Total Mods: Error loading";
+                console.error('Error loading data:', error);
             }
         }
 
-        window.onload = async () => {
-            await loadConfig();
-            await loadApps();
+        window.onload = () => {
+            loadConfig();
+            loadApps();
         };
     </script>
 </body>
