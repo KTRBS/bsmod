@@ -7,14 +7,16 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
-        input { width: 90%; padding: 8px; margin-bottom: 15px; font-size: 14px; }
-        .app-list { display: flex; flex-direction: column; gap: 10px; }
+        input { width: 100%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
+        .app-list { display: flex; flex-direction: column; gap: 15px; }
         .app-card {
             display: flex; align-items: center; background: #fff; padding: 10px;
             border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
         }
+        .app-card img { width: 50px; height: 50px; border-radius: 10px; margin-right: 15px; }
         .app-info { text-align: left; flex-grow: 1; }
         .app-info h3 { margin: 0; font-size: 16px; }
+        .app-info p { margin: 5px 0; color: #666; font-size: 14px; }
         .download-btn {
             padding: 5px 10px; background: #007bff; color: white; text-decoration: none;
             border-radius: 5px; font-size: 14px;
@@ -31,22 +33,22 @@
             color: #007bff;
             text-decoration: none;
         }
+        /* Discord Button */
+        .discord-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #7289DA; /* Discord Color */
+            color: white;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>bsmod</h1>
-
-        <!-- Total Mods & Updates (検索バーの上) -->
-        <p id="totalMods"></p>
-        <p id="lastUpdated"></p>
-        <p id="resourcesUpdate"></p>
-
-        <input type="text" id="searchBox" placeholder="Search by name...">
-
-        <!-- Search Results (検索バーの下) -->
-        <p id="searchResults" style="display: none;"></p>
-
+        <input type="text" id="searchBox" placeholder="Search by name or description...">
         <div class="app-list" id="appList"></div>
         <p class="no-results" id="noResults" style="display: none;">No matching results</p>
     </div>
@@ -56,20 +58,10 @@
         <a href="https://dl.natesworks.com" target="_blank" class="partner-link">Partner</a>
     </div>
 
-    <script>
-        async function loadConfig() {
-            try {
-                const response = await fetch('config.json');
-                const config = await response.json();
-                document.getElementById('lastUpdated').textContent = "Last Updated: " + config.lastUpdated;
-                document.getElementById('resourcesUpdate').textContent = "Resources Update: " + config.resourcesUpdated;
-            } catch (error) {
-                console.error('Error loading config:', error);
-                document.getElementById('lastUpdated').textContent = "Last Updated: Error loading";
-                document.getElementById('resourcesUpdate').textContent = "Resources Update: Error loading";
-            }
-        }
+    <!-- Discord Server Button -->
+    <a href="https://discord.gg/your-discord-server-link" target="_blank" class="discord-btn">Join Our Discord Server</a>
 
+    <script>
         async function loadApps() {
             try {
                 const response = await fetch('apps.json');
@@ -77,36 +69,14 @@
                 const appList = document.getElementById('appList');
                 const searchBox = document.getElementById('searchBox');
                 const noResults = document.getElementById('noResults');
-                const totalMods = document.getElementById('totalMods');
-                const searchResults = document.getElementById('searchResults');
-                const lastUpdated = document.getElementById('lastUpdated');
-                const resourcesUpdate = document.getElementById('resourcesUpdate');
-
-                totalMods.textContent = "Total Mods: " + data.length;
 
                 function displayApps(filteredData) {
                     appList.innerHTML = "";
-                    
-                    // 検索時の表示制御
-                    if (searchBox.value.trim() !== "") {
-                        lastUpdated.style.display = "none";
-                        resourcesUpdate.style.display = "none";
-                        totalMods.style.display = "none";
-                        searchResults.style.display = "block";
-                        searchResults.textContent = "Search Results: " + filteredData.length;
-                    } else {
-                        lastUpdated.style.display = "block";
-                        resourcesUpdate.style.display = "block";
-                        totalMods.style.display = "block";
-                        searchResults.style.display = "none";
-                    }
-
                     if (filteredData.length === 0) {
                         noResults.style.display = "block";
                         return;
                     }
                     noResults.style.display = "none";
-
                     filteredData.forEach(app => {
                         const appCard = document.createElement('div');
                         appCard.classList.add('app-card');
@@ -123,7 +93,8 @@
                 searchBox.addEventListener('input', () => {
                     const searchTerm = searchBox.value.toLowerCase();
                     const filteredData = data.filter(app => 
-                        app.name.toLowerCase().includes(searchTerm)
+                        app.name.toLowerCase().includes(searchTerm) || 
+                        app.description.toLowerCase().includes(searchTerm)
                     );
                     displayApps(filteredData);
                 });
@@ -134,10 +105,7 @@
             }
         }
 
-        window.onload = () => {
-            loadConfig();
-            loadApps();
-        };
+        window.onload = loadApps;
     </script>
 </body>
 </html>
