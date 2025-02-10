@@ -12,6 +12,7 @@
         .app-card {
             display: flex; align-items: center; background: #fff; padding: 10px;
             border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
         }
         .app-card img { width: 50px; height: 50px; border-radius: 10px; margin-right: 15px; }
         .app-info { text-align: left; flex-grow: 1; }
@@ -33,49 +34,38 @@
             color: #007bff;
             text-decoration: none;
         }
-        .discord-btn {
-            margin-top: 149px;  /* Discordボタンを149px下に移動 */
-            padding: 10px 20px;
-            background-color: #7289DA; /* Discordの色 */
-            color: white;
-            font-size: 16px;
-            text-decoration: none;
-            border-radius: 5px;
-        }
         .checkbox-container {
             display: flex;
+            justify-content: flex-start;
             align-items: center;
             margin-bottom: 10px;
-            justify-content: center;
+        }
+        .checkbox-container label {
+            margin-left: 5px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>bsmod</h1>
-        <div id="fileInfo">
-            <p>Total Mods: <span id="totalMods">Loading...</span></p>
-            <p>Last Updated: <span id="lastUpdated">Loading...</span></p>
-        </div>
-
-        <!-- チェックボックス -->
+        <h1>APK List</h1>
         <div class="checkbox-container">
-            <input type="checkbox" id="toggleModsList" checked>
-            <label for="toggleModsList">Show apk list</label>
+            <input type="checkbox" id="toggleMods" checked>
+            <label for="toggleMods">一覧を非表示</label>
         </div>
-
-        <input type="text" id="searchBox" placeholder="Search by name...">
+        <input type="text" id="searchBox" placeholder="Search by name or description...">
+        <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
+        <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-08</span></p>
+        <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2024-02-08</span></p>
+        <p id="searchResults" style="display: none;">Search Results: <span id="searchCount">0</span></p>
         <div class="app-list" id="appList"></div>
         <p class="no-results" id="noResults" style="display: none;">No matching results</p>
     </div>
 
     <!-- Partner link section -->
     <div class="partner-link-container">
-        <a href="https://brawlmods.natesworks.com/" target="_blank" class="partner-link">Partner</a>
+        <a href="https://discord.gg/yourserver" target="_blank" class="partner-link">Discord Server</a>
     </div>
-
-    <!-- Discord server button -->
-    <a href="https://dsc.gg/allbrawl" target="_blank" class="discord-btn">Join our Discord Server</a>
 
     <script>
         async function loadApps() {
@@ -85,9 +75,11 @@
                 const appList = document.getElementById('appList');
                 const searchBox = document.getElementById('searchBox');
                 const noResults = document.getElementById('noResults');
-                const totalMods = document.getElementById('totalMods');
-                const lastUpdated = document.getElementById('lastUpdated');
-                const toggleModsList = document.getElementById('toggleModsList');
+                const totalMods = document.getElementById('modCount');
+                const lastUpdated = document.getElementById('updateDate');
+                const resourcesUpdated = document.getElementById('resourcesUpdateDate');
+                const searchResults = document.getElementById('searchResults');
+                const searchCount = document.getElementById('searchCount');
 
                 function displayApps(filteredData) {
                     appList.innerHTML = "";
@@ -107,37 +99,35 @@
                         `;
                         appList.appendChild(appCard);
                     });
+
+                    searchCount.textContent = filteredData.length;
+                    searchResults.style.display = "block";
                 }
 
-                // Update Total Mods and Last Updated Date
-                totalMods.textContent = data.length;
-                lastUpdated.textContent = "2024-02-08"; // Example date, replace with real data
-
-                // Search functionality
                 searchBox.addEventListener('input', () => {
                     const searchTerm = searchBox.value.toLowerCase();
                     const filteredData = data.filter(app => 
-                        app.name.toLowerCase().includes(searchTerm) // Search only by name
+                        app.name.toLowerCase().includes(searchTerm) || 
+                        app.description.toLowerCase().includes(searchTerm)
                     );
                     displayApps(filteredData);
                 });
 
-                // Toggle the APK list based on the checkbox
-                toggleModsList.addEventListener('change', () => {
-                    if (toggleModsList.checked) {
-                        appList.style.display = 'block';
-                    } else {
+                totalMods.textContent = data.length;
+                lastUpdated.textContent = "2024-02-08"; // ここをconfigから動的に更新する場合、変数にする
+                resourcesUpdated.textContent = "2024-02-08"; // 同じくconfigから更新
+
+                // チェックボックスで表示非表示を切り替え
+                const toggleMods = document.getElementById('toggleMods');
+                toggleMods.addEventListener('change', () => {
+                    if (toggleMods.checked) {
                         appList.style.display = 'none';
+                    } else {
+                        appList.style.display = 'block';
                     }
                 });
 
-                // Initially display the apps list
                 displayApps(data);
-
-                // Initially check the state of the checkbox
-                if (!toggleModsList.checked) {
-                    appList.style.display = 'none';
-                }
             } catch (error) {
                 console.error('Error loading data:', error);
             }
