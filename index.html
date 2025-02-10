@@ -8,128 +8,149 @@
         body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
         input { width: 94%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
-        .app-list, .partner-list { display: flex; flex-direction: column; gap: 15px; }
-        .app-card, .partner-card {
+        .app-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .app-card {
             display: flex; align-items: center; background: #fff; padding: 10px;
             border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
         }
-        .app-info, .partner-info { text-align: left; flex-grow: 1; }
-        .app-info h3, .partner-info h3 { margin: 0; font-size: 16px; }
-        .app-info p, .partner-info p { margin: 5px 0; color: #666; font-size: 14px; }
-        .download-btn, .partner-link {
+        .app-card img { width: 50px; height: 50px; border-radius: 10px; margin-right: 15px; }
+        .app-info { text-align: left; flex-grow: 1; }
+        .app-info h3 { margin: 0; font-size: 16px; }
+        .app-info p { margin: 5px 0; color: #666; font-size: 14px; }
+        .download-btn {
             padding: 5px 10px; background: #007bff; color: white; text-decoration: none;
             border-radius: 5px; font-size: 14px;
         }
         .no-results { color: #999; margin-top: 10px; font-size: 14px; }
-        .checkbox-container {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .checkbox-container label {
-            margin-left: 5px;
-            font-size: 14px;
-        }
-        .discord-container {
-            margin-top: 149px;
-        }
-        .discord-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #5865F2;
-            color: white;
-            text-decoration: none;
+        .partner-link-container {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
             border-radius: 5px;
-            font-size: 16px;
         }
-        .hidden { display: none; }
+        .partner-link {
+            font-size: 16px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .checkbox-container {
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .discord-button-container {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>APK List</h1>
+        <h1>bsmod</h1>
+
+        <!-- Checkbox to toggle mod list visibility -->
         <div class="checkbox-container">
-            <input type="checkbox" id="toggleMods">
-            <label for="toggleMods">Hide List</label>
+            <input type="checkbox" id="toggleMods"> Hide mod list
+            <input type="text" id="filterText" placeholder="Enter to filter" style="width: 200px; margin-left: 10px;">
         </div>
-        <input type="text" id="searchBox" placeholder="Search by name...">
-        <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
-        <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-08</span></p>
-        <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2024-02-08</span></p>
-        <p id="searchResults" class="hidden">Search Results: <span id="searchCount">0</span></p>
+
+        <!-- Total mods and last update -->
+        <p id="totalMods">Total Mods: 0</p>
+        <p id="lastUpdated">Last Updated: --</p>
+
+        <!-- Search box -->
+        <input type="text" id="searchBox" placeholder="Search by name or description...">
+
+        <!-- Search result counter -->
+        <p id="searchResultCount" style="display:none;"></p>
+
+        <!-- Mod list will be here -->
         <div class="app-list" id="appList"></div>
-        <p class="no-results hidden" id="noResults">No matching results</p>
-        
-        <!-- Partner Section -->
-        <h2>Partners</h2>
-        <div class="partner-list" id="partnerList"></div>
+        <p class="no-results" id="noResults" style="display: none;">No matching results</p>
     </div>
 
-    <!-- Discord Server Link -->
-    <div class="discord-container">
-        <a href="https://discord.gg/yourserver" target="_blank" class="discord-link">Discord Server</a>
+    <!-- Partner link section -->
+    <div class="partner-link-container">
+        <a href="https://dl.natesworks.com" target="_blank" class="partner-link">Partner</a>
+    </div>
+
+    <!-- Discord button section -->
+    <div class="discord-button-container">
+        <a href="https://discord.gg/yourserver" target="_blank" class="discord-button">Discord Server</a>
     </div>
 
     <script>
-        async function loadApps() {
-            try {
-                const response = await fetch('apps.json');
-                const data = await response.json();
-                const appList = document.getElementById('appList');
-                const searchBox = document.getElementById('searchBox');
-                const noResults = document.getElementById('noResults');
-                const totalMods = document.getElementById('totalMods');
-                const lastUpdated = document.getElementById('lastUpdated');
-                const resourcesUpdated = document.getElementById('resourcesUpdated');
-                const searchResults = document.getElementById('searchResults');
-                const searchCount = document.getElementById('searchCount');
-                const toggleMods = document.getElementById('toggleMods');
+        // Placeholder for apps data
+        const apps = [
+            // Example apps data
+            { name: "app1.apk", description: "App 1 description", link: "https://t.me/channel/1001" },
+            { name: "app2.apk", description: "App 2 description", link: "https://t.me/channel/1002" },
+            // Add your app data here
+        ];
 
-                function displayApps(filteredData) {
-                    appList.innerHTML = "";
-                    if (filteredData.length === 0) {
-                        noResults.classList.remove("hidden");
-                        return;
-                    }
-                    noResults.classList.add("hidden");
-                    filteredData.forEach(app => {
-                        const appCard = document.createElement('div');
-                        appCard.classList.add('app-card');
-                        appCard.innerHTML = `
-                            <div class="app-info">
-                                <h3>${app.name}</h3>
-                            </div>
-                            <a href="${app.link}" target="_blank" class="download-btn">Download</a>
-                        `;
-                        appList.appendChild(appCard);
-                    });
-                }
+        // Sample data for last updated info
+        const lastUpdated = "Feb 10, 2025"; // Update this to actual date
+        const totalMods = apps.length;
 
-                function resetView() {
-                    totalMods.classList.remove("hidden");
-                    lastUpdated.classList.remove("hidden");
-                    resourcesUpdated.classList.remove("hidden");
-                    searchResults.classList.add("hidden");
-                }
+        // Show total mods and last update info
+        document.getElementById('totalMods').innerText = `Total Mods: ${totalMods}`;
+        document.getElementById('lastUpdated').innerText = `Last Updated: ${lastUpdated}`;
 
-                searchBox.addEventListener('input', () => {
-                    const searchTerm = searchBox.value.toLowerCase();
-                    if (searchTerm === "") {
-                        resetView();
-                        displayApps(data);
-                        return;
-                    }
+        // Function to display the list of apps
+        function displayApps(filteredData) {
+            const appList = document.getElementById('appList');
+            appList.innerHTML = "";
 
-                    const filteredData = data.filter(app => 
-                        app.name.toLowerCase().includes(searchTerm)
-                    );
+            if (filteredData.length === 0) {
+                document.getElementById('noResults').style.display = "block";
+                return;
+            }
+            document.getElementById('noResults').style.display = "none";
 
-                    displayApps(filteredData);
-                    searchResults.classList.remove("hidden");
-                    searchCount.textContent = filteredData.length;
-                    totalMods.classList.add("hidden");
-                    lastUpdated.classList.add("hidden");
-                    resourcesUpdated.classList.add("hidden");
-                });
+            filteredData.forEach(app => {
+                const appCard = document.createElement('div');
+                appCard.classList.add('app-card');
+                appCard.innerHTML = `
+                    <div class="app-info">
+                        <h3>${app.name}</h3>
+                        <p>${app.description}</p>
+                    </div>
+                    <a href="${app.link}" target="_blank" class="download-btn">Download</a>
+                `;
+                appList.appendChild(appCard);
+            });
+        }
+
+        // Function to filter apps based on search term
+        function filterApps() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const filteredData = apps.filter(app => 
+                app.name.toLowerCase().includes(searchTerm) || 
+                app.description.toLowerCase().includes(searchTerm)
+            );
+
+            // Show results count
+            document.getElementById('searchResultCount').innerText = `Search Result: ${filteredData.length}`;
+            document.getElementById('searchResultCount').style.display = "block";
+
+            displayApps(filteredData);
+        }
+
+        // Event listeners
+        document.getElementById('searchBox').addEventListener('input', filterApps);
+
+        // Checkbox to hide or show mod list
+        document.getElementById('toggleMods').addEventListener('change', function() {
+            const appList = document.getElementById('appList');
+            if (this.checked) {
+                appList.style.display = "none";
+            } else {
+                appList.style.display = "block";
+            }
+        });
+
+        // Initialize
+        window.onload = () => {
+            displayApps(apps); // Initially display all apps
+        };
+    </script>
+</body>
+</html>
