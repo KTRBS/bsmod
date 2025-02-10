@@ -70,26 +70,28 @@
                 const searchBox = document.getElementById('searchBox');
                 const noResults = document.getElementById('noResults');
 
+                // Function to display the filtered list
                 function displayApps(filteredData) {
                     appList.innerHTML = "";
                     if (filteredData.length === 0) {
                         noResults.style.display = "block";
-                        return;
+                    } else {
+                        noResults.style.display = "none";
+                        filteredData.forEach(app => {
+                            const appCard = document.createElement('div');
+                            appCard.classList.add('app-card');
+                            appCard.innerHTML = `
+                                <div class="app-info">
+                                    <h3>${app.name}</h3>
+                                </div>
+                                <a href="${app.link}" target="_blank" class="download-btn">Download</a>
+                            `;
+                            appList.appendChild(appCard);
+                        });
                     }
-                    noResults.style.display = "none";
-                    filteredData.forEach(app => {
-                        const appCard = document.createElement('div');
-                        appCard.classList.add('app-card');
-                        appCard.innerHTML = `
-                            <div class="app-info">
-                                <h3>${app.name}</h3>
-                            </div>
-                            <a href="${app.link}" target="_blank" class="download-btn">Download</a>
-                        `;
-                        appList.appendChild(appCard);
-                    });
                 }
 
+                // Search functionality
                 searchBox.addEventListener('input', () => {
                     const searchTerm = searchBox.value.toLowerCase();
                     const filteredData = data.filter(app => 
@@ -99,7 +101,7 @@
                     displayApps(filteredData);
                 });
 
-                displayApps(data);
+                displayApps(data); // Initial display when the page loads
             } catch (error) {
                 console.error('Error loading data:', error);
             }
