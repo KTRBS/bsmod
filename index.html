@@ -23,6 +23,13 @@
         }
         .no-results { color: #999; margin-top: 10px; font-size: 14px; }
         
+    .app-description {
+    font-size: 14px;
+    color: #555;
+    margin-top: 5px;
+    word-wrap: break-word;
+    }
+        
     .checkbox-container {
         display: inline-flex; 
         align-items: center;  
@@ -111,84 +118,90 @@
     <div class="telegram-container">
         <a href="https://t.me/AllModsBrawlStars" target="_blank" class="telegram-link">Telegram Channel</a>
     </div>
+    
+    <div class="app-list" id="appList">
+    <!-- ここにアプリ一覧が追加される -->
+</div>
 
     <script>
         async function loadApps() {
-            try {
-                const response = await fetch('apps.json');
-                const data = await response.json();
-                const appList = document.getElementById('appList');
-                const searchBox = document.getElementById('searchBox');
-                const noResults = document.getElementById('noResults');
-                const totalMods = document.getElementById('totalMods');
-                const lastUpdated = document.getElementById('lastUpdated');
-                const resourcesUpdated = document.getElementById('resourcesUpdated');
-                const searchResults = document.getElementById('searchResults');
-                const searchCount = document.getElementById('searchCount');
-                const toggleMods = document.getElementById('toggleMods');
+    try {
+        const response = await fetch('apps.json');
+        const data = await response.json();
+        const appList = document.getElementById('appList');
+        const searchBox = document.getElementById('searchBox');
+        const noResults = document.getElementById('noResults');
+        const totalMods = document.getElementById('totalMods');
+        const lastUpdated = document.getElementById('lastUpdated');
+        const resourcesUpdated = document.getElementById('resourcesUpdated');
+        const searchResults = document.getElementById('searchResults');
+        const searchCount = document.getElementById('searchCount');
+        const toggleMods = document.getElementById('toggleMods');
 
-                function displayApps(filteredData) {
-                    appList.innerHTML = "";
-                    if (filteredData.length === 0) {
-                        noResults.classList.remove("hidden");
-                        return;
-                    }
-                    noResults.classList.add("hidden");
-                    filteredData.forEach(app => {
-                        const appCard = document.createElement('div');
-                        appCard.classList.add('app-card');
-                        appCard.innerHTML = `
-                            <div class="app-info">
-                                <h3>${app.name}</h3>
-                            </div>
-                            <a href="${app.link}" target="_blank" class="download-btn">Download</a>
-                        `;
-                        appList.appendChild(appCard);
-                    });
-                }
-
-                function resetView() {
-                    totalMods.classList.remove("hidden");
-                    lastUpdated.classList.remove("hidden");
-                    resourcesUpdated.classList.remove("hidden");
-                    searchResults.classList.add("hidden");
-                }
-
-                searchBox.addEventListener('input', () => {
-                    const searchTerm = searchBox.value.toLowerCase();
-                    if (searchTerm === "") {
-                        resetView();
-                        displayApps(data);
-                        return;
-                    }
-
-                    const filteredData = data.filter(app => 
-                        app.name.toLowerCase().includes(searchTerm)
-                    );
-
-                    displayApps(filteredData);
-                    searchResults.classList.remove("hidden");
-                    searchCount.textContent = filteredData.length;
-                    totalMods.classList.add("hidden");
-                    lastUpdated.classList.add("hidden");
-                    resourcesUpdated.classList.add("hidden");
-                });
-
-                toggleMods.addEventListener('change', () => {
-                    appList.style.display = toggleMods.checked ? 'none' : 'block';
-                });
-
-                totalMods.querySelector('span').textContent = data.length;
-                lastUpdated.querySelector('span').textContent = "2024-02-10"; // config.json から動的取得も可能
-                resourcesUpdated.querySelector('span').textContent = "2024-02-10";
-
-                displayApps(data);
-            } catch (error) {
-                console.error('Error loading data:', error);
+        function displayApps(filteredData) {
+            appList.innerHTML = "";
+            if (filteredData.length === 0) {
+                noResults.classList.remove("hidden");
+                return;
             }
+            noResults.classList.add("hidden");
+            filteredData.forEach(app => {
+                const appCard = document.createElement('div');
+                appCard.classList.add('app-card');
+                appCard.innerHTML = `
+                    <div class="app-info">
+                        <h3>${app.name}</h3>
+                        <p class="app-description">${app.description || "No description available."}</p>
+                    </div>
+                    <a href="${app.link}" target="_blank" class="download-btn">Download</a>
+                `;
+                appList.appendChild(appCard);
+            });
         }
 
-        window.onload = loadApps;
+        function resetView() {
+            totalMods.classList.remove("hidden");
+            lastUpdated.classList.remove("hidden");
+            resourcesUpdated.classList.remove("hidden");
+            searchResults.classList.add("hidden");
+        }
+
+        searchBox.addEventListener('input', () => {
+            const searchTerm = searchBox.value.toLowerCase();
+            if (searchTerm === "") {
+                resetView();
+                displayApps(data);
+                return;
+            }
+
+            const filteredData = data.filter(app => 
+                app.name.toLowerCase().includes(searchTerm) ||
+                (app.description && app.description.toLowerCase().includes(searchTerm))
+            );
+
+            displayApps(filteredData);
+            searchResults.classList.remove("hidden");
+            searchCount.textContent = filteredData.length;
+            totalMods.classList.add("hidden");
+            lastUpdated.classList.add("hidden");
+            resourcesUpdated.classList.add("hidden");
+        });
+
+        toggleMods.addEventListener('change', () => {
+            appList.style.display = toggleMods.checked ? 'none' : 'block';
+        });
+
+        totalMods.querySelector('span').textContent = data.length;
+        lastUpdated.querySelector('span').textContent = "2024-02-10"; // config.json から動的取得も可能
+        resourcesUpdated.querySelector('span').textContent = "2024-02-10";
+
+        displayApps(data);
+    } catch (error) {
+        console.error('Error loading data:', error);
+    }
+}
+
+window.onload = loadApps;
     </script>
 </body>
 </html>
