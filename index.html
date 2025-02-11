@@ -120,7 +120,6 @@
     </div>
     
     <div class="app-list" id="appList">
-    <!-- ここにアプリ一覧が追加される -->
 </div>
 
     <script>
@@ -128,29 +127,39 @@
     try {
         const responses = await Promise.all([
             fetch('apps.json').then(res => res.json()),
-            fetch('oapps.json').then(res => res.json())
+            fetch('oapps.json').then(res => res.json()),
+            fetch('iapps.json').then(res => res.json())
         ]);
 
-        let [appsData, oappsData] = responses;
+        let [appsData, oappsData, iappsData] = responses;
 
-        // apps.json のデータには「offline」を追加
         appsData = appsData.map(app => ({
             ...app,
-            description: `<span style="color: black;">offline</span>` + (app.description ? ` - ${app.description}` : ''),
+            description: app.description !== undefined
+                ? `<span style="color: black;">offline</span> - ${app.description}`
+                : `<span style="color: black;">offline</span>`,
             status: "offline"
         }));
 
-        // oapps.json のデータには「online」を追加
         oappsData = oappsData.map(app => ({
             ...app,
-            description: `<span style="color: green;">online</span>` + (app.description ? ` - ${app.description}` : ''),
+            description: app.description !== undefined
+                ? `<span style="color: green;">online</span> - ${app.description}`
+                : `<span style="color: green;">online</span>`,
             status: "online"
         }));
+        
+        iappsData = iappsData.map(app => ({
+            ...app,
+            description: app.description !== undefined
+                ? app.description
+                : "ipa",
+            status: "ipa"
+        }));
 
-        // 2つのデータを結合し、アルファベット順に並べ替え
-        const allApps = [...appsData, ...oappsData].sort((a, b) => a.name.localeCompare(b.name));
+       
+        const allApps = [...appsData, ...oappsData, ...iappsData].sort((a, b) => a.name.localeCompare(b.name));
 
-        // HTML要素の取得
         const appList = document.getElementById('appList');
         const searchBox = document.getElementById('searchBox');
         const noResults = document.getElementById('noResults');
@@ -161,7 +170,6 @@
         const lastUpdated = document.getElementById('lastUpdated');
         const resourcesUpdated = document.getElementById('resourcesUpdated');
 
-        // 総数を表示
         totalMods.querySelector('span').textContent = allApps.length;
 
         function displayApps(filteredData) {
@@ -202,7 +210,7 @@
 
             const filteredData = allApps.filter(app => 
                 app.name.toLowerCase().includes(searchTerm) ||
-                app.status.toLowerCase().includes(searchTerm) // "online" や "offline" で検索可能にする
+                app.status.toLowerCase().includes(searchTerm)
             );
 
             displayApps(filteredData);
