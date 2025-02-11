@@ -126,14 +126,31 @@
     <script>
         async function loadApps() {
     try {
-        const response = await fetch('apps.json');
-        const data = await response.json();
+        const responses = await Promise.all([
+            fetch('apps.json').then(res => res.json()),
+            fetch('oapps.json').then(res => res.json())
+        ]);
+
+        let [appsData, oappsData] = responses;
+
+        // apps.json のデータには「offline」を追加
+        appsData = appsData.map(app => ({
+            ...app,
+            description: `<span style="color: black;">offline</span>` + (app.description ? ` - ${app.description}` : '')
+        }));
+
+        // oapps.json のデータには「online」を追加
+        oappsData = oappsData.map(app => ({
+            ...app,
+            description: `<span style="color: green;">online</span>` + (app.description ? ` - ${app.description}` : '')
+        }));
+
+        // 2つのデータを結合し、アルファベット順に並べ替え
+        const allApps = [...appsData, ...oappsData].sort((a, b) => a.name.localeCompare(b.name));
+
         const appList = document.getElementById('appList');
         const searchBox = document.getElementById('searchBox');
         const noResults = document.getElementById('noResults');
-        const totalMods = document.getElementById('totalMods');
-        const lastUpdated = document.getElementById('lastUpdated');
-        const resourcesUpdated = document.getElementById('resourcesUpdated');
         const searchResults = document.getElementById('searchResults');
         const searchCount = document.getElementById('searchCount');
         const toggleMods = document.getElementById('toggleMods');
@@ -151,7 +168,7 @@
                 appCard.innerHTML = `
                     <div class="app-info">
                         <h3>${app.name}</h3>
-                        <p class="app-description">${app.description || "No description available."}</p>
+                        <p class="app-description">${app.description || ''}</p>
                     </div>
                     <a href="${app.link}" target="_blank" class="download-btn">Download</a>
                 `;
@@ -160,9 +177,6 @@
         }
 
         function resetView() {
-            totalMods.classList.remove("hidden");
-            lastUpdated.classList.remove("hidden");
-            resourcesUpdated.classList.remove("hidden");
             searchResults.classList.add("hidden");
         }
 
@@ -170,32 +184,24 @@
             const searchTerm = searchBox.value.toLowerCase();
             if (searchTerm === "") {
                 resetView();
-                displayApps(data);
+                displayApps(allApps);
                 return;
             }
 
-            const filteredData = data.filter(app => 
-                app.name.toLowerCase().includes(searchTerm) ||
-                (app.description && app.description.toLowerCase().includes(searchTerm))
+            const filteredData = allApps.filter(app => 
+                app.name.toLowerCase().includes(searchTerm)
             );
 
             displayApps(filteredData);
             searchResults.classList.remove("hidden");
             searchCount.textContent = filteredData.length;
-            totalMods.classList.add("hidden");
-            lastUpdated.classList.add("hidden");
-            resourcesUpdated.classList.add("hidden");
         });
 
         toggleMods.addEventListener('change', () => {
             appList.style.display = toggleMods.checked ? 'none' : 'block';
         });
 
-        totalMods.querySelector('span').textContent = data.length;
-        lastUpdated.querySelector('span').textContent = "2024-02-10"; // config.json から動的取得も可能
-        resourcesUpdated.querySelector('span').textContent = "2024-02-10";
-
-        displayApps(data);
+        displayApps(allApps);
     } catch (error) {
         console.error('Error loading data:', error);
     }
