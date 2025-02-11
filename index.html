@@ -148,12 +148,19 @@
         // 2つのデータを結合し、アルファベット順に並べ替え
         const allApps = [...appsData, ...oappsData].sort((a, b) => a.name.localeCompare(b.name));
 
+        // HTML要素の取得
         const appList = document.getElementById('appList');
         const searchBox = document.getElementById('searchBox');
         const noResults = document.getElementById('noResults');
         const searchResults = document.getElementById('searchResults');
         const searchCount = document.getElementById('searchCount');
         const toggleMods = document.getElementById('toggleMods');
+        const totalMods = document.getElementById('totalMods');
+        const lastUpdated = document.getElementById('lastUpdated');
+        const resourcesUpdated = document.getElementById('resourcesUpdated');
+
+        // 総数を表示
+        totalMods.querySelector('span').textContent = allApps.length;
 
         function displayApps(filteredData) {
             appList.innerHTML = "";
@@ -177,6 +184,9 @@
         }
 
         function resetView() {
+            totalMods.classList.remove("hidden");
+            lastUpdated.classList.remove("hidden");
+            resourcesUpdated.classList.remove("hidden");
             searchResults.classList.add("hidden");
         }
 
@@ -195,6 +205,9 @@
             displayApps(filteredData);
             searchResults.classList.remove("hidden");
             searchCount.textContent = filteredData.length;
+            totalMods.classList.add("hidden");
+            lastUpdated.classList.add("hidden");
+            resourcesUpdated.classList.add("hidden");
         });
 
         toggleMods.addEventListener('change', () => {
