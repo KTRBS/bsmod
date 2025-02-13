@@ -7,7 +7,7 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
-        input { width: 94%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
+        input { width: 94%; padding: 10px; margin-bottom: 10px; font-size: 16px; }
         .app-list { display: flex; flex-direction: column; gap: 5px; }
         .app-card {
             display: flex; align-items: center; background: #fff; padding: 10px;
@@ -29,8 +29,18 @@
 <body>
     <div class="container">
         <h1>APK List</h1>
+
+        <!-- チェックボックス -->
+        <label>
+            <input type="checkbox" id="toggleMods"> Hide mod list
+        </label>
+
         <input type="text" id="searchBox" placeholder="Search by name...">
+        
         <p>Total Mods: <span id="modCount">0</span></p>
+        <p>Last Updated: <span id="updateDate">-</span></p>
+        <p>Resources Updated: <span id="resourcesUpdateDate">-</span></p>
+        
         <div class="app-list" id="appList"></div>
         <p class="no-results hidden" id="noResults">No matching results</p>
     </div>
@@ -75,7 +85,30 @@
                 console.log("Total apps count:", allApps.length);
                 document.getElementById('modCount').textContent = allApps.length;
 
+                // JSON から更新日時を取得
+                document.getElementById('updateDate').textContent = appsData[0]?.updateDate || "-";
+                document.getElementById('resourcesUpdateDate').textContent = appsData[0]?.resourcesUpdateDate || "-";
+
                 displayApps(allApps);
+
+                // 検索バーのイベント
+                document.getElementById('searchBox').addEventListener('input', function () {
+                    const searchTerm = this.value.toLowerCase();
+                    if (searchTerm === "") {
+                        displayApps(allApps);
+                        return;
+                    }
+                    const filteredApps = allApps.filter(app =>
+                        app.name.toLowerCase().includes(searchTerm) ||
+                        app.status.toLowerCase().includes(searchTerm)
+                    );
+                    displayApps(filteredApps);
+                });
+
+                // チェックボックスのイベント
+                document.getElementById('toggleMods').addEventListener('change', function () {
+                    document.getElementById('appList').style.display = this.checked ? 'none' : 'block';
+                });
 
             } catch (error) {
                 console.error('Error loading data:', error);
