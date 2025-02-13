@@ -98,12 +98,19 @@
         </div>
         <input type="text" id="searchBox" placeholder="Search by name...">
         <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
-        <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-11</span></p>
-        <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2024-02-11</span></p>
+        <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-08</span></p>
+        <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2024-02-08</span></p>
         <p id="searchResults" class="hidden">Search Results: <span id="searchCount">0</span></p>
         <div class="app-list" id="appList"></div>
         <p class="no-results hidden" id="noResults">No matching results</p>
     </div>
+
+<!-- buton -->
+<div class="filter-buttons">
+    <button onclick="filterByTag('offline')">Offline</button>
+    <button onclick="filterByTag('online')">Online</button>
+    <button onclick="filterByTag('ipa')">IPA</button>
+</div>
 
     <!-- Partner link section -->
     <div class="partner-link-container">
@@ -207,6 +214,13 @@
                 displayApps(allApps);
                 return;
             }
+            
+    <script>
+    function filterByTag(tag) {
+        const searchBox = document.getElementById('searchBox');
+        searchBox.value = tag;  //
+        searchBox.dispatchEvent(new Event('input')); 
+    }  
 
             const filteredData = allApps.filter(app => 
                 app.name.toLowerCase().includes(searchTerm) ||
