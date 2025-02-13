@@ -97,6 +97,11 @@
             <label for="toggleMods"> Hide mod list</label>
         </div>
         <input type="text" id="searchBox" placeholder="Search by name...">
+            
+<div class="filter-buttons">
+    <button onclick="filterByTag('offline')">Offline</button>
+    <button onclick="filterByTag('online')">Online</button>
+    <button onclick="filterByTag('ipa')">IPA</button>
         <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
         <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-11</span></p>
         <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2024-02-11</span></p>
@@ -118,12 +123,6 @@
     <div class="telegram-container">
         <a href="https://t.me/AllModsBrawlStars" target="_blank" class="telegram-link">Telegram Channel</a>
     </div>
-    
-<div class="filter-buttons">
-    <button onclick="filterByTag('offline')">Offline</button>
-    <button onclick="filterByTag('online')">Online</button>
-    <button onclick="filterByTag('ipa')">IPA</button>
-</div>
     
     <div class="app-list" id="appList">
 </div>
