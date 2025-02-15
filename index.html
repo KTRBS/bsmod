@@ -146,7 +146,6 @@ function filterByTag(tag) {
 
         let [appsData, oappsData, iappsData, prodData] = responses;
 
-        // 各JSONのデータにステータスを追加
         appsData = appsData.map(app => ({
             ...app,
             description: app.description !== undefined
@@ -177,7 +176,6 @@ function filterByTag(tag) {
             status: "prod"
         }));
 
-        // すべてのデータを統合してアルファベット順にソート
         const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData]
             .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -187,10 +185,9 @@ function filterByTag(tag) {
         const searchResults = document.getElementById('searchResults');
         const searchCount = document.getElementById('searchCount');
         const toggleMods = document.getElementById('toggleMods');
-        const totalMods = document.getElementById('totalMods');
+        const totalMods = document.getElementById('modCount');
 
-        // 総数を更新
-        totalMods.querySelector('span').textContent = allApps.length;
+        totalMods.textContent = allApps.length;
 
         function displayApps(filteredData) {
             appList.innerHTML = "";
@@ -213,15 +210,9 @@ function filterByTag(tag) {
             });
         }
 
-        function resetView() {
-            totalMods.classList.remove("hidden");
-            searchResults.classList.add("hidden");
-        }
-
         function searchApps() {
             const searchTerm = searchBox.value.trim().toLowerCase();
             if (searchTerm === "") {
-                resetView();
                 displayApps(allApps);
                 return;
             }
@@ -234,23 +225,19 @@ function filterByTag(tag) {
             displayApps(filteredData);
             searchResults.classList.remove("hidden");
             searchCount.textContent = filteredData.length;
-            totalMods.classList.add("hidden");
         }
 
-        // 検索バーの変更時に検索
         searchBox.addEventListener('input', searchApps);
 
-        // ボタンから検索するときの処理
         window.filterByTag = function(tag) {
             searchBox.value = tag;
-            searchApps();
+            searchBox.dispatchEvent(new Event('input'));  // 手動でイベントを発火
         };
 
         toggleMods.addEventListener('change', () => {
             appList.style.display = toggleMods.checked ? 'none' : 'block';
         });
 
-        // 初回表示
         displayApps(allApps);
     } catch (error) {
         console.error('Error loading data:', error);
