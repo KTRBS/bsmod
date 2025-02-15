@@ -102,6 +102,7 @@
     <button onclick="filterByTag('offline')">Offline</button>
     <button onclick="filterByTag('online')">Online</button>
     <button onclick="filterByTag('ipa')">IPA</button>
+    <button onclick="filterByProd()">PROD</button> <!-- 追加したボタン -->
         <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
         <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-11</span></p>
         <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2024-02-11</span></p>
@@ -138,37 +139,37 @@ function filterByTag(tag) {
         const responses = await Promise.all([
             fetch('apps.json').then(res => res.json()),
             fetch('oapps.json').then(res => res.json()),
-            fetch('iapps.json').then(res => res.json())
+            fetch('iapps.json').then(res => res.json()),
+            fetch('prod.json').then(res => res.json()) // prod.json を追加
         ]);
 
-        let [appsData, oappsData, iappsData] = responses;
+        let [appsData, oappsData, iappsData, prodData] = responses;
 
         appsData = appsData.map(app => ({
             ...app,
-            description: app.description !== undefined
-                ? `<span style="color: black;">offline</span> - ${app.description}`
-                : `<span style="color: black;">offline</span>`,
+            description: `<span style="color: black;">offline</span> - ${app.description || ''}`,
             status: "offline"
         }));
 
         oappsData = oappsData.map(app => ({
             ...app,
-            description: app.description !== undefined
-                ? `<span style="color: green;">online</span> - ${app.description}`
-                : `<span style="color: green;">online</span>`,
+            description: `<span style="color: green;">online</span> - ${app.description || ''}`,
             status: "online"
         }));
-        
+
         iappsData = iappsData.map(app => ({
             ...app,
-            description: app.description !== undefined
-                ? app.description
-                : "ipa",
+            description: app.description || "ipa",
             status: "ipa"
         }));
 
-       
-        const allApps = [...appsData, ...oappsData, ...iappsData].sort((a, b) => a.name.localeCompare(b.name));
+        prodData = prodData.map(app => ({
+            ...app,
+            description: `<span style="color: red;">PROD</span> - ${app.description || ''}`, // PRODのデータにラベルを追加
+            status: "prod"
+        }));
+
+        const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData].sort((a, b) => a.name.localeCompare(b.name));
 
         const appList = document.getElementById('appList');
         const searchBox = document.getElementById('searchBox');
@@ -195,7 +196,7 @@ function filterByTag(tag) {
                 appCard.innerHTML = `
                     <div class="app-info">
                         <h3>${app.name}</h3>
-                        <p class="app-description">${app.description || ''}</p>
+                        <p class="app-description">${app.description}</p>
                     </div>
                     <a href="${app.link}" target="_blank" class="download-btn">Download</a>
                 `;
@@ -239,6 +240,13 @@ function filterByTag(tag) {
     } catch (error) {
         console.error('Error loading data:', error);
     }
+}
+
+// PROD検索ボタンの動作を追加
+function filterByProd() {
+    const searchBox = document.getElementById('searchBox');
+    searchBox.value = "prod";
+    searchBox.dispatchEvent(new Event('input'));
 }
 
 window.onload = loadApps;
