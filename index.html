@@ -146,6 +146,7 @@ function filterByTag(tag) {
 
         let [appsData, oappsData, iappsData, prodData] = responses;
 
+        // 各JSONのデータにステータスを追加
         appsData = appsData.map(app => ({
             ...app,
             description: app.description !== undefined
@@ -176,6 +177,7 @@ function filterByTag(tag) {
             status: "prod"
         }));
 
+        // すべてのデータを統合してアルファベット順にソート
         const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData]
             .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -187,6 +189,7 @@ function filterByTag(tag) {
         const toggleMods = document.getElementById('toggleMods');
         const totalMods = document.getElementById('totalMods');
 
+        // 総数を更新
         totalMods.querySelector('span').textContent = allApps.length;
 
         function displayApps(filteredData) {
@@ -215,8 +218,8 @@ function filterByTag(tag) {
             searchResults.classList.add("hidden");
         }
 
-        searchBox.addEventListener('input', () => {
-            const searchTerm = searchBox.value.toLowerCase();
+        function searchApps() {
+            const searchTerm = searchBox.value.trim().toLowerCase();
             if (searchTerm === "") {
                 resetView();
                 displayApps(allApps);
@@ -225,29 +228,33 @@ function filterByTag(tag) {
 
             const filteredData = allApps.filter(app =>
                 app.name.toLowerCase().includes(searchTerm) ||
-                app.status.toLowerCase().includes(searchTerm)
+                app.status.toLowerCase() === searchTerm
             );
 
             displayApps(filteredData);
             searchResults.classList.remove("hidden");
             searchCount.textContent = filteredData.length;
             totalMods.classList.add("hidden");
-        });
+        }
+
+        // 検索バーの変更時に検索
+        searchBox.addEventListener('input', searchApps);
+
+        // ボタンから検索するときの処理
+        window.filterByTag = function(tag) {
+            searchBox.value = tag;
+            searchApps();
+        };
 
         toggleMods.addEventListener('change', () => {
             appList.style.display = toggleMods.checked ? 'none' : 'block';
         });
 
+        // 初回表示
         displayApps(allApps);
     } catch (error) {
         console.error('Error loading data:', error);
     }
-}
-
-function filterByTag(tag) {
-    const searchBox = document.getElementById('searchBox');
-    searchBox.value = tag;
-    searchBox.dispatchEvent(new Event('input'));
 }
 
 window.onload = loadApps;
