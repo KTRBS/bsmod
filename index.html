@@ -148,25 +148,25 @@ function filterByTag(tag) {
         appsData = appsData.map(app => ({
             ...app,
             description: `<span style="color: black;">offline</span> - ${app.description || ''}`,
-            status: "offline"
+            category: "offline"
         }));
 
         oappsData = oappsData.map(app => ({
             ...app,
             description: `<span style="color: green;">online</span> - ${app.description || ''}`,
-            status: "online"
+            category: "online"
         }));
 
         iappsData = iappsData.map(app => ({
             ...app,
             description: app.description || "ipa",
-            status: "ipa"
+            category: "ipa"
         }));
 
         prodData = prodData.map(app => ({
             ...app,
-            description: `<span style="color: red;">PROD</span> - ${app.description || ''}`, // PRODのデータにラベルを追加
-            status: "prod"
+            description: `<span style="color: red;">PROD</span> - ${app.description || ''}`,
+            category: "prod"
         }));
 
         const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData].sort((a, b) => a.name.localeCompare(b.name));
@@ -221,7 +221,8 @@ function filterByTag(tag) {
 
             const filteredData = allApps.filter(app => 
                 app.name.toLowerCase().includes(searchTerm) ||
-                app.status.toLowerCase().includes(searchTerm)
+                app.description.toLowerCase().includes(searchTerm) || 
+                app.category.toLowerCase().includes(searchTerm) // category も検索対象にする
             );
 
             displayApps(filteredData);
