@@ -140,36 +140,43 @@ function filterByTag(tag) {
             fetch('apps.json').then(res => res.json()),
             fetch('oapps.json').then(res => res.json()),
             fetch('iapps.json').then(res => res.json()),
-            fetch('prod.json').then(res => res.json()) // prod.json を追加
+            fetch('prod.json').then(res => res.json())
         ]);
 
         let [appsData, oappsData, iappsData, prodData] = responses;
 
         appsData = appsData.map(app => ({
             ...app,
-            description: `<span style="color: black;">offline</span> - ${app.description || ''}`,
-            category: "offline"
+            description: app.description !== undefined
+                ? `<span style="color: black;">offline</span> - ${app.description}`
+                : `<span style="color: black;">offline</span>`,
+            status: "offline"
         }));
 
         oappsData = oappsData.map(app => ({
             ...app,
-            description: `<span style="color: green;">online</span> - ${app.description || ''}`,
-            category: "online"
+            description: app.description !== undefined
+                ? `<span style="color: green;">online</span> - ${app.description}`
+                : `<span style="color: green;">online</span>`,
+            status: "online"
         }));
 
         iappsData = iappsData.map(app => ({
             ...app,
-            description: app.description || "ipa",
-            category: "ipa"
+            description: app.description !== undefined
+                ? app.description
+                : "ipa",
+            status: "ipa"
         }));
 
         prodData = prodData.map(app => ({
             ...app,
             description: `<span style="color: red;">PROD</span> - ${app.description || ''}`,
-            category: "prod"
+            status: "prod"
         }));
 
-        const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData].sort((a, b) => a.name.localeCompare(b.name));
+        const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData]
+            .sort((a, b) => a.name.localeCompare(b.name));
 
         const appList = document.getElementById('appList');
         const searchBox = document.getElementById('searchBox');
@@ -178,8 +185,6 @@ function filterByTag(tag) {
         const searchCount = document.getElementById('searchCount');
         const toggleMods = document.getElementById('toggleMods');
         const totalMods = document.getElementById('totalMods');
-        const lastUpdated = document.getElementById('lastUpdated');
-        const resourcesUpdated = document.getElementById('resourcesUpdated');
 
         totalMods.querySelector('span').textContent = allApps.length;
 
@@ -196,7 +201,7 @@ function filterByTag(tag) {
                 appCard.innerHTML = `
                     <div class="app-info">
                         <h3>${app.name}</h3>
-                        <p class="app-description">${app.description}</p>
+                        <p class="app-description">${app.description || ''}</p>
                     </div>
                     <a href="${app.link}" target="_blank" class="download-btn">Download</a>
                 `;
@@ -206,8 +211,6 @@ function filterByTag(tag) {
 
         function resetView() {
             totalMods.classList.remove("hidden");
-            lastUpdated.classList.remove("hidden");
-            resourcesUpdated.classList.remove("hidden");
             searchResults.classList.add("hidden");
         }
 
@@ -219,18 +222,15 @@ function filterByTag(tag) {
                 return;
             }
 
-            const filteredData = allApps.filter(app => 
+            const filteredData = allApps.filter(app =>
                 app.name.toLowerCase().includes(searchTerm) ||
-                app.description.toLowerCase().includes(searchTerm) || 
-                app.category.toLowerCase().includes(searchTerm) // category も検索対象にする
+                app.status.toLowerCase().includes(searchTerm)
             );
 
             displayApps(filteredData);
             searchResults.classList.remove("hidden");
             searchCount.textContent = filteredData.length;
             totalMods.classList.add("hidden");
-            lastUpdated.classList.add("hidden");
-            resourcesUpdated.classList.add("hidden");
         });
 
         toggleMods.addEventListener('change', () => {
@@ -243,10 +243,9 @@ function filterByTag(tag) {
     }
 }
 
-// PROD検索ボタンの動作を追加
-function filterByProd() {
+function filterByTag(tag) {
     const searchBox = document.getElementById('searchBox');
-    searchBox.value = "prod";
+    searchBox.value = tag;
     searchBox.dispatchEvent(new Event('input'));
 }
 
