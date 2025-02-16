@@ -104,7 +104,7 @@
     <button id="onlineBtn">Online</button>
     <button id="ipaBtn">IPA</button>
     <button id="prodBtn">PROD</button>
-    <button id="allBtn">Show all</button>
+    <button id="allBtn">show all</button>
 </div>
         <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
         <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-16</span></p>
@@ -137,7 +137,10 @@ function filterByTag(tag) {
     searchBox.value = tag;
     searchBox.dispatchEvent(new Event('input'));
 }
-        async function loadApps() {
+        let allApps = []; // 全アプリデータを保持する変数
+let currentFilter = ""; // 現在のフィルタ状態
+
+async function loadApps() {
     try {
         const timestamp = new Date().getTime();
         const responses = await Promise.all([
@@ -173,96 +176,97 @@ function filterByTag(tag) {
             status: "prod"
         }));
 
-        const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData].sort((a, b) => a.name.localeCompare(b.name));
+        allApps = [...appsData, ...oappsData, ...iappsData, ...prodData].sort((a, b) => a.name.localeCompare(b.name));
 
-        const appList = document.getElementById('appList');
-        const searchBox = document.getElementById('searchBox');
-        const noResults = document.getElementById('noResults');
-        const searchResults = document.getElementById('searchResults');
-        const searchCount = document.getElementById('searchCount');
-        const totalMods = document.getElementById('totalMods');
-        const lastUpdated = document.getElementById('lastUpdated');
-        const resourcesUpdated = document.getElementById('resourcesUpdated');
-
-        totalMods.querySelector('span').textContent = allApps.length;
-
-        function displayApps(filteredData) {
-            appList.innerHTML = "";
-            if (filteredData.length === 0) {
-                noResults.classList.remove("hidden");
-                return;
-            }
-            noResults.classList.add("hidden");
-            filteredData.forEach(app => {
-                const appCard = document.createElement('div');
-                appCard.classList.add('app-card');
-                appCard.innerHTML = `
-                    <div class="app-info">
-                        <h3>${app.name}</h3>
-                        <p class="app-description">${app.description || ''}</p>
-                    </div>
-                    <a href="${app.link}" target="_blank" class="download-btn">Download</a>
-                `;
-                appList.appendChild(appCard);
-            });
-        }
-
-        function resetView() {
-            totalMods.classList.remove("hidden");
-            lastUpdated.classList.remove("hidden");
-            resourcesUpdated.classList.remove("hidden");
-            searchResults.classList.add("hidden");
-        }
-
-        searchBox.addEventListener('input', () => {
-            const searchTerm = searchBox.value.toLowerCase();
-            if (searchTerm === "") {
-                resetView();
-                displayApps(allApps);
-                return;
-            }
-
-            const filteredData = allApps.filter(app => app.name.toLowerCase().includes(searchTerm));
-
-            displayApps(filteredData);
-            searchResults.classList.remove("hidden");
-            searchCount.textContent = filteredData.length;
-            totalMods.classList.add("hidden");
-            lastUpdated.classList.add("hidden");
-            resourcesUpdated.classList.add("hidden");
-        });
-
-        // フィルターボタン
-        function filterByTag(tag) {
-            searchBox.value = ""; // 検索バーはリセット
-            resetView();
-            const filteredData = allApps.filter(app => app.status === tag);
-            displayApps(filteredData);
-            searchResults.classList.remove("hidden");
-            searchCount.textContent = filteredData.length;
-            totalMods.classList.add("hidden");
-            lastUpdated.classList.add("hidden");
-            resourcesUpdated.classList.add("hidden");
-        }
-
-        // すべて表示ボタン
-        function showAll() {
-            searchBox.value = "";
-            resetView();
-            displayApps(allApps);
-        }
-
-        document.getElementById("offlineBtn").addEventListener("click", () => filterByTag("offline"));
-        document.getElementById("onlineBtn").addEventListener("click", () => filterByTag("online"));
-        document.getElementById("ipaBtn").addEventListener("click", () => filterByTag("ipa"));
-        document.getElementById("prodBtn").addEventListener("click", () => filterByTag("prod"));
-        document.getElementById("allBtn").addEventListener("click", showAll);
+        document.getElementById('modCount').textContent = allApps.length;
 
         displayApps(allApps);
     } catch (error) {
         console.error('Error loading data:', error);
     }
 }
+
+function displayApps(filteredData) {
+    const appList = document.getElementById('appList');
+    appList.innerHTML = "";
+
+    if (filteredData.length === 0) {
+        document.getElementById('noResults').classList.remove("hidden");
+        return;
+    }
+
+    document.getElementById('noResults').classList.add("hidden");
+
+    filteredData.forEach(app => {
+        const appCard = document.createElement('div');
+        appCard.classList.add('app-card');
+        appCard.innerHTML = `
+            <div class="app-info">
+                <h3>${app.name}</h3>
+                <p class="app-description">${app.description || ''}</p>
+            </div>
+            <a href="${app.link}" target="_blank" class="download-btn">Download</a>
+        `;
+        appList.appendChild(appCard);
+    });
+}
+
+function resetView() {
+    document.getElementById('totalMods').classList.remove("hidden");
+    document.getElementById('lastUpdated').classList.remove("hidden");
+    document.getElementById('resourcesUpdated').classList.remove("hidden");
+    document.getElementById('searchResults').classList.add("hidden");
+}
+
+document.getElementById('searchBox').addEventListener('input', () => {
+    const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+
+    if (searchTerm === "" && currentFilter === "") {
+        resetView();
+        displayApps(allApps);
+        return;
+    }
+
+    let filteredData = allApps.filter(app => app.name.toLowerCase().includes(searchTerm));
+
+    if (currentFilter) {
+        filteredData = filteredData.filter(app => app.status === currentFilter);
+    }
+
+    displayApps(filteredData);
+    document.getElementById('searchResults').classList.remove("hidden");
+    document.getElementById('searchCount').textContent = filteredData.length;
+    document.getElementById('totalMods').classList.add("hidden");
+    document.getElementById('lastUpdated').classList.add("hidden");
+    document.getElementById('resourcesUpdated').classList.add("hidden");
+});
+
+function filterByTag(tag) {
+    currentFilter = tag; // 現在のフィルタを設定
+    document.getElementById('searchBox').value = ""; // 検索バーはリセット
+    resetView();
+
+    const filteredData = allApps.filter(app => app.status === tag);
+    displayApps(filteredData);
+    document.getElementById('searchResults').classList.remove("hidden");
+    document.getElementById('searchCount').textContent = filteredData.length;
+    document.getElementById('totalMods').classList.add("hidden");
+    document.getElementById('lastUpdated').classList.add("hidden");
+    document.getElementById('resourcesUpdated').classList.add("hidden");
+}
+
+function showAll() {
+    currentFilter = ""; // フィルタを解除
+    document.getElementById('searchBox').value = "";
+    resetView();
+    displayApps(allApps);
+}
+
+document.getElementById("offlineBtn").addEventListener("click", () => filterByTag("offline"));
+document.getElementById("onlineBtn").addEventListener("click", () => filterByTag("online"));
+document.getElementById("ipaBtn").addEventListener("click", () => filterByTag("ipa"));
+document.getElementById("prodBtn").addEventListener("click", () => filterByTag("prod"));
+document.getElementById("allBtn").addEventListener("click", showAll);
 
 window.onload = loadApps;
     </script>
