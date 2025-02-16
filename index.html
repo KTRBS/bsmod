@@ -137,12 +137,11 @@ function filterByTag(tag) {
 }
         async function loadApps() {
     try {
-        const timestamp = new Date().getTime();
         const responses = await Promise.all([
-            fetch(`apps.json?${timestamp}`).then(res => res.json()),
-            fetch(`oapps.json?${timestamp}`).then(res => res.json()),
-            fetch(`iapps.json?${timestamp}`).then(res => res.json()),
-            fetch(`prod.json?${timestamp}`).then(res => res.json())
+            fetch('apps.json').then(res => res.json()),
+            fetch('oapps.json').then(res => res.json()),
+            fetch('iapps.json').then(res => res.json()),
+            fetch('prod.json').then(res => res.json())
         ]);
 
         let [appsData, oappsData, iappsData, prodData] = responses;
@@ -173,24 +172,26 @@ function filterByTag(tag) {
 
         prodData = prodData.map(app => ({
             ...app,
-            description: `<span style="color: red;">PROD</span> - ${app.description || ''}`,
+            description: app.description !== undefined
+                ? `<span style="color: blue;">PROD</span> - ${app.description}`
+                : `<span style="color: blue;">PROD</span>`,
             status: "prod"
         }));
 
-        const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData]
-            .sort((a, b) => a.name.localeCompare(b.name));
+        const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData].sort((a, b) => a.name.localeCompare(b.name));
 
         const appList = document.getElementById('appList');
         const searchBox = document.getElementById('searchBox');
         const noResults = document.getElementById('noResults');
         const searchResults = document.getElementById('searchResults');
         const searchCount = document.getElementById('searchCount');
-        const toggleMods = document.getElementById('toggleMods');
         const totalMods = document.getElementById('totalMods');
         const lastUpdated = document.getElementById('lastUpdated');
         const resourcesUpdated = document.getElementById('resourcesUpdated');
 
         totalMods.querySelector('span').textContent = allApps.length;
+
+        let activeFilter = null; // 現在のカテゴリフィルタを追跡
 
         function displayApps(filteredData) {
             appList.innerHTML = "";
@@ -214,40 +215,43 @@ function filterByTag(tag) {
         }
 
         function resetView() {
+            searchResults.classList.add("hidden");
             totalMods.classList.remove("hidden");
             lastUpdated.classList.remove("hidden");
             resourcesUpdated.classList.remove("hidden");
-            searchResults.classList.add("hidden");
         }
 
-        searchBox.addEventListener('input', () => {
-            const searchTerm = searchBox.value.trim().toLowerCase();
-            if (searchTerm === "") {
-                resetView();
-                displayApps(allApps);
-                return;
+        function filterByTag(tag) {
+            activeFilter = tag;
+            searchBox.value = ""; // 検索バーの値をクリア
+            searchApps();
+        }
+
+        function searchApps() {
+            const searchTerm = searchBox.value.toLowerCase();
+            let filteredData = allApps;
+
+            if (activeFilter) {
+                filteredData = filteredData.filter(app => app.status === activeFilter);
             }
 
-            const filteredData = allApps.filter(app =>
-                app.name.toLowerCase().includes(searchTerm) ||
-                app.status.toLowerCase() === searchTerm
-            );
+            if (searchTerm) {
+                filteredData = filteredData.filter(app => app.name.toLowerCase().includes(searchTerm));
+            }
 
             displayApps(filteredData);
             searchResults.classList.remove("hidden");
             searchCount.textContent = filteredData.length;
-            
-            // 🔹 Total Mods & Updated Date を隠す
             totalMods.classList.add("hidden");
             lastUpdated.classList.add("hidden");
             resourcesUpdated.classList.add("hidden");
+        }
+
+        searchBox.addEventListener('input', () => {
+            searchApps();
         });
 
-        toggleMods.addEventListener('change', () => {
-            appList.style.display = toggleMods.checked ? 'none' : 'block';
-        });
-
-        displayApps(allApps);
+        displayApps([]); // 初回は空表示
     } catch (error) {
         console.error('Error loading data:', error);
     }
