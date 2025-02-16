@@ -137,11 +137,12 @@ function filterByTag(tag) {
 }
         async function loadApps() {
     try {
+        const timestamp = new Date().getTime();
         const responses = await Promise.all([
-            fetch('apps.json').then(res => res.json()),
-            fetch('oapps.json').then(res => res.json()),
-            fetch('iapps.json').then(res => res.json()),
-            fetch('prod.json').then(res => res.json())
+            fetch(`apps.json?${timestamp}`).then(res => res.json()),
+            fetch(`oapps.json?${timestamp}`).then(res => res.json()),
+            fetch(`iapps.json?${timestamp}`).then(res => res.json()),
+            fetch(`prod.json?${timestamp}`).then(res => res.json())
         ]);
 
         let [appsData, oappsData, iappsData, prodData] = responses;
@@ -185,9 +186,11 @@ function filterByTag(tag) {
         const searchResults = document.getElementById('searchResults');
         const searchCount = document.getElementById('searchCount');
         const toggleMods = document.getElementById('toggleMods');
-        const totalMods = document.getElementById('modCount');
+        const totalMods = document.getElementById('totalMods');
+        const lastUpdated = document.getElementById('lastUpdated');
+        const resourcesUpdated = document.getElementById('resourcesUpdated');
 
-        totalMods.textContent = allApps.length;
+        totalMods.querySelector('span').textContent = allApps.length;
 
         function displayApps(filteredData) {
             appList.innerHTML = "";
@@ -210,9 +213,17 @@ function filterByTag(tag) {
             });
         }
 
-        function searchApps() {
+        function resetView() {
+            totalMods.classList.remove("hidden");
+            lastUpdated.classList.remove("hidden");
+            resourcesUpdated.classList.remove("hidden");
+            searchResults.classList.add("hidden");
+        }
+
+        searchBox.addEventListener('input', () => {
             const searchTerm = searchBox.value.trim().toLowerCase();
             if (searchTerm === "") {
+                resetView();
                 displayApps(allApps);
                 return;
             }
@@ -225,14 +236,12 @@ function filterByTag(tag) {
             displayApps(filteredData);
             searchResults.classList.remove("hidden");
             searchCount.textContent = filteredData.length;
-        }
-
-        searchBox.addEventListener('input', searchApps);
-
-        window.filterByTag = function(tag) {
-            searchBox.value = tag;
-            searchBox.dispatchEvent(new Event('input'));  
-        };
+            
+            // 🔹 Total Mods & Updated Date を隠す
+            totalMods.classList.add("hidden");
+            lastUpdated.classList.add("hidden");
+            resourcesUpdated.classList.add("hidden");
+        });
 
         toggleMods.addEventListener('change', () => {
             appList.style.display = toggleMods.checked ? 'none' : 'block';
