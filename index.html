@@ -98,15 +98,17 @@
         </div>
         <input type="text" id="searchBox" placeholder="Search by name...">
             
+<!-- フィルターボタン -->
 <div class="filter-buttons">
-    <button onclick="filterByTag('offline')">Offline</button>
-    <button onclick="filterByTag('online')">Online</button>
-    <button onclick="filterByTag('ipa')">IPA</button>
-    <button onclick="filterByTag('prod')">PROD</button>
+    <button id="offlineBtn">Offline</button>
+    <button id="onlineBtn">Online</button>
+    <button id="ipaBtn">IPA</button>
+    <button id="prodBtn">PROD</button>
+    <button id="allBtn">Show all</button>
 </div>
         <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
         <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-16</span></p>
-        <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2024-02-16</span></p>
+        <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2024-02-16/span></p>
         <p id="searchResults" class="hidden">Search Results: <span id="searchCount">0</span></p>
         <div class="app-list" id="appList"></div>
         <p class="no-results hidden" id="noResults">No matching results</p>
@@ -149,25 +151,19 @@ function filterByTag(tag) {
 
         appsData = appsData.map(app => ({
             ...app,
-            description: app.description !== undefined
-                ? `<span style="color: black;">offline</span> - ${app.description}`
-                : `<span style="color: black;">offline</span>`,
+            description: `<span style="color: black;">offline</span> - ${app.description || ''}`,
             status: "offline"
         }));
 
         oappsData = oappsData.map(app => ({
             ...app,
-            description: app.description !== undefined
-                ? `<span style="color: green;">online</span> - ${app.description}`
-                : `<span style="color: green;">online</span>`,
+            description: `<span style="color: green;">online</span> - ${app.description || ''}`,
             status: "online"
         }));
 
         iappsData = iappsData.map(app => ({
             ...app,
-            description: app.description !== undefined
-                ? app.description
-                : "ipa",
+            description: app.description || "ipa",
             status: "ipa"
         }));
 
@@ -177,15 +173,13 @@ function filterByTag(tag) {
             status: "prod"
         }));
 
-        const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData]
-            .sort((a, b) => a.name.localeCompare(b.name));
+        const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData].sort((a, b) => a.name.localeCompare(b.name));
 
         const appList = document.getElementById('appList');
         const searchBox = document.getElementById('searchBox');
         const noResults = document.getElementById('noResults');
         const searchResults = document.getElementById('searchResults');
         const searchCount = document.getElementById('searchCount');
-        const toggleMods = document.getElementById('toggleMods');
         const totalMods = document.getElementById('totalMods');
         const lastUpdated = document.getElementById('lastUpdated');
         const resourcesUpdated = document.getElementById('resourcesUpdated');
@@ -221,31 +215,48 @@ function filterByTag(tag) {
         }
 
         searchBox.addEventListener('input', () => {
-            const searchTerm = searchBox.value.trim().toLowerCase();
+            const searchTerm = searchBox.value.toLowerCase();
             if (searchTerm === "") {
                 resetView();
                 displayApps(allApps);
                 return;
             }
 
-            const filteredData = allApps.filter(app =>
-                app.name.toLowerCase().includes(searchTerm) ||
-                app.status.toLowerCase() === searchTerm
-            );
+            const filteredData = allApps.filter(app => app.name.toLowerCase().includes(searchTerm));
 
             displayApps(filteredData);
             searchResults.classList.remove("hidden");
             searchCount.textContent = filteredData.length;
-            
-            // 🔹 Total Mods & Updated Date を隠す
             totalMods.classList.add("hidden");
             lastUpdated.classList.add("hidden");
             resourcesUpdated.classList.add("hidden");
         });
 
-        toggleMods.addEventListener('change', () => {
-            appList.style.display = toggleMods.checked ? 'none' : 'block';
-        });
+        // フィルターボタン
+        function filterByTag(tag) {
+            searchBox.value = ""; // 検索バーはリセット
+            resetView();
+            const filteredData = allApps.filter(app => app.status === tag);
+            displayApps(filteredData);
+            searchResults.classList.remove("hidden");
+            searchCount.textContent = filteredData.length;
+            totalMods.classList.add("hidden");
+            lastUpdated.classList.add("hidden");
+            resourcesUpdated.classList.add("hidden");
+        }
+
+        // すべて表示ボタン
+        function showAll() {
+            searchBox.value = "";
+            resetView();
+            displayApps(allApps);
+        }
+
+        document.getElementById("offlineBtn").addEventListener("click", () => filterByTag("offline"));
+        document.getElementById("onlineBtn").addEventListener("click", () => filterByTag("online"));
+        document.getElementById("ipaBtn").addEventListener("click", () => filterByTag("ipa"));
+        document.getElementById("prodBtn").addEventListener("click", () => filterByTag("prod"));
+        document.getElementById("allBtn").addEventListener("click", showAll);
 
         displayApps(allApps);
     } catch (error) {
