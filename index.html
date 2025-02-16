@@ -137,16 +137,16 @@ function filterByTag(tag) {
 }
         async function loadApps() {
     try {
+        const timestamp = new Date().getTime();
         const responses = await Promise.all([
-            fetch('apps.json').then(res => res.json()),
-            fetch('oapps.json').then(res => res.json()),
-            fetch('iapps.json').then(res => res.json()),
-            fetch('prod.json').then(res => res.json())
+            fetch(`apps.json?${timestamp}`).then(res => res.json()),
+            fetch(`oapps.json?${timestamp}`).then(res => res.json()),
+            fetch(`iapps.json?${timestamp}`).then(res => res.json()),
+            fetch(`prod.json?${timestamp}`).then(res => res.json())
         ]);
 
         let [appsData, oappsData, iappsData, prodData] = responses;
 
-        // 各JSONのデータにステータスを追加
         appsData = appsData.map(app => ({
             ...app,
             description: app.description !== undefined
@@ -177,7 +177,6 @@ function filterByTag(tag) {
             status: "prod"
         }));
 
-        // すべてのデータを統合してアルファベット順にソート
         const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData]
             .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -188,8 +187,9 @@ function filterByTag(tag) {
         const searchCount = document.getElementById('searchCount');
         const toggleMods = document.getElementById('toggleMods');
         const totalMods = document.getElementById('totalMods');
+        const lastUpdated = document.getElementById('lastUpdated');
+        const resourcesUpdated = document.getElementById('resourcesUpdated');
 
-        // 総数を更新
         totalMods.querySelector('span').textContent = allApps.length;
 
         function displayApps(filteredData) {
@@ -215,10 +215,12 @@ function filterByTag(tag) {
 
         function resetView() {
             totalMods.classList.remove("hidden");
+            lastUpdated.classList.remove("hidden");
+            resourcesUpdated.classList.remove("hidden");
             searchResults.classList.add("hidden");
         }
 
-        function searchApps() {
+        searchBox.addEventListener('input', () => {
             const searchTerm = searchBox.value.trim().toLowerCase();
             if (searchTerm === "") {
                 resetView();
@@ -234,23 +236,17 @@ function filterByTag(tag) {
             displayApps(filteredData);
             searchResults.classList.remove("hidden");
             searchCount.textContent = filteredData.length;
+            
+            // 🔹 Total Mods & Updated Date を隠す
             totalMods.classList.add("hidden");
-        }
-
-        // 検索バーの変更時に検索
-        searchBox.addEventListener('input', searchApps);
-
-        // ボタンから検索するときの処理
-        window.filterByTag = function(tag) {
-            searchBox.value = tag;
-            searchApps();
-        };
+            lastUpdated.classList.add("hidden");
+            resourcesUpdated.classList.add("hidden");
+        });
 
         toggleMods.addEventListener('change', () => {
             appList.style.display = toggleMods.checked ? 'none' : 'block';
         });
 
-        // 初回表示
         displayApps(allApps);
     } catch (error) {
         console.error('Error loading data:', error);
