@@ -137,8 +137,9 @@ function filterByTag(tag) {
     searchBox.value = tag;
     searchBox.dispatchEvent(new Event('input'));
 }
-        let allApps = []; // 全アプリデータを保持する変数
-let currentFilter = ""; // 現在のフィルタ状態
+        let allApps = [];
+let currentFilter = "";
+let isFiltered = false; // デフォルトで非表示
 
 async function loadApps() {
     try {
@@ -180,15 +181,19 @@ async function loadApps() {
 
         document.getElementById('modCount').textContent = allApps.length;
 
-        displayApps(allApps);
+        // 初回は非表示
+        document.getElementById('appList').style.display = "none";
+
     } catch (error) {
         console.error('Error loading data:', error);
     }
 }
 
-function displayApps(filteredData) {
+function displayApps() {
     const appList = document.getElementById('appList');
     appList.innerHTML = "";
+
+    let filteredData = allApps.filter(app => app.status === currentFilter);
 
     if (filteredData.length === 0) {
         document.getElementById('noResults').classList.remove("hidden");
@@ -209,6 +214,8 @@ function displayApps(filteredData) {
         `;
         appList.appendChild(appCard);
     });
+
+    appList.style.display = "block"; // フィルタを適用したらリストを表示
 }
 
 function resetView() {
@@ -221,9 +228,9 @@ function resetView() {
 document.getElementById('searchBox').addEventListener('input', () => {
     const searchTerm = document.getElementById('searchBox').value.toLowerCase();
 
-    if (searchTerm === "" && currentFilter === "") {
+    if (searchTerm === "" && !isFiltered) {
         resetView();
-        displayApps(allApps);
+        document.getElementById('appList').style.display = "none"; // デフォルトでは非表示
         return;
     }
 
@@ -242,24 +249,19 @@ document.getElementById('searchBox').addEventListener('input', () => {
 });
 
 function filterByTag(tag) {
-    currentFilter = tag; // 現在のフィルタを設定
-    document.getElementById('searchBox').value = ""; // 検索バーはリセット
+    currentFilter = tag;
+    isFiltered = true; // フィルターが適用されたことを記録
+    document.getElementById('searchBox').value = "";
     resetView();
-
-    const filteredData = allApps.filter(app => app.status === tag);
-    displayApps(filteredData);
-    document.getElementById('searchResults').classList.remove("hidden");
-    document.getElementById('searchCount').textContent = filteredData.length;
-    document.getElementById('totalMods').classList.add("hidden");
-    document.getElementById('lastUpdated').classList.add("hidden");
-    document.getElementById('resourcesUpdated').classList.add("hidden");
+    displayApps();
 }
 
 function showAll() {
-    currentFilter = ""; // フィルタを解除
+    currentFilter = "";
+    isFiltered = false;
     document.getElementById('searchBox').value = "";
     resetView();
-    displayApps(allApps);
+    document.getElementById('appList').style.display = "none"; // すべてリセットで非表示に戻す
 }
 
 document.getElementById("offlineBtn").addEventListener("click", () => filterByTag("offline"));
