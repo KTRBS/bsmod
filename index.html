@@ -192,6 +192,7 @@ function filterByTag(tag) {
         totalMods.querySelector('span').textContent = allApps.length;
 
         let activeFilter = null; // 現在のカテゴリフィルタを追跡
+        let filteredApps = allApps; // フィルタされたMODリストを保持
 
         function displayApps(filteredData) {
             appList.innerHTML = "";
@@ -224,24 +225,21 @@ function filterByTag(tag) {
         function filterByTag(tag) {
             activeFilter = tag;
             searchBox.value = ""; // 検索バーの値をクリア
-            searchApps();
+            filteredApps = allApps.filter(app => app.status === activeFilter);
+            searchApps(); // 選択したカテゴリ内のMODを表示
         }
 
         function searchApps() {
             const searchTerm = searchBox.value.toLowerCase();
-            let filteredData = allApps;
-
-            if (activeFilter) {
-                filteredData = filteredData.filter(app => app.status === activeFilter);
-            }
+            let searchResultsData = filteredApps; // 現在のカテゴリのリストを使う
 
             if (searchTerm) {
-                filteredData = filteredData.filter(app => app.name.toLowerCase().includes(searchTerm));
+                searchResultsData = searchResultsData.filter(app => app.name.toLowerCase().includes(searchTerm));
             }
 
-            displayApps(filteredData);
+            displayApps(searchResultsData);
             searchResults.classList.remove("hidden");
-            searchCount.textContent = filteredData.length;
+            searchCount.textContent = searchResultsData.length;
             totalMods.classList.add("hidden");
             lastUpdated.classList.add("hidden");
             resourcesUpdated.classList.add("hidden");
