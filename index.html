@@ -1,1 +1,269 @@
-mantainance.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APK List</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
+        .container { max-width: 600px; margin: 20px auto; padding: 10px; }
+        input { width: 94%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
+        .app-list { display: flex; flex-direction: column; gap: 5px; }
+        .app-card {
+            display: flex; align-items: center; background: #fff; padding: 10px;
+            border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 5px;
+        }
+        .app-info { text-align: left; flex-grow: 1; }
+        .app-info h3 { margin: 0; font-size: 16px; }
+        .app-info p { margin: 5px 0; color: #666; font-size: 14px; }
+        .download-btn {
+            padding: 5px 10px; background: #007bff; color: white; text-decoration: none;
+            border-radius: 5px; font-size: 14px;
+        }
+        .no-results { color: #999; margin-top: 10px; font-size: 14px; }
+        
+    .app-description {
+    font-size: 14px;
+    color: #555;
+    margin-top: 5px;
+    word-wrap: break-word;
+    }
+        
+    .checkbox-container {
+        display: inline-flex; 
+        align-items: center;  
+        gap: 2px;  
+        margin-bottom: 10px;
+    }
+
+    .checkbox-container input {
+        margin: 0;  
+        width: 16px;
+        height: 16px;
+    }
+
+    .checkbox-container label {
+        font-size: 14px;
+        white-space: nowrap;  
+    }
+
+        .partner-link-container {
+            margin-top: 20px;
+        }
+        .partner-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .discord-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .discord-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #5865F2;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        }
+        .telegram-container {
+            margin-top: 40px;
+        }
+        .telegram-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>APK List</h1>
+        <div class="checkbox-container">
+            <input type="checkbox" id="toggleMods">
+            <label for="toggleMods"> Hide mod list</label>
+        </div>
+        <input type="text" id="searchBox" placeholder="Search by name...">
+            
+<div class="filter-buttons">
+    <button onclick="filterByTag('offline')">Offline</button>
+    <button onclick="filterByTag('online')">Online</button>
+    <button onclick="filterByTag('ipa')">IPA</button>
+    <button onclick="filterByTag('prod')">PROD</button>
+</div>
+        <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
+        <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-16</span></p>
+        <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2024-02-16/span></p>
+        <p id="searchResults" class="hidden">Search Results: <span id="searchCount">0</span></p>
+        <div class="app-list" id="appList"></div>
+        <p class="no-results hidden" id="noResults">No matching results</p>
+    </div>
+
+    <!-- Partner link section -->
+    <div class="partner-link-container">
+        <a href="https://brawlmods.natesworks.com/" target="_blank" class="partner-link">Partner</a>
+    </div>
+
+    <!-- Discord Server Link -->
+    <div class="discord-container">
+        <a href="https://discord.com/invite/Q7tSMM5C7A" target="_blank" class="discord-link">Discord Server</a>
+    </div>
+    
+    <div class="telegram-container">
+        <a href="https://t.me/AllModsBrawlStars" target="_blank" class="telegram-link">Telegram Channel</a>
+    </div>
+    
+    <div class="app-list" id="appList">
+</div>
+
+    <script>
+function filterByTag(tag) {
+    const searchBox = document.getElementById('searchBox');
+    searchBox.value = tag;
+    searchBox.dispatchEvent(new Event('input'));
+}
+        async function loadApps() {
+    try {
+        const timestamp = new Date().getTime();
+        const responses = await Promise.all([
+            fetch(`apps.json?${timestamp}`).then(res => res.json()),
+            fetch(`oapps.json?${timestamp}`).then(res => res.json()),
+            fetch(`iapps.json?${timestamp}`).then(res => res.json()),
+            fetch(`prod.json?${timestamp}`).then(res => res.json())
+        ]);
+
+        let [appsData, oappsData, iappsData, prodData] = responses;
+
+        appsData = appsData.map(app => ({
+            ...app,
+            description: `<span style="color: black;">offline</span> - ${app.description || ''}`,
+            status: "offline"
+        }));
+
+        oappsData = oappsData.map(app => ({
+            ...app,
+            description: `<span style="color: green;">online</span> - ${app.description || ''}`,
+            status: "online"
+        }));
+
+        iappsData = iappsData.map(app => ({
+            ...app,
+            description: app.description || "ipa",
+            status: "ipa"
+        }));
+
+        prodData = prodData.map(app => ({
+            ...app,
+            description: `<span style="color: red;">PROD</span> - ${app.description || ''}`,
+            status: "prod"
+        }));
+
+        const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData].sort((a, b) => a.name.localeCompare(b.name));
+
+        const appList = document.getElementById('appList');
+        const searchBox = document.getElementById('searchBox');
+        const noResults = document.getElementById('noResults');
+        const searchResults = document.getElementById('searchResults');
+        const searchCount = document.getElementById('searchCount');
+        const totalMods = document.getElementById('totalMods');
+        const lastUpdated = document.getElementById('lastUpdated');
+        const resourcesUpdated = document.getElementById('resourcesUpdated');
+
+        totalMods.querySelector('span').textContent = allApps.length;
+
+        function displayApps(filteredData) {
+            appList.innerHTML = "";
+            if (filteredData.length === 0) {
+                noResults.classList.remove("hidden");
+                return;
+            }
+            noResults.classList.add("hidden");
+            filteredData.forEach(app => {
+                const appCard = document.createElement('div');
+                appCard.classList.add('app-card');
+                appCard.innerHTML = `
+                    <div class="app-info">
+                        <h3>${app.name}</h3>
+                        <p class="app-description">${app.description || ''}</p>
+                    </div>
+                    <a href="${app.link}" target="_blank" class="download-btn">Download</a>
+                `;
+                appList.appendChild(appCard);
+            });
+        }
+
+        function resetView() {
+            totalMods.classList.remove("hidden");
+            lastUpdated.classList.remove("hidden");
+            resourcesUpdated.classList.remove("hidden");
+            searchResults.classList.add("hidden");
+        }
+
+        searchBox.addEventListener('input', () => {
+            const searchTerm = searchBox.value.toLowerCase();
+            if (searchTerm === "") {
+                resetView();
+                displayApps(allApps);
+                return;
+            }
+
+            const filteredData = allApps.filter(app => app.name.toLowerCase().includes(searchTerm));
+
+            displayApps(filteredData);
+            searchResults.classList.remove("hidden");
+            searchCount.textContent = filteredData.length;
+            totalMods.classList.add("hidden");
+            lastUpdated.classList.add("hidden");
+            resourcesUpdated.classList.add("hidden");
+        });
+
+        // フィルターボタン
+        function filterByTag(tag) {
+            searchBox.value = ""; // 検索バーはリセット
+            resetView();
+            const filteredData = allApps.filter(app => app.status === tag);
+            displayApps(filteredData);
+            searchResults.classList.remove("hidden");
+            searchCount.textContent = filteredData.length;
+            totalMods.classList.add("hidden");
+            lastUpdated.classList.add("hidden");
+            resourcesUpdated.classList.add("hidden");
+        }
+
+        // すべて表示ボタン
+        function showAll() {
+            searchBox.value = "";
+            resetView();
+            displayApps(allApps);
+        }
+
+        document.getElementById("offlineBtn").addEventListener("click", () => filterByTag("offline"));
+        document.getElementById("onlineBtn").addEventListener("click", () => filterByTag("online"));
+        document.getElementById("ipaBtn").addEventListener("click", () => filterByTag("ipa"));
+        document.getElementById("prodBtn").addEventListener("click", () => filterByTag("prod"));
+        document.getElementById("allBtn").addEventListener("click", showAll);
+
+        displayApps(allApps);
+    } catch (error) {
+        console.error('Error loading data:', error);
+    }
+}
+
+window.onload = loadApps;
+    </script>
+</body>
+</html>
+
