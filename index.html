@@ -90,23 +90,78 @@
     </style>
 </head>
 <body>
+
+     <!-- ポップアップのHTML -->
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <span class="close-btn" onclick="closePopup()">&times;</span>
+        <h2>i lost access to my tgacc</h2>
+        <p>sorry i cant add mods, if u know how to solve probrem, pls dm my new acc @dsc_gg on tg</p>
+        <button onclick="closePopup()">OK</button>
+    </div>
+</div>
+
+<!-- ポップアップのCSS -->
+<style>
+.popup {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.popup-content {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 80%;
+    max-width: 400px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px; right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
+</style>
+
+<!-- ポップアップのJavaScript -->
+<script>
+function openPopup() {
+    document.getElementById('popup').style.display = 'block';
+}
+
+function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+}
+
+// ページ読み込み時にポップアップを表示
+window.onload = function() {
+    setTimeout(openPopup, 500); // 0.5秒後に表示
+};
+</script>
     <div class="container">
-        <h1>APK List</h1>
-        <div class="checkbox-container">
-            <input type="checkbox" id="toggleMods">
-            <label for="toggleMods"> Hide mod list</label>
-        </div>
+        <h1>Mod List</h1>
         <input type="text" id="searchBox" placeholder="Search by name...">
             
+<!-- フィルターボタン -->
 <div class="filter-buttons">
-    <button onclick="filterByTag('offline')">Offline</button>
-    <button onclick="filterByTag('online')">Online</button>
-    <button onclick="filterByTag('ipa')">IPA</button>
-    <button onclick="filterByTag('prod')">PROD</button>
+    <button id="offlineBtn">Offline</button>
+    <button id="onlineBtn">Online</button>
+    <button id="ipaBtn">IPA</button>
+    <button id="prodBtn">PROD</button>
+    <button id="allBtn">show all</button>
 </div>
         <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
-        <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-11</span></p>
-        <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2024-02-11</span></p>
+        <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-16</span></p>
+        <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2024-02-16/span></p>
         <p id="searchResults" class="hidden">Search Results: <span id="searchCount">0</span></p>
         <div class="app-list" id="appList"></div>
         <p class="no-results hidden" id="noResults">No matching results</p>
@@ -135,7 +190,11 @@ function filterByTag(tag) {
     searchBox.value = tag;
     searchBox.dispatchEvent(new Event('input'));
 }
-        async function loadApps() {
+        let allApps = [];
+let currentFilter = "";
+let isFiltered = false; // デフォルトで非表示
+
+async function loadApps() {
     try {
         const timestamp = new Date().getTime();
         const responses = await Promise.all([
@@ -149,25 +208,19 @@ function filterByTag(tag) {
 
         appsData = appsData.map(app => ({
             ...app,
-            description: app.description !== undefined
-                ? `<span style="color: black;">offline</span> - ${app.description}`
-                : `<span style="color: black;">offline</span>`,
+            description: `<span style="color: black;">offline</span> - ${app.description || ''}`,
             status: "offline"
         }));
 
         oappsData = oappsData.map(app => ({
             ...app,
-            description: app.description !== undefined
-                ? `<span style="color: green;">online</span> - ${app.description}`
-                : `<span style="color: green;">online</span>`,
+            description: `<span style="color: green;">online</span> - ${app.description || ''}`,
             status: "online"
         }));
 
         iappsData = iappsData.map(app => ({
             ...app,
-            description: app.description !== undefined
-                ? app.description
-                : "ipa",
+            description: app.description || "ipa",
             status: "ipa"
         }));
 
@@ -177,81 +230,98 @@ function filterByTag(tag) {
             status: "prod"
         }));
 
-        const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData]
-            .sort((a, b) => a.name.localeCompare(b.name));
+        allApps = [...appsData, ...oappsData, ...iappsData, ...prodData].sort((a, b) => a.name.localeCompare(b.name));
 
-        const appList = document.getElementById('appList');
-        const searchBox = document.getElementById('searchBox');
-        const noResults = document.getElementById('noResults');
-        const searchResults = document.getElementById('searchResults');
-        const searchCount = document.getElementById('searchCount');
-        const toggleMods = document.getElementById('toggleMods');
-        const totalMods = document.getElementById('totalMods');
-        const lastUpdated = document.getElementById('lastUpdated');
-        const resourcesUpdated = document.getElementById('resourcesUpdated');
+        document.getElementById('modCount').textContent = allApps.length;
 
-        totalMods.querySelector('span').textContent = allApps.length;
+        // 初回は非表示
+        document.getElementById('appList').style.display = "none";
 
-        function displayApps(filteredData) {
-            appList.innerHTML = "";
-            if (filteredData.length === 0) {
-                noResults.classList.remove("hidden");
-                return;
-            }
-            noResults.classList.add("hidden");
-            filteredData.forEach(app => {
-                const appCard = document.createElement('div');
-                appCard.classList.add('app-card');
-                appCard.innerHTML = `
-                    <div class="app-info">
-                        <h3>${app.name}</h3>
-                        <p class="app-description">${app.description || ''}</p>
-                    </div>
-                    <a href="${app.link}" target="_blank" class="download-btn">Download</a>
-                `;
-                appList.appendChild(appCard);
-            });
-        }
-
-        function resetView() {
-            totalMods.classList.remove("hidden");
-            lastUpdated.classList.remove("hidden");
-            resourcesUpdated.classList.remove("hidden");
-            searchResults.classList.add("hidden");
-        }
-
-        searchBox.addEventListener('input', () => {
-            const searchTerm = searchBox.value.trim().toLowerCase();
-            if (searchTerm === "") {
-                resetView();
-                displayApps(allApps);
-                return;
-            }
-
-            const filteredData = allApps.filter(app =>
-                app.name.toLowerCase().includes(searchTerm) ||
-                app.status.toLowerCase() === searchTerm
-            );
-
-            displayApps(filteredData);
-            searchResults.classList.remove("hidden");
-            searchCount.textContent = filteredData.length;
-            
-            // 🔹 Total Mods & Updated Date を隠す
-            totalMods.classList.add("hidden");
-            lastUpdated.classList.add("hidden");
-            resourcesUpdated.classList.add("hidden");
-        });
-
-        toggleMods.addEventListener('change', () => {
-            appList.style.display = toggleMods.checked ? 'none' : 'block';
-        });
-
-        displayApps(allApps);
     } catch (error) {
         console.error('Error loading data:', error);
     }
 }
+
+function displayApps() {
+    const appList = document.getElementById('appList');
+    appList.innerHTML = "";
+
+    let filteredData = allApps.filter(app => app.status === currentFilter);
+
+    if (filteredData.length === 0) {
+        document.getElementById('noResults').classList.remove("hidden");
+        return;
+    }
+
+    document.getElementById('noResults').classList.add("hidden");
+
+    filteredData.forEach(app => {
+        const appCard = document.createElement('div');
+        appCard.classList.add('app-card');
+        appCard.innerHTML = `
+            <div class="app-info">
+                <h3>${app.name}</h3>
+                <p class="app-description">${app.description || ''}</p>
+            </div>
+            <a href="${app.link}" target="_blank" class="download-btn">Download</a>
+        `;
+        appList.appendChild(appCard);
+    });
+
+    appList.style.display = "block"; // フィルタを適用したらリストを表示
+}
+
+function resetView() {
+    document.getElementById('totalMods').classList.remove("hidden");
+    document.getElementById('lastUpdated').classList.remove("hidden");
+    document.getElementById('resourcesUpdated').classList.remove("hidden");
+    document.getElementById('searchResults').classList.add("hidden");
+}
+
+document.getElementById('searchBox').addEventListener('input', () => {
+    const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+
+    if (searchTerm === "" && !isFiltered) {
+        resetView();
+        document.getElementById('appList').style.display = "none"; // デフォルトでは非表示
+        return;
+    }
+
+    let filteredData = allApps.filter(app => app.name.toLowerCase().includes(searchTerm));
+
+    if (currentFilter) {
+        filteredData = filteredData.filter(app => app.status === currentFilter);
+    }
+
+    displayApps(filteredData);
+    document.getElementById('searchResults').classList.remove("hidden");
+    document.getElementById('searchCount').textContent = filteredData.length;
+    document.getElementById('totalMods').classList.add("hidden");
+    document.getElementById('lastUpdated').classList.add("hidden");
+    document.getElementById('resourcesUpdated').classList.add("hidden");
+});
+
+function filterByTag(tag) {
+    currentFilter = tag;
+    isFiltered = true; // フィルターが適用されたことを記録
+    document.getElementById('searchBox').value = "";
+    resetView();
+    displayApps();
+}
+
+function showAll() {
+    currentFilter = "";
+    isFiltered = false;
+    document.getElementById('searchBox').value = "";
+    resetView();
+    document.getElementById('appList').style.display = "none"; // すべてリセットで非表示に戻す
+}
+
+document.getElementById("offlineBtn").addEventListener("click", () => filterByTag("offline"));
+document.getElementById("onlineBtn").addEventListener("click", () => filterByTag("online"));
+document.getElementById("ipaBtn").addEventListener("click", () => filterByTag("ipa"));
+document.getElementById("prodBtn").addEventListener("click", () => filterByTag("prod"));
+document.getElementById("allBtn").addEventListener("click", showAll);
 
 window.onload = loadApps;
     </script>
