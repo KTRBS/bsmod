@@ -105,8 +105,8 @@
     <button onclick="filterByTag('prod')">PROD</button>
 </div>
         <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
-        <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-16</span></p>
-        <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2024-02-16/span></p>
+        <p id="lastUpdated">Last Updated: <span id="updateDate">2024-02-11</span></p>
+        <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2024-02-11</span></p>
         <p id="searchResults" class="hidden">Search Results: <span id="searchCount">0</span></p>
         <div class="app-list" id="appList"></div>
         <p class="no-results hidden" id="noResults">No matching results</p>
@@ -149,19 +149,25 @@ function filterByTag(tag) {
 
         appsData = appsData.map(app => ({
             ...app,
-            description: `<span style="color: black;">offline</span> - ${app.description || ''}`,
+            description: app.description !== undefined
+                ? `<span style="color: black;">offline</span> - ${app.description}`
+                : `<span style="color: black;">offline</span>`,
             status: "offline"
         }));
 
         oappsData = oappsData.map(app => ({
             ...app,
-            description: `<span style="color: green;">online</span> - ${app.description || ''}`,
+            description: app.description !== undefined
+                ? `<span style="color: green;">online</span> - ${app.description}`
+                : `<span style="color: green;">online</span>`,
             status: "online"
         }));
 
         iappsData = iappsData.map(app => ({
             ...app,
-            description: app.description || "ipa",
+            description: app.description !== undefined
+                ? app.description
+                : "ipa",
             status: "ipa"
         }));
 
@@ -171,13 +177,15 @@ function filterByTag(tag) {
             status: "prod"
         }));
 
-        const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData].sort((a, b) => a.name.localeCompare(b.name));
+        const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData]
+            .sort((a, b) => a.name.localeCompare(b.name));
 
         const appList = document.getElementById('appList');
         const searchBox = document.getElementById('searchBox');
         const noResults = document.getElementById('noResults');
         const searchResults = document.getElementById('searchResults');
         const searchCount = document.getElementById('searchCount');
+        const toggleMods = document.getElementById('toggleMods');
         const totalMods = document.getElementById('totalMods');
         const lastUpdated = document.getElementById('lastUpdated');
         const resourcesUpdated = document.getElementById('resourcesUpdated');
@@ -213,48 +221,31 @@ function filterByTag(tag) {
         }
 
         searchBox.addEventListener('input', () => {
-            const searchTerm = searchBox.value.toLowerCase();
+            const searchTerm = searchBox.value.trim().toLowerCase();
             if (searchTerm === "") {
                 resetView();
                 displayApps(allApps);
                 return;
             }
 
-            const filteredData = allApps.filter(app => app.name.toLowerCase().includes(searchTerm));
+            const filteredData = allApps.filter(app =>
+                app.name.toLowerCase().includes(searchTerm) ||
+                app.status.toLowerCase() === searchTerm
+            );
 
             displayApps(filteredData);
             searchResults.classList.remove("hidden");
             searchCount.textContent = filteredData.length;
+            
+            // 🔹 Total Mods & Updated Date を隠す
             totalMods.classList.add("hidden");
             lastUpdated.classList.add("hidden");
             resourcesUpdated.classList.add("hidden");
         });
 
-        // フィルターボタン
-        function filterByTag(tag) {
-            searchBox.value = ""; // 検索バーはリセット
-            resetView();
-            const filteredData = allApps.filter(app => app.status === tag);
-            displayApps(filteredData);
-            searchResults.classList.remove("hidden");
-            searchCount.textContent = filteredData.length;
-            totalMods.classList.add("hidden");
-            lastUpdated.classList.add("hidden");
-            resourcesUpdated.classList.add("hidden");
-        }
-
-        // すべて表示ボタン
-        function showAll() {
-            searchBox.value = "";
-            resetView();
-            displayApps(allApps);
-        }
-
-        document.getElementById("offlineBtn").addEventListener("click", () => filterByTag("offline"));
-        document.getElementById("onlineBtn").addEventListener("click", () => filterByTag("online"));
-        document.getElementById("ipaBtn").addEventListener("click", () => filterByTag("ipa"));
-        document.getElementById("prodBtn").addEventListener("click", () => filterByTag("prod"));
-        document.getElementById("allBtn").addEventListener("click", showAll);
+        toggleMods.addEventListener('change', () => {
+            appList.style.display = toggleMods.checked ? 'none' : 'block';
+        });
 
         displayApps(allApps);
     } catch (error) {
