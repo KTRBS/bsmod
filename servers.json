@@ -1,0 +1,23 @@
+{
+    "V11": [
+        {
+            "title": "Standard Server",
+            "description": "idk lmao",
+            "link": "https://t.me/DownloadZipBS/61"
+        }
+    ],
+    "V26": [
+        {
+            "title": "V26 Server (Multi-Platform)",
+            "description": "Multi-platform server files",
+            "link": "https://t.me/example_v26_server"
+        }
+    ],
+    "V53": [
+        {
+            "title": "Latest Server",
+            "description": "Latest server files",
+            "link": "https://t.me/example_v53_server"
+        }
+    ]
+}
