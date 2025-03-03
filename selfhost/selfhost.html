@@ -5,85 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Selfhost Downloads</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
-        .container { max-width: 600px; margin: 20px auto; padding: 10px; }
-        .version-item {
-            background: #fff; padding: 10px; margin: 5px 0;
-            border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .button-container { margin-top: 10px; }
-        .version-btn {
-            padding: 5px 10px; margin: 5px;
-            background: #007bff; color: white; border: none;
-            border-radius: 5px; cursor: pointer;
-        }
-        .download-list { list-style: none; padding: 0; display: none; }
-        .download-item {
-            background: #fff; padding: 10px; margin: 5px 0;
-            border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .download-btn {
-            text-decoration: none; color: #007bff; font-weight: bold;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; padding: 20px; }
+        h1 { margin-bottom: 20px; }
+        .version-section { margin: 20px 0; padding: 10px; background-color: #f0f0f0; border-radius: 10px; }
+        .version-header { font-size: 20px; font-weight: bold; }
+        .download-item { padding: 10px; background-color: white; margin: 10px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+        .download-btn { padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; }
+        .download-btn:hover { background-color: #0056b3; }
+        .downloads { display: none; list-style-type: none; padding: 0; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Selfhost Downloads</h1>
-        <div id="versionList"></div>
+
+    <h1>Selfhost APK & IPA Downloads</h1>
+
+    <!-- Version V1 -->
+    <div class="version-section">
+        <div class="version-header">V1</div>
+        <button onclick="toggleDownloads('V1', 'apk')">APK</button>
+        <button onclick="toggleDownloads('V1', 'ipa')">IPA</button>
+        <button onclick="toggleDownloads('V1', 'server')">Server</button>
+        <ul id="downloads-V1" class="downloads"></ul>
+    </div>
+
+    <!-- Version V2 -->
+    <div class="version-section">
+        <div class="version-header">V2</div>
+        <button onclick="toggleDownloads('V2', 'apk')">APK</button>
+        <button onclick="toggleDownloads('V2', 'ipa')">IPA</button>
+        <button onclick="toggleDownloads('V2', 'server')">Server</button>
+        <ul id="downloads-V2" class="downloads"></ul>
+    </div>
+
+    <!-- Version V4 -->
+    <div class="version-section">
+        <div class="version-header">V4</div>
+        <button onclick="toggleDownloads('V4', 'apk')">APK</button>
+        <button onclick="toggleDownloads('V4', 'ipa')">IPA</button>
+        <button onclick="toggleDownloads('V4', 'server')">Server</button>
+        <ul id="downloads-V4" class="downloads"></ul>
+    </div>
+
+    <!-- Version V26 -->
+    <div class="version-section">
+        <div class="version-header">V26</div>
+        <button onclick="toggleDownloads('V26', 'apk')">APK</button>
+        <button onclick="toggleDownloads('V26', 'ipa')">IPA</button>
+        <button onclick="toggleDownloads('V26', 'server')">Server</button>
+        <ul id="downloads-V26" class="downloads"></ul>
+    </div>
+
+    <!-- Version V53 -->
+    <div class="version-section">
+        <div class="version-header">V53</div>
+        <button onclick="toggleDownloads('V53', 'apk')">APK</button>
+        <button onclick="toggleDownloads('V53', 'ipa')">IPA</button>
+        <button onclick="toggleDownloads('V53', 'server')">Server</button>
+        <ul id="downloads-V53" class="downloads"></ul>
+    </div>
+
+    <!-- Version V11 to V59 -->
+    <div class="version-section">
+        <div class="version-header">V11 - V59</div>
+        <button onclick="toggleDownloads('V11-V59', 'apk')">APK</button>
+        <button onclick="toggleDownloads('V11-V59', 'server')">Server</button>
+        <ul id="downloads-V11-V59" class="downloads"></ul>
     </div>
 
     <script>
-        const versions = {
-            "V1": ["ipa", "server"],
-            "V2": ["ipa", "server"],
-            "V4": ["ipa", "server"],
-            "V26": ["ipa", "apk", "server"],
-        };
-        for (let i = 11; i <= 53; i++) {
-            versions[`V${i}`] = ["apk", "server"];
-        }
-
-        async function loadData(type, version) {
-            const url = type === "apk" ? "apks.json" : "servers.json";
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                return data[version] || [];
-            } catch (error) {
-                console.error("Error loading data:", error);
-                return [];
-            }
-        }
-
-        function createVersionList() {
-            const container = document.getElementById("versionList");
-            Object.keys(versions).forEach(version => {
-                const versionDiv = document.createElement("div");
-                versionDiv.classList.add("version-item");
-                versionDiv.innerHTML = `<h3>${version}</h3>`;
-
-                const buttonContainer = document.createElement("div");
-                buttonContainer.classList.add("button-container");
-
-                versions[version].forEach(type => {
-                    const button = document.createElement("button");
-                    button.classList.add("version-btn");
-                    button.textContent = type.toUpperCase();
-                    button.onclick = () => toggleDownloads(version, type);
-                    buttonContainer.appendChild(button);
-                });
-
-                const downloadList = document.createElement("ul");
-                downloadList.classList.add("download-list");
-                downloadList.id = `downloads-${version}`;
-
-                versionDiv.appendChild(buttonContainer);
-                versionDiv.appendChild(downloadList);
-                container.appendChild(versionDiv);
-            });
-        }
-
         async function toggleDownloads(version, type) {
             const list = document.getElementById(`downloads-${version}`);
             list.innerHTML = "";
@@ -93,6 +82,7 @@
                 const listItem = document.createElement("li");
                 listItem.classList.add("download-item");
                 listItem.innerHTML = `
+                    <h4>${item.title}</h4>
                     <p>${item.description}</p>
                     <a href="${item.link}" target="_blank" class="download-btn">Download</a>
                 `;
@@ -100,7 +90,17 @@
             });
         }
 
-        window.onload = createVersionList;
+        async function loadData(type, version) {
+            const fileMap = {
+                "apk": "apks.json",
+                "ipa": "ipas.json",
+                "server": "servers.json"
+            };
+            const response = await fetch(fileMap[type]);
+            const data = await response.json();
+            return data[version] || [];
+        }
     </script>
+
 </body>
 </html>
