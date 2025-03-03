@@ -13,7 +13,7 @@
     padding: 5px; 
     background-color: white; 
     margin: 6px 0; 
-    border-radius: 6px; 
+    border-radius: 5px; 
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* シンプルな影に変更 */
     display: flex;
     justify-content: space-between; /* 右端にボタンを配置 */
@@ -62,9 +62,16 @@
     <!-- Version V11 -->
     <div class="version-section">
         <div class="version-header">V11</div>
-        <button onclick="toggleDownloads('V11-V59', 'apk')">APK</button>
-        <button onclick="toggleDownloads('V11-V59', 'server')">Server</button>
-        <ul id="downloads-V11-V59" class="downloads"></ul>
+        <button onclick="toggleDownloads('V11', 'apk')">APK</button>
+        <button onclick="toggleDownloads('V11', 'server')">Server</button>
+        <ul id="downloads-V11" class="downloads"></ul>
+    </div>
+    
+        <div class="version-section">
+        <div class="version-header">V11</div>
+        <button onclick="toggleDownloads('V12', 'apk')">APK</button>
+        <button onclick="toggleDownloads('V12', 'server')">Server</button>
+        <ul id="downloads-V12" class="downloads"></ul>
     </div>
 
     <!-- Version V26 -->
