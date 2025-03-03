@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selfhost Downloads</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
+        .container { max-width: 600px; margin: 20px auto; padding: 10px; }
+        .version-item {
+            background: #fff; padding: 10px; margin: 5px 0;
+            border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .button-container { margin-top: 10px; }
+        .version-btn {
+            padding: 5px 10px; margin: 5px;
+            background: #007bff; color: white; border: none;
+            border-radius: 5px; cursor: pointer;
+        }
+        .download-list { list-style: none; padding: 0; display: none; }
+        .download-item {
+            background: #fff; padding: 10px; margin: 5px 0;
+            border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .download-btn {
+            text-decoration: none; color: #007bff; font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Selfhost Downloads</h1>
+        <div id="versionList"></div>
+    </div>
+
+    <script>
+        const versions = {
+            "V1": ["ipa", "server"],
+            "V2": ["ipa", "server"],
+            "V4": ["ipa", "server"],
+            "V26": ["ipa", "apk", "server"],
+        };
+        for (let i = 11; i <= 53; i++) {
+            versions[`V${i}`] = ["apk", "server"];
+        }
+
+        async function loadData(type, version) {
+            const url = type === "apk" ? "apks.json" : "servers.json";
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return data[version] || [];
+            } catch (error) {
+                console.error("Error loading data:", error);
+                return [];
+            }
+        }
+
+        function createVersionList() {
+            const container = document.getElementById("versionList");
+            Object.keys(versions).forEach(version => {
+                const versionDiv = document.createElement("div");
+                versionDiv.classList.add("version-item");
+                versionDiv.innerHTML = `<h3>${version}</h3>`;
+
+                const buttonContainer = document.createElement("div");
+                buttonContainer.classList.add("button-container");
+
+                versions[version].forEach(type => {
+                    const button = document.createElement("button");
+                    button.classList.add("version-btn");
+                    button.textContent = type.toUpperCase();
+                    button.onclick = () => toggleDownloads(version, type);
+                    buttonContainer.appendChild(button);
+                });
+
+                const downloadList = document.createElement("ul");
+                downloadList.classList.add("download-list");
+                downloadList.id = `downloads-${version}`;
+
+                versionDiv.appendChild(buttonContainer);
+                versionDiv.appendChild(downloadList);
+                container.appendChild(versionDiv);
+            });
+        }
+
+        async function toggleDownloads(version, type) {
+            const list = document.getElementById(`downloads-${version}`);
+            list.innerHTML = "";
+            list.style.display = "block";
+            const items = await loadData(type, version);
+            items.forEach(item => {
+                const listItem = document.createElement("li");
+                listItem.classList.add("download-item");
+                listItem.innerHTML = `
+                    <p>${item.description}</p>
+                    <a href="${item.link}" target="_blank" class="download-btn">Download</a>
+                `;
+                list.appendChild(listItem);
+            });
+        }
+
+        window.onload = createVersionList;
+    </script>
+</body>
+</html>
