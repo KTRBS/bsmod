@@ -10,42 +10,47 @@
         .version-section { margin: 20px 0; padding: 10px; background-color: #f0f0f0; border-radius: 10px; }
         .version-header { font-size: 20px; font-weight: bold; }
 .download-item { 
-    padding: 4px; 
+    padding: 8px 12px; 
     background-color: white; 
     margin: 6px 0; 
-    border-radius: 5px; 
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
+    border-radius: 8px; /* 角を丸く */
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1); /* 影を少し強めに */
     display: flex;
-    align-items: center; /* 垂直中央揃え */
-    justify-content: space-between; /* タイトルとボタンを左右に配置 */
-    text-align: left; /* テキストは左寄せ */
+    align-items: center;
+    justify-content: space-between;
 }
 
 .download-text {
-    flex: 1; /* 残りのスペースを使う */
+    flex: 1;
+    text-align: left;
 }
 
 .download-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 
 .download-description {
-    font-size: 14px;
+    font-size: 13px;
     color: #666;
+    margin-bottom: 0;
 }
 
 .download-btn {
-    padding: 6px 6px;
+    padding: 3px 10px;
     background-color: #007bff;
     color: white;
     text-decoration: none;
-    border-radius: 5px;
-    font-size: 14px;
-    white-space: nowrap; /* ボタンのテキストを折り返さない */
+    border-radius: 6px; /* 角を少し丸く */
+    font-size: 13px;
+    white-space: nowrap;
+    font-weight: bold;
+    border: none;
 }
-        .download-btn:hover { background-color: #0056b3; }
+.download-btn:hover {
+    background-color: #0056b3;
+}
         .downloads { display: none; list-style-type: none; padding: 0; }
     </style>
 </head>
