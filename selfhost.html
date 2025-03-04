@@ -10,14 +10,27 @@
         .version-section { margin: 20px 0; padding: 10px; background-color: #f0f0f0; border-radius: 10px; }
         .version-header { font-size: 20px; font-weight: bold; }
 .download-item { 
-    padding: 5px; 
+    padding: 6px; 
     background-color: white; 
     margin: 6px 0; 
     border-radius: 5px; 
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* シンプルな影に変更 */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
     display: flex;
-    justify-content: space-between; /* 右端にボタンを配置 */
-    align-items: center;
+    flex-direction: column; /* 縦並びに変更 */
+    align-items: center; /* 中央揃え */
+    text-align: center; /* テキスト中央揃え */
+}
+
+.download-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.download-description {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
 }
 .download-btn { 
     padding: 6px 15px; 
@@ -213,10 +226,10 @@
                 const listItem = document.createElement("li");
                 listItem.classList.add("download-item");
                 listItem.innerHTML = `
-                    <h4>${item.title}</h4>
-                    <p>${item.description}</p>
-                    <a href="${item.link}" target="_blank" class="download-btn">Download</a>
-                `;
+    <h4 class="download-title">${item.title}</h4>
+    <p class="download-description">${item.description}</p>
+    <a href="${item.link}" target="_blank" class="download-btn">Download</a>
+`;
                 list.appendChild(listItem);
             });
         }
