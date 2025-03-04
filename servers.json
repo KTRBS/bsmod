@@ -317,14 +317,69 @@
     ],  
     "V26": [
         {
-            "title": "VBC Brawl",
-            "description": "One if stable server",
-            "link": "https://t.me/DownloadZipBS/285"
+            "title": "BSDS",
+            "description": "umchecked",
+            "link": "https://t.me/DownloadZipBS/29"
+        },
+        {
+            "title": "Classic Brawl",
+            "description": "umchecked",
+            "link": "https://t.me/DownloadZipBS/58"
+        },
+        {
+            "title": "Devills",
+            "description": "most of logic",
+            "link": "https://t.me/DownloadZipBS/280"
+        },
+        {
+            "title": "DDBS",
+            "description": "js, online",
+            "link": "https://t.me/DownloadZipBS/320"
         },
         {
             "title": "Lucky Brawl",
             "description": "Testing purpose",
             "link": "https://t.me/DownloadZipBS/342"
+        },
+        {
+            "title": "MJBS",
+            "description": "unchecked",
+            "link": "https://t.me/DownloadZipBS/351"
+        },
+        {
+            "title": "Modern",
+            "description": "unchecked",
+            "link": "https://t.me/DownloadZipBS/284"
+        },
+        {
+            "title": "Object",
+            "description": "unchecked",
+            "link": "https://t.me/DownloadZipBS/249"
+        },
+        {
+            "title": "Pruvay",
+            "description": "unchecked",
+            "link": "https://t.me/DownloadZipBS/279"
+        },
+        {
+            "title": "Pybrawl",
+            "description": "unchecked",
+            "link": "https://t.me/DownloadZipBS/32"
+        },
+        {
+            "title": "Royale Brawl",
+            "description": "unchecked",
+            "link": "https://t.me/DownloadZipBS/276"
+        },
+        {
+            "title": "VBC Brawl",
+            "description": "FULL LOGIC V26",
+            "link": "https://t.me/DownloadZipBS/285"
+        },
+        {
+            "title": "Vitalik's",
+            "description": "untested",
+            "link": "https://t.me/DownloadZipBS/185"
         }
     ],
     "V53": [
