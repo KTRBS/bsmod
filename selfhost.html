@@ -10,9 +10,9 @@
         .version-section { margin: 20px 0; padding: 10px; background-color: #f0f0f0; border-radius: 10px; }
         .version-header { font-size: 20px; font-weight: bold; }
 .download-item { 
-    padding: 6px 8px; 
+    padding: 8px 12px; 
     background-color: white; 
-    margin: 3px 0; 
+    margin: 6px 0; 
     border-radius: 8px; /* 角を丸く */
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1); /* 影を少し強めに */
     display: flex;
@@ -228,23 +228,31 @@
 
     <script>
         async function toggleDownloads(version, type) {
-            const list = document.getElementById(`downloads-${version}`);
-            list.innerHTML = "";
-            list.style.display = "block";
-            const items = await loadData(type, version);
-            items.forEach(item => {
-                const listItem = document.createElement("li");
-                listItem.classList.add("download-item");
-                listItem.innerHTML = `
-    <div class="download-text">
-        <h4 class="download-title">${item.title}</h4>
-        <p class="download-description">${item.description}</p>
-    </div>
-    <a href="${item.link}" target="_blank" class="download-btn">Download</a>
-`;
-                list.appendChild(listItem);
-            });
-        }
+    const list = document.getElementById(`downloads-${version}`);
+    
+    // 既に表示されていたら閉じる
+    if (list.style.display === "block") {
+        list.style.display = "none";
+        return;
+    }
+
+    list.innerHTML = "";
+    list.style.display = "block";
+
+    const items = await loadData(type, version);
+    items.forEach(item => {
+        const listItem = document.createElement("li");
+        listItem.classList.add("download-item");
+        listItem.innerHTML = `
+            <div class="download-text">
+                <h4 class="download-title">${item.title}</h4>
+                <p class="download-description">${item.description}</p>
+            </div>
+            <a href="${item.link}" target="_blank" class="download-btn">Download</a>
+        `;
+        list.appendChild(listItem);
+    });
+}
 
         async function loadData(type, version) {
             const fileMap = {
