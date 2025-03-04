@@ -137,7 +137,7 @@
             "title": "sia",
             "description": "No port lock",
             "link": "https://t.me/DownloadZipBS/354"
-        } 
+        },    
     ],            
     "V26": [
         {
@@ -149,6 +149,42 @@
             "title": "PSG Brawl",
             "description": "No port lock",
             "link": "https://t.me/DownloadZipBS/127"
+        }
+    ],
+    "V27": [
+        {
+            "title": "libgg",
+            "description": "Port locked to 9339",
+            "link": "https://t.me/DownloadZipBS/82"
+        },
+        {
+            "title": "idk",
+            "description": "No port lock",
+            "link": "https://t.me/DownloadZipBS/270"
+        }
+    ],
+    "V28": [
+        {
+            "title": "Mrvitalik",
+            "description": "No port lock",
+            "link": "https://t.me/DownloadZipBS/130"
+        },
+        {
+            "title": "summer",
+            "description": "No port lock",
+            "link": "https://t.me/DownloadZipBS/304"
+        }
+    ],
+    "V29": [
+        {
+            "title": "Alah Brawl",
+            "description": "Apk with pins + no lock",
+            "link": "https://t.me/DownloadZipBS/367"
+        },
+        {
+            "title": "Classic Brawl",
+            "description": "Locked port",
+            "link": "https://t.me/DownloadZipBS/84"
         }
     ],
     "V59": [
