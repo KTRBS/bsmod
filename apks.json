@@ -63,16 +63,6 @@
             "title": "Project Bibi",
             "description": "No port lock",
             "link": "https://t.me/DownloadZipBS/256"
-        },
-        {
-            "title": "Debug menu (old)",
-            "description": "Comes with Debug menu.",
-            "link": "https://t.me/DownloadZipBS/306"
-        },
-        {
-            "title": "Debug menu (new)",
-            "description": "Comes with Debug menu.",
-            "link": "https://t.me/DownloadZipBS/309"
         }
     ],
     "V19": [
@@ -147,7 +137,7 @@
             "title": "sia",
             "description": "No port lock",
             "link": "https://t.me/DownloadZipBS/354"
-        },    
+        }
     ],            
     "V26": [
         {
@@ -195,25 +185,13 @@
             "title": "Classic Brawl",
             "description": "Locked port",
             "link": "https://t.me/DownloadZipBS/84"
-        },
-        {
-            "title": "Classic Brawl",
-            "description": "Comes with camera button",
-            "link": "https://t.me/DownloadZipBS/310"
-        }
-    ],
-    "V30": [
-        {
-            "title": "Classic Brawl",
-            "description": "Port locked to 9339",
-            "link": "https://t.me/DownloadZipBS/85"
         }
     ],
     "V59": [
         {
-            "title": "idk lol",
-            "description": "unchecked.",
-            "link": "https://t.me/DownloadZipBS/352"
+            "title": "V59 APK Stable",
+            "description": "Stable version of APK for V59.",
+            "link": "https://t.me/example_link_for_v59_apk"
         }
     ]
 }
