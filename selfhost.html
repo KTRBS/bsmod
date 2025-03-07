@@ -52,49 +52,53 @@
     background-color: #0056b3;
 }
         .downloads { display: none; list-style-type: none; padding: 0; }
-        .partner-link-container {
-            margin-top: 20px;
-        }
-.partner-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .discord-container {
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-        .discord-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #5865F2;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        }
-        .telegram-container {
-            margin-top: 40px;
-        }
-        .telegram-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+        .social-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 30px 0;
+}
+
+.social-buttons a {
+    display: inline-block;
+    padding: 10px 20px;
+    width: 200px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 8px;
+}
+
+.partner-btn {
+    background-color: #007bff;
+}
+
+.discord-btn {
+    background-color: #5865F2;
+}
+
+.telegram-btn {
+    background-color: #0088cc;
+}
+
+.partner-btn:hover {
+    background-color: #0056b3;
+}
+
+.discord-btn:hover {
+    background-color: #4854c6;
+}
+
+.telegram-btn:hover {
+    background-color: #0070a9;
+}
     </style>
 </head>
 <body>
 
-    <h2>Selfhost clients and servers</h2>
+    <h1>Selfhost APK & IPA Downloads</h1>
 
     <!-- Version V1 -->
     <div class="version-section">
@@ -263,6 +267,12 @@
         <button onclick="toggleDownloads('V53', 'server')">Server</button>
         <ul id="downloads-V53" class="downloads"></ul>
     </div>
+    
+    <div class="social-buttons">
+    <a href="https://example.com/partner" class="partner-btn">Partner</a>
+    <a href="https://discord.gg/example" class="discord-btn">Discord Server</a>
+    <a href="https://t.me/example" class="telegram-btn">Telegram Channel</a>
+</div>
 
     <script>
         async function toggleDownloads(version, type) {
