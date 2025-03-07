@@ -9,12 +9,19 @@
         h1 { margin-bottom: 20px; }
         .version-section { margin: 20px 0; padding: 10px; background-color: #f0f0f0; border-radius: 10px; }
         .version-header { font-size: 20px; font-weight: bold; }
+      
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192x192.png">
+
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
+<link rel="manifest" href="site.webmanifest">
 .download-item { 
     padding: 8px 12px; 
     background-color: white; 
     margin: 6px 0; 
-    border-radius: 8px; /* 角を丸く */
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1); /* 影を少し強めに */
+    border-radius: 8px; 
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1); 
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -42,7 +49,7 @@
     background-color: #007bff;
     color: white;
     text-decoration: none;
-    border-radius: 6px; /* 角を少し丸く */
+    border-radius: 6px; 
     font-size: 13px;
     white-space: nowrap;
     font-weight: bold;
@@ -278,7 +285,6 @@
         async function toggleDownloads(version, type) {
     const list = document.getElementById(`downloads-${version}`);
     
-    // 既に表示されていたら閉じる
     if (list.style.display === "block") {
         list.style.display = "none";
         return;
