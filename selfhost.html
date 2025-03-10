@@ -90,30 +90,12 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        
-        .dark-mode-toggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    cursor: pointer;
-    font-size: 24px;
-    width: 32px;
-    height: 32px;
-    background-image: url('moon-icon.png'); /* 画像のパスを設定 */
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.dark-mode .dark-mode-toggle {
-    background-image: url('sun-icon.png'); /* ダークモード時のアイコン（太陽） */
-}
     </style>
 </head>
 <body>
 
     <h1>Selfhost APK & IPA Downloads</h1>
-<div class="dark-mode-toggle" onclick="toggleDarkMode()"></div>
+
     <!-- Version V1 -->
     <div class="version-section">
         <div class="version-header">V1</div>
@@ -149,6 +131,7 @@
         <div class="version-section">
         <div class="version-header">V12</div>
         <button onclick="toggleDownloads('V12', 'apk')">APK</button>
+        <button onclick="toggleDownloads('V12', 'ipa')">IPA</button>
         <button onclick="toggleDownloads('V12', 'server')">Server</button>
         <ul id="downloads-V12" class="downloads"></ul>
     </div>
@@ -320,10 +303,6 @@
             const data = await response.json();
             return data[version] || [];
         }
-        
-        function toggleDarkMode() {
-    document.body.classList.toggle("dark-mode");
-}
     </script>
 
 </body>
