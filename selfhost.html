@@ -294,15 +294,25 @@
 }
 
         async function loadData(type, version) {
-            const fileMap = {
-                "apk": "apks.json",
-                "ipa": "ipas.json",
-                "server": "servers.json"
-            };
-            const response = await fetch(fileMap[type]);
-            const data = await response.json();
-            return data[version] || [];
-        }
+    const fileMap = {
+        "apk": "apks.json",
+        "ipa": "ipas.json",
+        "server": "servers.json"
+    };
+    console.log(`Fetching: ${fileMap[type]}`); // ここでファイル名を確認
+    const response = await fetch(fileMap[type]);
+    
+    if (!response.ok) {
+        console.error(`Failed to load ${fileMap[type]}: ${response.status}`);
+        return [];
+    }
+
+    const data = await response.json();
+    console.log("Loaded data:", data); // データをコンソールに表示
+
+    return data[version] || [];
+}
+        
     </script>
 
 </body>
