@@ -20,11 +20,18 @@
             "link": "https://t.me/DownloadZipBS/387"
         }
     ],
+    "V12": [
+        {
+            "title": "Fideua Brawl",
+            "description": "iOS 18 with jb/jit",
+            "link": "https://t.me/DownloadZipBS/390"
+        }
+    ],
     "V26": [
         {
             "title": "Classic Brawl",
-            "description": "iOS 18 support ig port locked",
+            "description": "iOS 18 with jb/jit (locked port)",
             "link": "https://t.me/DownloadZipBS/384"
         }
     ]
-}
+}d
