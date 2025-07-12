@@ -80,7 +80,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             border-radius: 5px;
             font-size: 16px;
         }
-        }
+        
         .telegram-container {
             margin-top: 40px;
         }
@@ -94,6 +94,20 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             font-size: 16px;
         }
         .hidden { display: none; }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 1200px;
+            }
+            .app-list {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .app-card {
+                margin-bottom: 0;
+            }
+        }
     </style>
 </head>
 <body>
