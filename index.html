@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brawl Stars Mods | ブロスタのMODをダウンロード</title>
-    <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-TMWFXQQD');</script>
-<!-- End Google Tag Manager -->
+    <title>APK List</title>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TMWFXQQD');</script>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
+        body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; margin: 0; padding: 0; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
-        input { width: 94%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
-        .app-list { display: flex; flex-direction: column; gap: 5px; }
+        input { width: 94%; padding: 10px; margin-bottom: 20px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
+        .app-list { display: flex; flex-direction: column; gap: 5px; text-align: left; }
         .app-card {
             display: flex; align-items: center; background: #fff; padding: 10px;
             border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
@@ -26,230 +24,208 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         .app-info p { margin: 5px 0; color: #666; font-size: 14px; }
         .download-btn {
             padding: 5px 10px; background: #007bff; color: white; text-decoration: none;
-            border-radius: 5px; font-size: 14px;
+            border-radius: 5px; font-size: 14px; white-space: nowrap;
         }
         .no-results { color: #999; margin-top: 10px; font-size: 14px; }
         
-    .app-description {
-    font-size: 14px;
-    color: #555;
-    margin-top: 5px;
-    word-wrap: break-word;
-    }
-        
-    .checkbox-container {
-        display: inline-flex; 
-        align-items: center;  
-        gap: 2px;  
-        margin-bottom: 10px;
-    }
+        .checkbox-container { display: inline-flex; align-items: center; gap: 5px; margin-bottom: 10px; }
+        .checkbox-container input { width: 16px; height: 16px; margin: 0; }
+        .checkbox-container label { font-size: 14px; }
 
-    .checkbox-container input {
-        margin: 0;  
-        width: 16px;
-        height: 16px;
-    }
+        /* 言語切り替えボタンのスタイル */
+        .lang-switcher {
+            position: fixed; top: 10px; right: 10px; z-index: 1000;
+            background: rgba(255, 255, 255, 0.8); padding: 5px; border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; gap: 10px;
+        }
+        .lang-btn { cursor: pointer; font-size: 24px; transition: transform 0.2s; border: none; background: none; outline: none; }
+        .lang-btn:hover { transform: scale(1.2); }
+        .lang-btn.active { border-bottom: 2px solid #007bff; }
 
-    .checkbox-container label {
-        font-size: 14px;
-        white-space: nowrap;  
-    }
+        .filter-buttons { margin-bottom: 15px; }
+        .filter-buttons button { padding: 5px 15px; cursor: pointer; border-radius: 5px; border: 1px solid #ddd; background: #fff; }
 
-        .partner-link-container {
-            margin-top: 20px;
+        .partner-link, .discord-link, .telegram-link {
+            display: inline-block; padding: 10px 20px; color: white; text-decoration: none;
+            border-radius: 5px; font-size: 16px; margin: 10px 0;
         }
-        .partner-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .discord-container {
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-        .discord-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #5865F2;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        
-        .telegram-container {
-            margin-top: 40px;
-        }
-        .telegram-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+        .partner-link, .telegram-link { background-color: #007bff; }
+        .discord-link { background-color: #5865F2; }
         .hidden { display: none; }
 
         @media (min-width: 768px) {
-            .container {
-                max-width: 1200px;
-            }
-            .app-list {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-            .app-card {
-                margin-bottom: 0;
-            }
+            .container { max-width: 1200px; }
+            .app-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         }
     </style>
-    <meta name='admaven-placement' content=BqdU4rdYE>
 </head>
 <body>
-    <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TMWFXQQD"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+    <div class="lang-switcher">
+        <button class="lang-btn" id="btn-jp" onclick="changeLanguage('ja')">🇯🇵</button>
+        <button class="lang-btn" id="btn-en" onclick="changeLanguage('en')">🇺🇸</button>
+    </div>
+
     <div class="container">
-        <h1>APK List</h1>
+        <h1 id="ui-title">APK List</h1>
+        
         <div class="checkbox-container">
             <input type="checkbox" id="toggleMods">
-            <label for="toggleMods"> Hide mod list</label>
+            <label for="toggleMods" id="ui-hide-mods"> Hide mod list</label>
         </div>
-        <input type="text" id="searchBox" placeholder="Search by name...">
-            
-<div class="filter-buttons">
-    <button onclick="filterByTag('offline')">Offline</button>
-    <button onclick="filterByTag('online')">Online</button>
-    <button onclick="filterByTag('ipa')">IPA</button>
-    <button onclick="filterByTag('prod')">PROD</button>
-</div>
-        <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
-        <p id="lastUpdated">Last Updated: <span id="updateDate">2025-02-11</span></p>
-        <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2025-02-11</span></p>
-        <p id="searchResults" class="hidden">Search Results: <span id="searchCount">0</span></p>
+
+        <input type="text" id="searchBox" placeholder="Search...">
+
+        <div class="filter-buttons">
+            <button onclick="filterByTag('offline')">Offline</button>
+            <button onclick="filterByTag('online')">Online</button>
+            <button onclick="filterByTag('ipa')">IPA</button>
+            <button onclick="filterByTag('prod')">PROD</button>
+        </div>
+
+        <p id="totalMods"><span id="ui-total-text">Total Mods:</span> <span id="modCount">0</span></p>
+        <p id="lastUpdated"><span id="ui-last-updated">Last Updated:</span> <span id="updateDate">2025-02-11</span></p>
+        
+        <p id="searchResults" class="hidden"><span id="ui-search-results">Search Results:</span> <span id="searchCount">0</span></p>
+        
         <div class="app-list" id="appList"></div>
         <p class="no-results hidden" id="noResults">No matching results</p>
-    </div>
 
-    <!-- Partner link section -->
-    <div class="partner-link-container">
-        <a href="https://brawlmods.natesworks.com/" target="_blank" class="partner-link">Partner</a>
+        <div style="margin-top: 30px;">
+            <a href="https://brawlmods.natesworks.com/" target="_blank" class="partner-link" id="ui-partner">Partner</a><br>
+            <a href="https://discord.com/invite/fwdX8jZBsX" target="_blank" class="discord-link">Discord Server</a><br>
+            <a href="https://t.me/AllModsBrawlStars" target="_blank" class="telegram-link">Telegram Channel</a>
+        </div>
     </div>
-
-    <!-- Discord Server Link -->
-    <div class="discord-container">
-        <a href="https://discord.com/invite/fwdX8jZBsX" target="_blank" class="discord-link">Discord Server</a>
-    </div>
-    
-    <div class="telegram-container">
-        <a href="https://t.me/AllModsBrawlStars" target="_blank" class="telegram-link">Telegram Channel</a>
-    </div>
-    
-    <div class="app-list" id="appList">
-</div>
 
     <script>
-function filterByTag(tag) {
-    const searchBox = document.getElementById('searchBox');
-    searchBox.value = tag;
-    searchBox.dispatchEvent(new Event('input'));
-}
+        const translations = {
+            ja: {
+                title: "ブロスタ mod",
+                hideMods: "リストを非表示にする",
+                searchPlaceholder: "名前で検索...",
+                totalMods: "合計数:",
+                lastUpdated: "最終更新:",
+                searchResults: "検索結果:",
+                noResults: "該当する結果が見つかりません",
+                download: "ダウンロード",
+                partner: "パートナーサイト"
+            },
+            en: {
+                title: "APK List",
+                hideMods: "Hide mod list",
+                searchPlaceholder: "Search by name...",
+                totalMods: "Total Mods:",
+                lastUpdated: "Last Updated:",
+                searchResults: "Search Results:",
+                noResults: "No matching results",
+                download: "Download",
+                partner: "Partner"
+            }
+        };
+
+        let currentLang = localStorage.getItem('selectedLang') || (navigator.language.includes('ja') ? 'ja' : 'en');
+        let allApps = [];
+
+        function updateUI() {
+            const t = translations[currentLang];
+            document.getElementById('ui-title').textContent = t.title;
+            document.getElementById('ui-hide-mods').textContent = t.hideMods;
+            document.getElementById('searchBox').placeholder = t.searchPlaceholder;
+            document.getElementById('ui-total-text').textContent = t.totalMods;
+            document.getElementById('ui-last-updated').textContent = t.lastUpdated;
+            document.getElementById('ui-search-results').textContent = t.searchResults;
+            document.getElementById('noResults').textContent = t.noResults;
+            document.getElementById('ui-partner').textContent = t.partner;
+            
+            // ボタンのハイライト
+            document.getElementById('btn-jp').classList.toggle('active', currentLang === 'ja');
+            document.getElementById('btn-en').classList.toggle('active', currentLang === 'en');
+            
+            // リストを再描画（ダウンロードボタンの文字を変えるため）
+            displayApps(allApps);
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('selectedLang', lang);
+            updateUI();
+        }
+
+        function filterByTag(tag) {
+            const searchBox = document.getElementById('searchBox');
+            searchBox.value = tag;
+            searchBox.dispatchEvent(new Event('input'));
+        }
+
         async function loadApps() {
-    try {
-        const timestamp = new Date().getTime();
-        const responses = await Promise.all([
-            fetch(`apps.json?${timestamp}`).then(res => res.json()),
-            fetch(`oapps.json?${timestamp}`).then(res => res.json()),
-            fetch(`iapps.json?${timestamp}`).then(res => res.json()),
-            fetch(`prod.json?${timestamp}`).then(res => res.json())
-        ]);
+            try {
+                const timestamp = new Date().getTime();
+                const responses = await Promise.all([
+                    fetch(`apps.json?${timestamp}`).then(res => res.json()),
+                    fetch(`oapps.json?${timestamp}`).then(res => res.json()),
+                    fetch(`iapps.json?${timestamp}`).then(res => res.json()),
+                    fetch(`prod.json?${timestamp}`).then(res => res.json())
+                ]);
 
-        let [appsData, oappsData, iappsData, prodData] = responses;
+                let [appsData, oappsData, iappsData, prodData] = responses;
 
-        appsData = appsData.map(app => ({
-            ...app,
-            description: app.description !== undefined
-                ? `<span style="color: black;">offline</span> - ${app.description}`
-                : `<span style="color: black;">offline</span>`,
-            status: "offline"
-        }));
+                // データの正規化
+                appsData = appsData.map(app => ({ ...app, status: "offline", descColor: "black" }));
+                oappsData = oappsData.map(app => ({ ...app, status: "online", descColor: "green" }));
+                iappsData = iappsData.map(app => ({ ...app, status: "ipa", descColor: "gray" }));
+                prodData = prodData.map(app => ({ ...app, status: "prod", descColor: "red" }));
 
-        oappsData = oappsData.map(app => ({
-            ...app,
-            description: app.description !== undefined
-                ? `<span style="color: green;">online</span> - ${app.description}`
-                : `<span style="color: green;">online</span>`,
-            status: "online"
-        }));
+                allApps = [...appsData, ...oappsData, ...iappsData, ...prodData].sort((a, b) => a.name.localeCompare(b.name));
+                
+                document.getElementById('modCount').textContent = allApps.length;
+                updateUI(); // 読み込み完了後にUIを更新
 
-        iappsData = iappsData.map(app => ({
-            ...app,
-            description: app.description !== undefined
-                ? app.description
-                : "ipa",
-            status: "ipa"
-        }));
-
-        prodData = prodData.map(app => ({
-            ...app,
-            description: `<span style="color: red;">PROD</span> - ${app.description || ''}`,
-            status: "prod"
-        }));
-
-        const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData]
-            .sort((a, b) => a.name.localeCompare(b.name));
-
-        const appList = document.getElementById('appList');
-        const searchBox = document.getElementById('searchBox');
-        const noResults = document.getElementById('noResults');
-        const searchResults = document.getElementById('searchResults');
-        const searchCount = document.getElementById('searchCount');
-        const toggleMods = document.getElementById('toggleMods');
-        const totalMods = document.getElementById('totalMods');
-        const lastUpdated = document.getElementById('lastUpdated');
-        const resourcesUpdated = document.getElementById('resourcesUpdated');
-
-        totalMods.querySelector('span').textContent = allApps.length;
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
 
         function displayApps(filteredData) {
+            const appList = document.getElementById('appList');
+            const noResults = document.getElementById('noResults');
             appList.innerHTML = "";
+            
             if (filteredData.length === 0) {
                 noResults.classList.remove("hidden");
                 return;
             }
             noResults.classList.add("hidden");
+
             filteredData.forEach(app => {
                 const appCard = document.createElement('div');
                 appCard.classList.add('app-card');
+                
+                // ステータス表示の組み立て
+                const statusLabel = `<span style="color: ${app.descColor}; font-weight: bold;">${app.status.toUpperCase()}</span>`;
+                const description = app.description ? ` - ${app.description}` : "";
+
                 appCard.innerHTML = `
                     <div class="app-info">
                         <h3>${app.name}</h3>
-                        <p class="app-description">${app.description || ''}</p>
+                        <p class="app-description">${statusLabel}${description}</p>
                     </div>
-                    <a href="${app.link}" target="_blank" class="download-btn">Download</a>
+                    <a href="${app.link}" target="_blank" class="download-btn">${translations[currentLang].download}</a>
                 `;
                 appList.appendChild(appCard);
             });
         }
 
-        function resetView() {
-            totalMods.classList.remove("hidden");
-            lastUpdated.classList.remove("hidden");
-            resourcesUpdated.classList.remove("hidden");
-            searchResults.classList.add("hidden");
-        }
+        // 検索ロジック
+        document.getElementById('searchBox').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.trim().toLowerCase();
+            const totalMods = document.getElementById('totalMods');
+            const lastUpdated = document.getElementById('lastUpdated');
+            const searchResults = document.getElementById('searchResults');
 
-        searchBox.addEventListener('input', () => {
-            const searchTerm = searchBox.value.trim().toLowerCase();
             if (searchTerm === "") {
-                resetView();
+                totalMods.classList.remove("hidden");
+                lastUpdated.classList.remove("hidden");
+                searchResults.classList.add("hidden");
                 displayApps(allApps);
                 return;
             }
@@ -261,25 +237,16 @@ function filterByTag(tag) {
 
             displayApps(filteredData);
             searchResults.classList.remove("hidden");
-            searchCount.textContent = filteredData.length;
-            
-            // 🔹 Total Mods & Updated Date を隠す
+            document.getElementById('searchCount').textContent = filteredData.length;
             totalMods.classList.add("hidden");
             lastUpdated.classList.add("hidden");
-            resourcesUpdated.classList.add("hidden");
         });
 
-        toggleMods.addEventListener('change', () => {
-            appList.style.display = toggleMods.checked ? 'none' : 'block';
+        document.getElementById('toggleMods').addEventListener('change', (e) => {
+            document.getElementById('appList').style.display = e.target.checked ? 'none' : 'grid';
         });
 
-        displayApps(allApps);
-    } catch (error) {
-        console.error('Error loading data:', error);
-    }
-}
-
-window.onload = loadApps;
+        window.onload = loadApps;
     </script>
 </body>
 </html>
