@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -25,100 +25,29 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         .download-btn {
             padding: 5px 12px; background: #007bff; color: white; text-decoration: none;
             border-radius: 5px; font-size: 14px;
-            /* 改行を防ぐ設定 */
             white-space: nowrap;
             display: inline-block;
             min-width: fit-content;
         }
         .no-results { color: #999; margin-top: 10px; font-size: 14px; }
-        
-    .app-description {
-    font-size: 14px;
-    color: #555;
-    margin-top: 5px;
-    word-wrap: break-word;
-    }
-        
-    .checkbox-container {
-        display: inline-flex; 
-        align-items: center;  
-        gap: 2px;  
-        margin-bottom: 10px;
-    }
-
-    .checkbox-container input {
-        margin: 0;  
-        width: 16px;
-        height: 16px;
-    }
-
-    .checkbox-container label {
-        font-size: 14px;
-        white-space: nowrap;  
-    }
-
-        .partner-link-container {
-            margin-top: 20px;
-        }
-        .partner-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .discord-container {
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-        .discord-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #5865F2;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        
-        .telegram-container {
-            margin-top: 40px;
-        }
-        .telegram-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+        .app-description { font-size: 14px; color: #555; margin-top: 5px; word-wrap: break-word; }
+        .checkbox-container { display: inline-flex; align-items: center; gap: 2px; margin-bottom: 10px; }
+        .checkbox-container input { margin: 0; width: 16px; height: 16px; }
+        .checkbox-container label { font-size: 14px; white-space: nowrap; }
+        .partner-link-container { margin-top: 20px; }
+        .partner-link { display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; }
+        .discord-container { margin-top: 20px; margin-bottom: 20px; }
+        .discord-link { display: inline-block; padding: 10px 20px; background-color: #5865F2; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; }
+        .telegram-container { margin-top: 40px; }
+        .telegram-link { display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; }
         .hidden { display: none; }
-
-        /* 言語切り替えボタン */
-        .lang-switcher {
-            position: fixed; top: 10px; right: 10px; z-index: 1000;
-            background: white; padding: 5px 8px; border-radius: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            display: flex; gap: 5px;
-        }
+        .lang-switcher { position: fixed; top: 10px; right: 10px; z-index: 1000; background: white; padding: 5px 8px; border-radius: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: flex; gap: 5px; }
         .lang-btn { cursor: pointer; font-size: 18px; border: none; background: none; padding: 2px 4px; border-radius: 50%; transition: background 0.2s; }
         .lang-btn:hover { background: #eee; }
-
         @media (min-width: 768px) {
-            .container {
-                max-width: 1200px;
-            }
-            .app-list {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-            .app-card {
-                margin-bottom: 0;
-            }
+            .container { max-width: 1200px; }
+            .app-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .app-card { margin-bottom: 0; }
         }
     </style>
     <meta name='admaven-placement' content=BqdU4rdYE>
@@ -140,15 +69,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
         <input type="text" id="searchBox" placeholder="Search by name...">
             
-<div class="filter-buttons">
-    <button onclick="filterByTag('offline')">Offline</button>
-    <button onclick="filterByTag('online')">Online</button>
-    <button onclick="filterByTag('ipa')">IPA</button>
-    <button onclick="filterByTag('prod')">PROD</button>
-</div>
+        <div class="filter-buttons">
+            <button onclick="filterByTag('offline')">Offline</button>
+            <button onclick="filterByTag('online')">Online</button>
+            <button onclick="filterByTag('ipa')">IPA</button>
+            <button onclick="filterByTag('prod')">PROD</button>
+        </div>
         <p id="totalMods"><span id="ui-total-label">Total Mods:</span> <span id="modCount">0</span></p>
-        <p id="lastUpdated"><span id="ui-updated-label">Last Updated:</span> <span id="updateDate">2025-02-11</span></p>
-        <p id="resourcesUpdated"><span id="ui-res-label">Resources Update:</span> <span id="resourcesUpdateDate">2025-02-11</span></p>
+        <p id="lastUpdated"><span id="ui-updated-label">Last Updated:</span> <span id="updateDate">----</span></p>
+        <p id="resourcesUpdated"><span id="ui-res-label">Resources Update:</span> <span id="resourcesUpdateDate">----</span></p>
         <p id="searchResults" class="hidden"><span id="ui-search-label">Search Results:</span> <span id="searchCount">0</span></p>
         <div class="app-list" id="appList"></div>
         <p class="no-results hidden" id="noResults">No matching results</p>
@@ -179,7 +108,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 noRes: "一致する結果がありません",
                 download: "ダウンロード",
                 partner: "パートナー",
-                status: { offline: "オフライン", online: "オンライン", ipa: "IPA", prod: "PROD" }
+                status: { offline: "オフライン", online: "オンライン", ipa: "IPA", prod: "現行Ver" }
             },
             en: {
                 title: "APK List",
@@ -203,8 +132,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             currentLang = lang;
             localStorage.setItem('lang', lang);
             updateUIText();
-            
-            // 現在の検索ボックスの内容を反映させて再描画（状態保持）
             const searchTerm = document.getElementById('searchBox').value;
             applySearch(searchTerm);
         }
@@ -231,12 +158,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         async function loadApps() {
             try {
                 const timestamp = new Date().getTime();
-                const [appsData, oappsData, iappsData, prodData] = await Promise.all([
+                // config.json を含めた全ての通信
+                const [appsData, oappsData, iappsData, prodData, configData] = await Promise.all([
                     fetch(`apps.json?${timestamp}`).then(res => res.json()),
                     fetch(`oapps.json?${timestamp}`).then(res => res.json()),
                     fetch(`iapps.json?${timestamp}`).then(res => res.json()),
-                    fetch(`prod.json?${timestamp}`).then(res => res.json())
+                    fetch(`prod.json?${timestamp}`).then(res => res.json()),
+                    fetch(`config.json?${timestamp}`).then(res => res.json()).catch(() => null) // 失敗してもnullを返す
                 ]);
+
+                // 日付の反映
+                if (configData) {
+                    if (configData.lastUpdated) document.getElementById('updateDate').textContent = configData.lastUpdated;
+                    if (configData.resourcesUpdated) document.getElementById('resourcesUpdateDate').textContent = configData.resourcesUpdated;
+                }
 
                 const process = (data, type, color) => data.map(app => ({ ...app, type, color }));
 
@@ -258,14 +193,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         function applySearch(searchTerm) {
             searchTerm = searchTerm.trim().toLowerCase();
             const resultsDiv = document.getElementById('searchResults');
-            const totalDiv = document.getElementById('totalMods');
-            const updateDiv = document.getElementById('lastUpdated');
-            const resUpdateDiv = document.getElementById('resourcesUpdated');
+            const infoDivs = [
+                document.getElementById('totalMods'),
+                document.getElementById('lastUpdated'),
+                document.getElementById('resourcesUpdated')
+            ];
             
             if (searchTerm === "") {
-                totalDiv.classList.remove("hidden");
-                updateDiv.classList.remove("hidden");
-                resUpdateDiv.classList.remove("hidden");
+                infoDivs.forEach(div => div.classList.remove("hidden"));
                 resultsDiv.classList.add("hidden");
                 displayApps(allAppsGlobal);
                 return;
@@ -279,9 +214,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             displayApps(filtered);
             resultsDiv.classList.remove("hidden");
             document.getElementById('searchCount').textContent = filtered.length;
-            totalDiv.classList.add("hidden");
-            updateDiv.classList.add("hidden");
-            resUpdateDiv.classList.add("hidden");
+            infoDivs.forEach(div => div.classList.add("hidden"));
         }
 
         function displayApps(filteredData) {
