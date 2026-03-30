@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -23,8 +23,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         .app-info h3 { margin: 0; font-size: 16px; }
         .app-info p { margin: 5px 0; color: #666; font-size: 14px; }
         .download-btn {
-            padding: 5px 10px; background: #007bff; color: white; text-decoration: none;
+            padding: 5px 12px; background: #007bff; color: white; text-decoration: none;
             border-radius: 5px; font-size: 14px;
+            /* 改行を防ぐ設定 */
+            white-space: nowrap;
+            display: inline-block;
+            min-width: fit-content;
         }
         .no-results { color: #999; margin-top: 10px; font-size: 14px; }
         
@@ -93,13 +97,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         }
         .hidden { display: none; }
 
-        /* 言語切り替えボタン（新規追加分） */
+        /* 言語切り替えボタン */
         .lang-switcher {
             position: fixed; top: 10px; right: 10px; z-index: 1000;
-            background: white; padding: 5px 10px; border-radius: 30px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            background: white; padding: 5px 8px; border-radius: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            display: flex; gap: 5px;
         }
-        .lang-btn { cursor: pointer; font-size: 20px; border: none; background: none; padding: 0 5px; }
+        .lang-btn { cursor: pointer; font-size: 18px; border: none; background: none; padding: 2px 4px; border-radius: 50%; transition: background 0.2s; }
+        .lang-btn:hover { background: #eee; }
 
         @media (min-width: 768px) {
             .container {
@@ -119,13 +125,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </head>
 <body>
     <div class="lang-switcher">
-        <button class="lang-btn" onclick="changeLanguage('ja')">🇯🇵</button>
-        <button class="lang-btn" onclick="changeLanguage('en')">🇺🇸</button>
+        <button class="lang-btn" title="日本語" onclick="changeLanguage('ja')">🇯🇵</button>
+        <button class="lang-btn" title="English" onclick="changeLanguage('en')">🇺🇸</button>
     </div>
 
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TMWFXQQD"
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TMWFXQQD"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<div class="container">
+
+    <div class="container">
         <h1 id="ui-title">APK List</h1>
         <div class="checkbox-container">
             <input type="checkbox" id="toggleMods">
@@ -160,7 +167,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     <script>
-        // 多言語辞書
         const i18n = {
             ja: {
                 title: "ブロスタ mod",
@@ -197,7 +203,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             currentLang = lang;
             localStorage.setItem('lang', lang);
             updateUIText();
-            displayApps(allAppsGlobal);
+            
+            // 現在の検索ボックスの内容を反映させて再描画（状態保持）
+            const searchTerm = document.getElementById('searchBox').value;
+            applySearch(searchTerm);
         }
 
         function updateUIText() {
@@ -240,10 +249,39 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
                 document.getElementById('modCount').textContent = allAppsGlobal.length;
                 updateUIText();
-                displayApps(allAppsGlobal);
+                applySearch(document.getElementById('searchBox').value);
             } catch (error) {
                 console.error('Error loading data:', error);
             }
+        }
+
+        function applySearch(searchTerm) {
+            searchTerm = searchTerm.trim().toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            const totalDiv = document.getElementById('totalMods');
+            const updateDiv = document.getElementById('lastUpdated');
+            const resUpdateDiv = document.getElementById('resourcesUpdated');
+            
+            if (searchTerm === "") {
+                totalDiv.classList.remove("hidden");
+                updateDiv.classList.remove("hidden");
+                resUpdateDiv.classList.remove("hidden");
+                resultsDiv.classList.add("hidden");
+                displayApps(allAppsGlobal);
+                return;
+            }
+
+            const filtered = allAppsGlobal.filter(app =>
+                app.name.toLowerCase().includes(searchTerm) ||
+                app.type.toLowerCase() === searchTerm
+            );
+
+            displayApps(filtered);
+            resultsDiv.classList.remove("hidden");
+            document.getElementById('searchCount').textContent = filtered.length;
+            totalDiv.classList.add("hidden");
+            updateDiv.classList.add("hidden");
+            resUpdateDiv.classList.add("hidden");
         }
 
         function displayApps(filteredData) {
@@ -267,7 +305,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 appCard.innerHTML = `
                     <div class="app-info">
                         <h3>${app.name}</h3>
-                        <p class="app-description"><span style="color: ${app.color};">${statusTxt}</span>${descText}</p>
+                        <p class="app-description"><span style="color: ${app.color}; font-weight:bold;">${statusTxt}</span>${descText}</p>
                     </div>
                     <a href="${app.link}" target="_blank" class="download-btn">${t.download}</a>
                 `;
@@ -275,31 +313,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             });
         }
 
-        // 検索・フィルターイベント
         document.getElementById('searchBox').addEventListener('input', (e) => {
-            const searchTerm = e.target.value.trim().toLowerCase();
-            const resultsDiv = document.getElementById('searchResults');
-            
-            if (searchTerm === "") {
-                document.getElementById('totalMods').classList.remove("hidden");
-                document.getElementById('lastUpdated').classList.remove("hidden");
-                document.getElementById('resourcesUpdated').classList.remove("hidden");
-                resultsDiv.classList.add("hidden");
-                displayApps(allAppsGlobal);
-                return;
-            }
-
-            const filtered = allAppsGlobal.filter(app =>
-                app.name.toLowerCase().includes(searchTerm) ||
-                app.type.toLowerCase() === searchTerm
-            );
-
-            displayApps(filtered);
-            resultsDiv.classList.remove("hidden");
-            document.getElementById('searchCount').textContent = filtered.length;
-            document.getElementById('totalMods').classList.add("hidden");
-            document.getElementById('lastUpdated').classList.add("hidden");
-            document.getElementById('resourcesUpdated').classList.add("hidden");
+            applySearch(e.target.value);
         });
 
         document.getElementById('toggleMods').addEventListener('change', (e) => {
