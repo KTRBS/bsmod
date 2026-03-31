@@ -3,23 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>App Store - Mods</title>
+    <title>App Store - Today</title>
     <style>
         :root {
             --ios-blue: #007aff;
             --ios-gray: #8e8e93;
-            --ios-bg: #ffffff;
+            --ios-bg: #f2f2f7; /* 背景を少しグレーに（カードを目立たせるため） */
+            --card-bg: #ffffff;
             --search-bg: rgba(142, 142, 147, 0.12);
             --text-color: #000000;
-            --line: rgba(0,0,0,0.1);
-            --tab-bg: rgba(252, 252, 252, 0.9);
+            --line: rgba(0,0,0,0.05);
+            --tab-bg: rgba(255, 255, 255, 0.9);
         }
         @media (prefers-color-scheme: dark) {
             :root {
                 --ios-bg: #000000;
+                --card-bg: #1c1c1e;
                 --search-bg: rgba(255, 255, 255, 0.12);
                 --text-color: #ffffff;
-                --line: rgba(255,255,255,0.15);
+                --line: rgba(255,255,255,0.1);
                 --tab-bg: rgba(20, 20, 20, 0.85);
             }
         }
@@ -35,45 +37,60 @@
 
         .hidden { display: none !important; }
 
-        /* --- Header & Lang Switcher --- */
-        header { padding: 40px 0 10px 0; position: relative; }
-        .lang-switcher { position: absolute; top: 45px; right: 0; display: flex; gap: 8px; }
-        .lang-btn { cursor: pointer; border: none; background: var(--search-bg); padding: 6px 12px; border-radius: 15px; font-size: 13px; color: var(--text-color); font-weight: bold; }
-        
+        /* --- Header --- */
+        header { padding: 40px 0 20px 0; position: relative; }
+        .lang-switcher { position: absolute; top: 45px; right: 0; }
+        .lang-btn { cursor: pointer; border: none; background: var(--search-bg); padding: 6px 12px; border-radius: 15px; font-size: 12px; color: var(--text-color); font-weight: bold; }
         .date-str { color: var(--ios-gray); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
         h1 { font-size: 2.2rem; margin: 0; font-weight: 800; letter-spacing: -1px; }
 
-        /* --- Search Style --- */
+        /* --- Today Card List (画像1枚目のスタイル) --- */
+        .today-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        .card-header-tag { color: var(--ios-gray); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
+        .card-header-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 20px; letter-spacing: -0.5px; }
+
+        .mod-row {
+            display: flex; align-items: center; gap: 12px; padding: 12px 0;
+            text-decoration: none; color: inherit; border-bottom: 1px solid var(--line);
+        }
+        .mod-row:last-child { border-bottom: none; }
+        .mod-icon { width: 58px; height: 58px; border-radius: 12px; object-fit: cover; }
+        .mod-info { flex: 1; min-width: 0; }
+        .mod-name { font-size: 1rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mod-sub { font-size: 0.85rem; color: var(--ios-gray); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Get Button (太めの横長形状) */
+        .get-btn {
+            background: #f0f0f7; color: var(--ios-blue); font-weight: 800;
+            padding: 8px 24px; border-radius: 25px; font-size: 0.95rem;
+            min-width: 80px; text-align: center; transition: background 0.2s;
+        }
+        @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
+        .get-btn:active { opacity: 0.7; }
+
+        /* --- Search View (画像2枚目のスタイル) --- */
         .search-wrapper { position: relative; margin: 20px 0; }
         .search-wrapper input {
             width: 100%; box-sizing: border-box; padding: 12px 12px 12px 40px; border-radius: 12px; border: none; 
             background: var(--search-bg); font-size: 17px; color: var(--text-color); outline: none;
         }
-        .search-icon { position: absolute; left: 12px; top: 12px; color: var(--ios-gray); font-size: 18px; }
+        .search-icon { position: absolute; left: 12px; top: 12px; color: var(--ios-gray); }
 
-        /* --- Result Card (App Store Style) --- */
-        .search-result-card {
-            display: flex; flex-direction: column; padding: 20px 0;
-            border-bottom: 1px solid var(--line); text-decoration: none; color: inherit;
-        }
-        .card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
-        .app-icon { width: 64px; height: 64px; border-radius: 14px; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.1); background: #eee; }
-        .app-info { flex: 1; min-width: 0; }
-        .app-name { font-size: 1.1rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .app-sub { font-size: 0.85rem; color: var(--ios-gray); margin-top: 2px; }
-        .get-btn { background: #f0f0f7; color: var(--ios-blue); font-weight: 800; padding: 6px 20px; border-radius: 20px; font-size: 0.9rem; min-width: 65px; text-align: center; }
-        @media (prefers-color-scheme: dark) { .get-btn { background: #1c1c1e; } }
-        
-        /* Screenshot area */
-        .ss-container { width: 100%; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9; background: var(--search-bg); margin-top: 5px; }
+        .search-result-card { display: flex; flex-direction: column; padding: 25px 0; border-bottom: 1px solid var(--line); text-decoration: none; color: inherit; }
+        .ss-container { width: 100%; border-radius: 14px; overflow: hidden; aspect-ratio: 16 / 9; background: var(--search-bg); margin-top: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .ss-img { width: 100%; height: 100%; object-fit: cover; }
 
         /* --- Tab Bar --- */
         .tab-bar {
             position: fixed; bottom: 0; left: 0; right: 0; height: 85px;
             background: var(--tab-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-top: 0.5px solid var(--line);
-            display: flex; justify-content: space-around; padding-top: 10px; z-index: 100;
+            border-top: 0.5px solid var(--line); display: flex; justify-content: space-around; padding-top: 10px; z-index: 100;
         }
         .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 10px; font-weight: 500; }
         .tab-item.active { color: var(--ios-blue); }
@@ -88,16 +105,20 @@
                 <button class="lang-btn" onclick="changeLang('ja')">JP</button>
                 <button class="lang-btn" onclick="changeLang('en')">EN</button>
             </div>
-            <p class="date-str" id="display-date">Wednesday, April 1</p>
+            <p class="date-str" id="display-date">Date</p>
             <h1>Today</h1>
         </header>
-        <h2 style="font-size: 1.4rem; margin: 20px 0 10px 0;">Play These Popular Games</h2>
-        <div id="today-list"></div>
+
+        <div class="today-card">
+            <div class="card-header-tag">Now Trending</div>
+            <div class="card-header-title">Play These Popular Games</div>
+            <div id="today-list">
+                </div>
+        </div>
     </div>
 
     <div id="page-search" class="hidden">
         <header style="border-bottom:none;">
-            <p class="date-str">Discover</p>
             <h1>Search</h1>
             <div class="search-wrapper">
                 <span class="search-icon">🔍</span>
@@ -118,27 +139,26 @@
 
     <script>
         const i18n = {
-            ja: { placeholder: "App、Modなど", get: "入手", status: { offline: "オフライン", online: "オンライン", ipa: "IPA", prod: "PROD" } },
-            en: { placeholder: "Apps, Mods, and more", get: "GET", status: { offline: "offline", online: "online", ipa: "ipa", prod: "PROD" } }
+            ja: { get: "入手", status: { offline: "オフライン", online: "オンライン", ipa: "IPA", prod: "PROD" } },
+            en: { get: "GET", status: { offline: "offline", online: "online", ipa: "ipa", prod: "PROD" } }
         };
 
         let currentLang = localStorage.getItem('lang') || 'ja';
         let allData = [];
         let prodData = [];
 
-        function changeLang(l) {
-            currentLang = l;
-            localStorage.setItem('lang', l);
-            document.getElementById('searchInput').placeholder = i18n[currentLang].placeholder;
-            renderToday();
-            runSearch();
-        }
-
         function showTab(name) {
             document.getElementById('page-today').classList.toggle('hidden', name !== 'today');
             document.getElementById('page-search').classList.toggle('hidden', name !== 'search');
             document.querySelectorAll('.tab-item').forEach((el, i) => el.classList.toggle('active', (name==='today' && i===0) || (name==='search' && i===1)));
             window.scrollTo(0,0);
+        }
+
+        function changeLang(l) {
+            currentLang = l;
+            localStorage.setItem('lang', l);
+            renderToday();
+            runSearch();
         }
 
         async function init() {
@@ -152,57 +172,83 @@
                     fetch(`../prod.json?${ts}`).then(r => r.json()).catch(() => [])
                 ]);
 
-                prodData = prod.map(a => ({...a, type: 'prod', color: '#ff3b30'}));
-                allData = [
-                    ...apps.map(a => ({...a, type:'offline', color:'#000'})),
-                    ...oapps.map(a => ({...a, type:'online', color:'#28a745'})),
-                    ...iapps.map(a => ({...a, type:'ipa', color:'#000'})),
-                    ...prodData
-                ];
+                // 各アイテムにステータス設定
+                const format = (data, type, color) => data.map(a => ({...a, type, color}));
+                prodData = format(prod, 'prod', '#ff3b30');
+                allData = [...format(apps,'offline','#000'), ...format(oapps,'online','#28a745'), ...format(iapps,'ipa','#000'), ...prodData];
+
                 renderToday();
             } catch (e) { console.error(e); }
         }
 
-        function createResultCard(app) {
+        // Today用のリスト行作成
+        async function createTodayRow(app) {
+            const t = i18n[currentLang];
+            const ts = new Date().getTime();
+            const row = document.createElement('a');
+            row.href = app.link;
+            row.className = 'mod-row';
+
+            // version.jsonからデータを取得
+            let versionInfo = "Create & explore your world!"; // デフォルト
+            if (app.codename) {
+                try {
+                    const vRes = await fetch(`../resources/${app.codename}/version.json?${ts}`);
+                    if (vRes.ok) {
+                        const vData = await vRes.json();
+                        // v重複防止ロジック
+                        const vNum = vData.version.toString().toLowerCase().startsWith('v') ? vData.version : 'v' + vData.version;
+                        versionInfo = `${vNum} • Updated: ${vData.lastUpdated}`;
+                    }
+                } catch(e) {}
+            }
+
+            const iconUrl = app.icon ? `../${app.icon}` : `../resources/${app.codename}/icon.png`;
+
+            row.innerHTML = `
+                <img src="${iconUrl}" class="mod-icon" onerror="this.src='../resources/default-icon.png'">
+                <div class="mod-info">
+                    <div class="mod-name">${app.name}</div>
+                    <div class="mod-sub">${versionInfo}</div>
+                </div>
+                <div class="get-btn">${t.get}</div>
+            `;
+            return row;
+        }
+
+        async function renderToday() {
+            const container = document.getElementById('today-list');
+            container.innerHTML = "";
+            for (const app of prodData) {
+                const row = await createTodayRow(app);
+                container.appendChild(row);
+            }
+        }
+
+        // Search用のカード作成
+        function createSearchCard(app) {
             const t = i18n[currentLang];
             const card = document.createElement('a');
             card.href = app.link;
             card.className = 'search-result-card';
 
-            // 画像解決
-            const iconUrl = app.icon ? `../${app.icon}` : (app.codename ? `../resources/${app.codename}/icon.png` : null);
-            const ssUrl = app.codename ? `../resources/${app.codename}/ss1.png` : null;
-            
-            // v重複防止ロジック
-            let versionDisplay = "";
-            if (app.version) {
-                const rawV = app.version.toString().toLowerCase();
-                versionDisplay = rawV.startsWith('v') ? rawV : 'v' + rawV;
-            }
-
-            const statusLabel = t.status[app.type] || app.type;
+            const iconUrl = app.icon ? `../${app.icon}` : `../resources/${app.codename}/icon.png`;
+            const ssUrl = app.ss1 ? `../${app.ss1}` : `../resources/${app.codename}/ss1.png`;
 
             card.innerHTML = `
                 <div class="card-top">
-                    ${iconUrl ? `<img src="${iconUrl}" class="app-icon" onerror="this.style.display='none'">` : ''}
+                    <img src="${iconUrl}" class="app-icon">
                     <div class="app-info">
                         <div class="app-name">${app.name}</div>
-                        <div class="app-sub">
-                            <span style="color:${app.color}; font-weight:bold; text-transform:uppercase;">${statusLabel}</span> 
-                            ${versionDisplay ? ' • ' + versionDisplay : ''}
-                        </div>
+                        <div class="app-sub"><span style="color:${app.color}; font-weight:bold;">${t.status[app.type]}</span> • Mod</div>
                     </div>
                     <div class="get-btn">${t.get}</div>
                 </div>
-                ${ssUrl ? `<div class="ss-container"><img src="${ssUrl}" class="ss-img" onerror="this.parentElement.style.display='none'"></div>` : ''}
+                <div class="ss-container">
+                    <img src="${ssUrl}" class="ss-img" onerror="this.parentElement.style.display='none'">
+                </div>
             `;
             return card;
-        }
-
-        function renderToday() {
-            const container = document.getElementById('today-list');
-            container.innerHTML = "";
-            prodData.forEach(app => container.appendChild(createResultCard(app)));
         }
 
         function runSearch() {
@@ -210,9 +256,8 @@
             const res = document.getElementById('search-results');
             res.innerHTML = "";
             if(!q) return;
-
             allData.filter(a => a.name.toLowerCase().includes(q)).forEach(app => {
-                res.appendChild(createResultCard(app));
+                res.appendChild(createSearchCard(app));
             });
         }
 
