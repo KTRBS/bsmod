@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KazareWare - Details</title>
+    
+    <meta property="og:title" content="Download Kazareware">
+    <meta property="og:description" content="KazareWare, a hack mod with more than 10 hacks made by KTR has just been released! Check it out now!">
+    <meta property="og:image" content="https://KTRBS.github.io/resources/kazare/icon.png">
+    <meta property="og:url" content="https://KTRBS.github.io/bsmod/tale">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Brawl Stars Mods">
+
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333;
+            --secondary-text: #666;
+            --grad-color: rgba(255,255,255,1);
+            --card-bg: #fff;
+            --btn-green: #28a745;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --text-color: #f0f0f0;
+                --secondary-text: #bbb;
+                --grad-color: rgba(18,18,18,1);
+                --card-bg: #1e1e1e;
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background 0.3s;
+        }
+
+        /* ヘッダー画像 (階層が変わったのでパス修正) */
+        .hero {
+            position: relative;
+            height: 250px;
+            background: url('../../resources/kazare/header.png') center/cover no-repeat;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+        }
+        .hero::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--grad-color) 100%);
+        }
+
+        .mod-name {
+            position: relative;
+            z-index: 10;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0 0 20px 20px;
+            text-align: left;
+            text-shadow: 0 0 10px var(--grad-color);
+        }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+
+        .info-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; text-align: left; }
+        .icon-box img { width: 85px; height: 85px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .version-num { font-size: 1.3rem; font-weight: bold; margin: 0; }
+        .status-badge { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; margin-top: 6px; }
+        .status-available { background: #28a745; color: white; }
+        .status-outdated { background: #dc3545; color: white; }
+
+        .download-btn {
+            display: block; background: var(--btn-green); color: white; text-decoration: none;
+            text-align: center; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 1.1rem;
+            margin-bottom: 30px; transition: transform 0.1s;
+        }
+
+        .ss-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            margin: 0 -20px 30px -20px;
+            padding: 0 30px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        .ss-container::-webkit-scrollbar { display: none; }
+        .ss-container img {
+            flex: 0 0 calc(100% - 10px);
+            max-width: 320px;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            border-radius: 18px;
+            scroll-snap-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .section-title { font-size: 1.25rem; font-weight: bold; border-bottom: 1px solid var(--secondary-text); padding-bottom: 10px; margin-bottom: 18px; text-align: left; }
+        .content-body { text-align: left; font-size: 1rem; color: var(--secondary-text); line-height: 1.7; }
+        
+        /* リストに戻るリンクも修正 */
+        .back-link { display: inline-block; margin: 40px 0; color: #007bff; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <div class="mod-name" id="ui-mod-name">KazareWare</div>
+    </section>
+
+    <div class="container">
+        <div class="info-header">
+            <div class="icon-box"><img src="../../resources/kazare/icon.png" alt="Icon"></div>
+            <div>
+                <p class="version-num" id="js-version">v---</p>
+                <div id="js-status" class="status-badge">----</div>
+                <p style="font-size: 0.85rem; margin: 6px 0 0;" id="ui-updated">Last Updated: --</p>
+            </div>
+        </div>
+
+        <a href="#" id="js-download-link" class="download-btn">DOWNLOAD</a>
+
+        <div class="ss-container">
+            <img src="../../resources/kazare/ss1.png" alt="Screenshot 1">
+            <img src="../../resources/kazare/ss2.png" alt="Screenshot 2">
+            <img src="../../resources/kazare/ss3.png" alt="Screenshot 3">
+        </div>
+
+        <h2 class="section-title" id="ui-howto-title">How to Install</h2>
+        <div class="content-body" id="js-info-content">Loading...</div>
+
+        <a href="../../index.html" class="back-link" id="ui-back">← Back to List</a>
+    </div>
+
+    <script>
+        const isJa = navigator.language.includes('ja');
+        const lang = isJa ? 'ja' : 'en';
+        
+        const uiText = {
+            ja: { updated: "最終更新: ", howto: "導入方法", back: "← リストに戻る", download: "ダウンロード", available: "利用可能", outdated: "旧バージョン" },
+            en: { updated: "Last Updated: ", howto: "How to Install", back: "← Back to List", download: "DOWNLOAD", available: "Available", outdated: "Outdated" }
+        };
+
+        async function initPage() {
+            const ts = new Date().getTime();
+            const t = uiText[lang];
+
+            document.getElementById('ui-updated').firstChild.textContent = t.updated;
+            document.getElementById('ui-howto-title').textContent = t.howto;
+            document.getElementById('ui-back').textContent = t.back;
+            document.getElementById('js-download-link').textContent = t.download;
+
+            try {
+                // JSONのパスを ../../ に修正
+                const vRes = await fetch(`../../resources/kazare/version.json?${ts}`);
+                const vData = await vRes.json();
+                
+                document.getElementById('js-version').textContent = vData.version;
+                document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
+                
+                const statusEl = document.getElementById('js-status');
+                const rawStatus = vData.status.toLowerCase();
+                if (rawStatus === 'available') {
+                    statusEl.textContent = t.available;
+                    statusEl.className = 'status-badge status-available';
+                } else {
+                    statusEl.textContent = t.outdated;
+                    statusEl.className = 'status-badge status-outdated';
+                }
+
+                const dlBtn = document.getElementById('js-download-link');
+                if (vData.downloadUrl) {
+                    dlBtn.href = vData.downloadUrl;
+                    dlBtn.target = "_blank";
+                } else {
+                    dlBtn.style.display = "none";
+                }
+
+                // infoのパスを ../../ に修正
+                const infoFile = isJa ? 'info_ja.html' : 'info_en.html';
+                const infoRes = await fetch(`../../resources/kazare/${infoFile}?${ts}`);
+                document.getElementById('js-info-content').innerHTML = await infoRes.text();
+
+            } catch (e) {
+                console.error("Failed to load details:", e);
+                document.getElementById('js-info-content').textContent = "Content could not be loaded.";
+            }
+        }
+
+        window.onload = initPage;
+    </script>
+</body>
+</html>
