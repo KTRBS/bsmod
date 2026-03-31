@@ -3,202 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tale Stars - 詳細情報</title>
+    <title>Tale Stars - Details</title>
     <style>
         :root {
-            --primary-green: #28a745;
-            --bg-white: #ffffff;
-            --text-main: #333;
+            --bg-color: #ffffff;
+            --text-color: #333;
+            --secondary-text: #666;
+            --grad-color: rgba(255,255,255,1);
+            --card-bg: #fff;
+            --btn-green: #28a745;
+        }
+
+        /* ダークモード設定 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --text-color: #f0f0f0;
+                --secondary-text: #bbb;
+                --grad-color: rgba(18,18,18,1);
+                --card-bg: #1e1e1e;
+            }
         }
 
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-white);
-            color: var(--text-main);
-            line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background 0.3s;
         }
 
-        /* ヘッダー画像とグラデーション背景 */
-        .hero-section {
+        /* グラデーションヘッダー */
+        .hero {
             position: relative;
-            height: 250px;
-            background: url('../resources/tale/header.png') center/cover no-repeat; /* ヘッダー画像 */
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
+            height: 280px;
+            background: url('../resources/tale/header.png') center/cover no-repeat;
+            display: flex; align-items: flex-end; justify-content: center;
+        }
+        .hero::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--grad-color) 100%);
         }
 
-        /* 下に向かって白くなるグラデーション */
-        .hero-section::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 100%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
-        }
+        .mod-name { position: relative; z-index: 10; font-size: 2rem; font-weight: 800; margin-bottom: 15px; }
 
-        .mod-name {
-            position: relative;
-            z-index: 10;
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(255,255,255,0.8);
-        }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-        }
+        /* アイコンエリア */
+        .info-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; text-align: left; }
+        .icon-box img { width: 80px; height: 80px; border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .version-num { font-size: 1.2rem; font-weight: bold; margin: 0; }
+        .status-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-top: 5px; }
+        .status-available { background: #28a745; color: white; }
+        .status-outdated { background: #dc3545; color: white; }
 
-        /* アイコンと情報の横並び */
-        .info-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
+        /* ダウンロードボタン */
+        .download-btn {
+            display: block; background: var(--btn-green); color: white; text-decoration: none;
+            text-align: center; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 1.1rem;
             margin-bottom: 30px;
         }
 
-        .icon-box img {
-            width: 100px;
-            height: 100px;
-            border-radius: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        /* スクリーンショット横スクロール (App Store風) */
+        .ss-container {
+            display: flex; overflow-x: auto; gap: 12px; margin: 0 -20px 30px -20px;
+            padding: 0 20px; scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        .ss-container::-webkit-scrollbar { display: none; } /* スクロールバー非表示 */
+        .ss-container img {
+            flex: 0 0 70%; /* スマホで1枚の7割が見えるように */
+            max-width: 260px; border-radius: 15px; scroll-snap-align: start;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
-        .info-meta {
-            text-align: left;
-        }
+        /* コンテンツエリア */
+        .section-title { font-size: 1.2rem; border-bottom: 1px solid #444; padding-bottom: 8px; margin-bottom: 15px; text-align: left; }
+        .content-body { text-align: left; font-size: 0.95rem; color: var(--secondary-text); }
 
-        .version { font-size: 1.5rem; font-weight: bold; margin: 0; }
-        .last-update { font-size: 0.9rem; color: #666; margin: 5px 0 0; }
-
-        /* ダウンロードボタン（緑） */
-        .download-btn {
-            display: block;
-            background-color: var(--primary-green);
-            color: white;
-            text-decoration: none;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 40px;
-            transition: transform 0.2s, background 0.2s;
-        }
-
-        .download-btn:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
-        }
-
-        /* スクリーンショット 2x2グリッド */
-        .screenshot-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 40px;
-        }
-
-        .screenshot-grid img {
-            width: 100%;
-            border-radius: 15px; /* 縁を丸く */
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-
-        /* 導入方法セクション */
-        .howto-section {
-            text-align: left;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-
-        .howto-section h2 {
-            font-size: 1.3rem;
-            border-left: 5px solid var(--primary-green);
-            padding-left: 10px;
-            margin-bottom: 15px;
-        }
-
-        .content-body {
-            font-size: 0.95rem;
-            color: #444;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-top: 40px;
-            color: #007bff;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
+        .back-link { display: inline-block; margin-top: 40px; color: #007bff; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <section class="hero-section">
-        <div class="mod-name">Tale Stars</div>
+    <section class="hero">
+        <div class="mod-name" id="ui-mod-name">Tale Stars</div>
     </section>
 
     <div class="container">
         <div class="info-header">
-            <div class="icon-box">
-                <img src="../resources/tale/icon.png" alt="Icon">
-            </div>
-            <div class="info-meta">
-                <p class="version">v66.109</p>
-                <p class="last-update" id="js-update-date">最終更新: ----</p>
+            <div class="icon-box"><img src="../resources/tale/icon.png"></div>
+            <div>
+                <p class="version-num" id="js-version">v0.0.0</p>
+                <div id="js-status" class="status-badge">----</div>
+                <p style="font-size: 0.8rem; margin: 5px 0 0;" id="ui-updated">Last Updated: --</p>
             </div>
         </div>
 
-        <a href="https://example.com/download" target="_blank" class="download-btn">ダウンロード</a>
+        <a href="#" id="js-download-link" class="download-btn">DOWNLOAD</a>
 
-        <div class="screenshot-grid">
-            <img src="../resources/tale/ss1.png" alt="SS1">
-            <img src="../resources/tale/ss2.png" alt="SS2">
-            <img src="../resources/tale/ss3.png" alt="SS3">
-            <img src="../resources/tale/ss4.png" alt="SS4">
+        <div class="ss-container">
+            <img src="../resources/tale/ss1.png"><img src="../resources/tale/ss2.png">
+            <img src="../resources/tale/ss3.png"><img src="../resources/tale/ss4.png">
         </div>
 
-        <section class="howto-section">
-            <h2>導入方法</h2>
-            <div class="content-body" id="js-info-content">
-                読み込み中...
-            </div>
-        </section>
+        <h2 class="section-title" id="ui-howto-title">How to Install</h2>
+        <div class="content-body" id="js-info-content">Loading content...</div>
 
-        <a href="../index.html" class="back-link">← リストに戻る</a>
+        <a href="../index.html" class="back-link" id="ui-back">← Back to List</a>
     </div>
 
     <script>
-        // 1. 日付をconfig.jsonから取得（共通管理したい場合）
-        async function fetchInfo() {
-            try {
-                const ts = new Date().getTime();
-                const response = await fetch('../config.json?' + ts);
-                const config = await response.json();
-                if (config.lastUpdated) {
-                    document.getElementById('js-update-date').innerText = '最終更新: ' + config.lastUpdated;
-                }
+        const lang = navigator.language.includes('ja') ? 'ja' : 'en';
+        
+        const uiText = {
+            ja: { updated: "最終更新: ", howto: "導入方法", back: "← リストに戻る", download: "ダウンロード" },
+            en: { updated: "Last Updated: ", howto: "How to Install", back: "← Back to List", download: "DOWNLOAD" }
+        };
 
-                // 2. info.htmlの中身を読み込んで表示する
-                const infoRes = await fetch('../resources/tale/info.html?' + ts);
-                const infoHtml = await infoRes.text();
-                document.getElementById('js-info-content').innerHTML = infoHtml;
+        async function initPage() {
+            const ts = new Date().getTime();
+            const t = uiText[lang];
+
+            // UIテキスト設定
+            document.getElementById('ui-updated').firstChild.textContent = t.updated;
+            document.getElementById('ui-howto-title').textContent = t.howto;
+            document.getElementById('ui-back').textContent = t.back;
+            document.getElementById('js-download-link').textContent = t.download;
+
+            try {
+                // 1. バージョン情報の取得
+                const vRes = await fetch(`../resources/tale/version.json?${ts}`);
+                const vData = await vRes.json();
+                
+                document.getElementById('js-version').textContent = vData.version;
+                document.getElementById('ui-updated').innerHTML += vData.lastUpdated;
+                
+                const statusEl = document.getElementById('js-status');
+                statusEl.textContent = vData.status;
+                statusEl.classList.add(vData.status === 'available' ? 'status-available' : 'status-outdated');
+
+                // 2. 言語別info.htmlの取得
+                const infoFile = lang === 'ja' ? 'info_ja.html' : 'info_en.html';
+                const infoRes = await fetch(`../resources/tale/${infoFile}?${ts}`);
+                document.getElementById('js-info-content').innerHTML = await infoRes.text();
+
             } catch (e) {
-                console.error("データの読み込みに失敗しました", e);
-                document.getElementById('js-info-content').innerText = "説明文の読み込みに失敗しました。";
+                console.error(e);
+                document.getElementById('js-info-content').textContent = "Error loading info.";
             }
         }
 
-        window.onload = fetchInfo;
+        window.onload = initPage;
     </script>
 </body>
 </html>
