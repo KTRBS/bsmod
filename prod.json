@@ -1,19 +1,22 @@
 [
     {
-        "name": "a - メンテナンス中🛠️ リンクは機能しないよ",
-        "link": "https://google.com"
+        "name": "a - メンテナンス中🛠️",
+        "link": "https://google.com",
+        "infoLink": "https://KTRBS.github.io/bsmod/soon.html"
     },
     {
         "name": "Tale Stars [Android]",
-        "link": "https://google.com"
+        "link": "https://google.com",
+        "infoLink": "https://KTRBS.github.io/bsmod/tale.html"
     },
     {
         "name": "Tale Stars [iOS]",
-        "link": "https://google.com"
+        "link": "https://google.com",
+        "infoLink": "https://KTRBS.github.io/bsmod/taleiOS.html"
     },
     {
-        "name": "Nulls Rythm [Android]",
-        "link": "https://google.com"
-    }
-    
+        "name": "Null Rythm [Android]",
+        "link": "https://google.com",
+        "infoLink": "https://KTRBS.github.io/bsmod/nullRythm.html"
+    }    
 ]
