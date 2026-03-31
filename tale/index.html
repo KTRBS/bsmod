@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tale Stars - Details</title>
+    
+    <meta id="meta-desc" property="og:description" content="Tale stars 最新版をダウンロード">
+    <meta id="og-title" property="og:title" content="Tale Stars - Details">
+    <meta property="og:image" content="https://KTRBS.github.io/resources/tale/icon.png">
+    <meta property="og:url" content="https://KTRBS.github.io/bsmod/tale">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Brawl Stars Mods">
+    
+    </head>
+
+<script>
+    const isJa = navigator.language.includes('ja');
+    const lang = isJa ? 'ja' : 'en';
+    
+    const uiText = {
+        ja: { 
+            title: "Tale Stars - 詳細",
+            desc: "Tale stars 最新版をダウンロード",
+            updated: "最終更新: ", 
+            howto: "導入方法", 
+            back: "← リストに戻る", 
+            download: "ダウンロード",
+            available: "利用可能",
+            outdated: "旧バージョン"
+        },
+        en: { 
+            title: "Tale Stars - Details",
+            desc: "Download the latest version of Tale stars",
+            updated: "Last Updated: ", 
+            howto: "How to Install", 
+            back: "← Back to List", 
+            download: "DOWNLOAD",
+            available: "Available",
+            outdated: "Outdated"
+        }
+    };
+
+    async function initPage() {
+        const ts = new Date().getTime();
+        const t = uiText[lang];
+
+        // ★ メタタグとタイトルを動的に書き換え
+        document.title = t.title;
+        document.getElementById('meta-desc').setAttribute('content', t.desc);
+        document.getElementById('og-title').setAttribute('content', t.title);
+
+        // UIテキスト書き換え
+        document.getElementById('ui-updated').firstChild.textContent = t.updated;
+        document.getElementById('ui-howto-title').textContent = t.howto;
+        document.getElementById('ui-back').textContent = t.back;
+        document.getElementById('js-download-link').textContent = t.download;
+
+        try {
+            // (fetch処理などは以前と同じ)
+            const vRes = await fetch(`../../resources/tale/version.json?${ts}`);
+            const vData = await vRes.json();
+            
+            document.getElementById('js-version').textContent = vData.version;
+            document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
+            
+            const statusEl = document.getElementById('js-status');
+            const rawStatus = vData.status.toLowerCase();
+            if (rawStatus === 'available') {
+                statusEl.textContent = t.available;
+                statusEl.className = 'status-badge status-available';
+            } else {
+                statusEl.textContent = t.outdated;
+                statusEl.className = 'status-badge status-outdated';
+            }
+
+            const dlBtn = document.getElementById('js-download-link');
+            if (vData.downloadUrl) {
+                dlBtn.href = vData.downloadUrl;
+                dlBtn.target = "_blank";
+            } else {
+                dlBtn.style.display = "none";
+            }
+
+            const infoFile = isJa ? 'info_ja.html' : 'info_en.html';
+            const infoRes = await fetch(`../../resources/tale/${infoFile}?${ts}`);
+            document.getElementById('js-info-content').innerHTML = await infoRes.text();
+
+        } catch (e) {
+            console.error("Failed to load details:", e);
+            document.getElementById('js-info-content').textContent = "Content could not be loaded.";
+        }
+    }
+
+    window.onload = initPage;
+</script>
+
+</body>
+</html>
