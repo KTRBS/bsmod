@@ -158,6 +158,7 @@
             const ts = new Date().getTime();
             const t = uiText[lang];
 
+            // テキスト流し込み (前回と同様)
             document.title = t.title;
             document.getElementById('meta-desc').setAttribute('content', t.desc);
             document.getElementById('ui-updated').firstChild.textContent = t.updated;
@@ -169,50 +170,61 @@
             try {
                 const vRes = await fetch(`../../resources/tale/version.json?${ts}`);
                 const vData = await vRes.json();
-                
                 document.getElementById('js-version').textContent = vData.version;
                 document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
-                
                 const statusEl = document.getElementById('js-status');
                 const rawStatus = vData.status.toLowerCase();
                 statusEl.textContent = rawStatus === 'available' ? t.available : t.outdated;
                 statusEl.className = 'status-badge ' + (rawStatus === 'available' ? 'status-available' : 'status-outdated');
-
+                
                 const dlLinks = document.querySelectorAll('.js-dl-link');
                 dlLinks.forEach(link => {
-                    if (vData.downloadUrl) {
-                        link.href = vData.downloadUrl;
-                        link.target = "_blank";
-                    } else {
-                        link.style.display = "none";
-                    }
+                    if (vData.downloadUrl) { link.href = vData.downloadUrl; link.target = "_blank"; }
                 });
 
                 const infoFile = isJa ? 'info_ja.html' : 'info_en.html';
                 const infoRes = await fetch(`../../resources/tale/${infoFile}?${ts}`);
                 document.getElementById('js-info-content').innerHTML = await infoRes.text();
-
             } catch (e) { console.error(e); }
 
-            // --- スクロール監視の仕組み ---
+            // --- ★ スクロール連動アニメーションの核心部分 ---
             const stickyHeader = document.getElementById('js-sticky-header');
-            const trigger = document.getElementById('js-trigger');
+            const mainTitle = document.querySelector('.mod-name');
+            const heroSection = document.querySelector('.hero');
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    // 通常のヘッダーアイコン部分が画面から消えそうになったら表示
-                    if (!entry.isIntersecting) {
-                        stickyHeader.classList.add('active');
-                    } else {
-                        stickyHeader.classList.remove('active');
-                    }
-                });
-            }, { threshold: 0.1 });
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                const heroHeight = heroSection.offsetHeight;
+                
+                // 1. メインタイトルのアニメーション (上に移動しながら消える)
+                // スクロール量に合わせて 0〜1 の比率を計算
+                const fadeStart = 50;  // 50pxスクロールしたらフェード開始
+                const fadeEnd = 150;   // 150pxで完全に消える
+                let opacity = 1 - (scrollY - fadeStart) / (fadeEnd - fadeStart);
+                let translateY = (scrollY - fadeStart) * -0.5; // 上にせり上がる速度
 
-            observer.observe(trigger);
+                if (scrollY <= fadeStart) {
+                    opacity = 1;
+                    translateY = 0;
+                } else if (scrollY >= fadeEnd) {
+                    opacity = 0;
+                }
+
+                mainTitle.style.opacity = opacity;
+                mainTitle.style.transform = `translateY(${translateY}px)`;
+
+                // 2. スティッキーヘッダーの表示切り替え
+                // タイトルがほぼ消えた(150px)タイミングでヘッダーを出す
+                if (scrollY > fadeEnd - 20) {
+                    stickyHeader.classList.add('active');
+                } else {
+                    stickyHeader.classList.remove('active');
+                }
+            });
         }
 
         window.onload = initPage;
     </script>
+
 </body>
 </html>
