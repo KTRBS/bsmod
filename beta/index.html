@@ -14,14 +14,13 @@
             --line: rgba(0,0,0,0.1);
             --tab-bg: rgba(249, 249, 249, 0.9);
         }
-
         @media (prefers-color-scheme: dark) {
             :root {
                 --ios-bg: #000000;
                 --search-bg: rgba(255, 255, 255, 0.12);
                 --text-color: #ffffff;
                 --line: rgba(255,255,255,0.15);
-                --tab-bg: rgba(20, 20, 20, 0.9);
+                --tab-bg: rgba(20, 20, 20, 0.85);
             }
         }
 
@@ -30,133 +29,108 @@
             background-color: var(--ios-bg);
             color: var(--text-color);
             margin: 0;
-            padding: 0 20px 100px 20px; /* タブバーの分だけ下に余白 */
+            padding: 0 20px 110px 20px;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- ヘッダー --- */
-        header { padding: 40px 0 10px 0; }
+        /* --- Tab Switching --- */
+        .hidden { display: none !important; }
+
+        /* --- Header --- */
+        header { padding: 40px 0 10px 0; border-bottom: 1px solid var(--line); margin-bottom: 15px; }
         .date-str { color: var(--ios-gray); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
-        h1 { font-size: 2.2rem; margin: 0 0 15px 0; font-weight: 800; letter-spacing: -1px; }
+        h1 { font-size: 2.2rem; margin: 0; font-weight: 800; letter-spacing: -1px; }
 
-        /* --- Todayタブ専用: ビッグカード --- */
-        .today-card {
-            background: #fff;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            margin-bottom: 25px;
-            text-decoration: none;
-            color: #fff;
-            display: block;
-            position: relative;
-            aspect-ratio: 4 / 5;
-            background-size: cover;
-            background-position: center;
+        /* --- List Style (Play Now / Search Results) --- */
+        .mod-list { display: flex; flex-direction: column; }
+        .mod-item {
+            display: flex; align-items: center; gap: 15px; padding: 12px 0;
+            text-decoration: none; color: inherit; border-bottom: 1px solid var(--line);
+            transition: opacity 0.2s;
         }
-        .today-card-overlay {
-            position: absolute; bottom: 0; left: 0; right: 0; padding: 20px;
-            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
-        }
-        .today-card .category { font-size: 0.8rem; font-weight: bold; opacity: 0.8; text-transform: uppercase; }
-        .today-card .title { font-size: 1.8rem; font-weight: 800; margin-top: 5px; }
+        .mod-item:active { opacity: 0.4; }
+        .mod-item:last-child { border-bottom: none; }
+        
+        .mod-icon { width: 64px; height: 64px; border-radius: 14px; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .mod-info { flex: 1; min-width: 0; }
+        .mod-title { font-size: 1.05rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mod-desc { font-size: 0.85rem; color: var(--ios-gray); margin: 3px 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mod-btn { background: #f0f0f7; color: var(--ios-blue); font-weight: 800; padding: 6px 20px; border-radius: 20px; font-size: 0.9rem; }
+        @media (prefers-color-scheme: dark) { .mod-btn { background: #1c1c1e; } }
 
-        /* --- Searchタブ専用: 入力欄 --- */
-        .search-input-wrapper {
-            position: relative; display: flex; align-items: center; margin-bottom: 20px;
-        }
-        .search-input-wrapper input {
+        /* --- Search Bar --- */
+        .search-wrapper { position: relative; margin: 15px 0; }
+        .search-wrapper input {
             width: 100%; padding: 12px 12px 12px 40px; border-radius: 12px; border: none;
             background: var(--search-bg); font-size: 17px; color: var(--text-color); outline: none;
         }
-        .search-icon { position: absolute; left: 12px; width: 20px; height: 20px; fill: var(--ios-gray); }
+        .search-icon { position: absolute; left: 12px; top: 12px; width: 20px; height: 20px; fill: var(--ios-gray); }
 
-        /* --- 共通リストアイテム --- */
-        .prod-item {
-            display: flex; align-items: center; gap: 15px; padding: 15px 0;
-            text-decoration: none; color: inherit; border-bottom: 1px solid var(--line);
-        }
-        .prod-icon { width: 64px; height: 64px; border-radius: 14px; object-fit: cover; }
-        .prod-info { flex: 1; min-width: 0; }
-        .prod-title { font-size: 1.1rem; font-weight: 600; margin: 0; }
-        .prod-desc { font-size: 0.9rem; color: var(--ios-gray); margin: 3px 0 0; }
-        .prod-get-btn { background: #f0f0f7; color: var(--ios-blue); font-weight: 800; padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; }
-
-        /* --- タブバー --- */
+        /* --- Tab Bar --- */
         .tab-bar {
             position: fixed; bottom: 0; left: 0; right: 0; height: 85px;
             background: var(--tab-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-top: 0.5px solid var(--line);
             display: flex; justify-content: space-around; padding-top: 10px; z-index: 100;
         }
-        .tab-item {
-            display: flex; flex-direction: column; align-items: center;
-            color: var(--ios-gray); text-decoration: none; font-size: 10px; font-weight: 500;
-        }
+        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 10px; font-weight: 500; }
         .tab-item.active { color: var(--ios-blue); }
         .tab-icon { font-size: 24px; margin-bottom: 4px; }
-
-        .hidden { display: none; }
     </style>
 </head>
 <body>
 
     <div id="page-today">
         <header>
-            <p class="date-str" id="today-date">Wednesday, April 1</p>
-            <h1>Today</h1>
+            <p class="date-str" id="display-date">Wednesday, April 1</p>
+            <h1>Play Now</h1>
         </header>
-        <div id="today-content">
+        <div class="mod-list" id="today-list">
             </div>
     </div>
 
     <div id="page-search" class="hidden">
-        <header>
-            <p class="category-name">Search</p>
+        <header style="border-bottom:none;">
+            <p class="date-str">Discover</p>
             <h1>Search</h1>
-            <div class="search-input-wrapper">
+            <div class="search-wrapper">
                 <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                <input type="text" id="betaSearchBox" placeholder="Apps, Mods, and more" oninput="filterSearch()">
+                <input type="text" id="searchInput" placeholder="Apps, Mods, and more" oninput="runSearch()">
             </div>
         </header>
-        <div class="prod-list" id="search-results"></div>
+        <div class="mod-list" id="search-results"></div>
     </div>
 
     <nav class="tab-bar">
-        <a href="#" class="tab-item active" onclick="switchTab('today')">
+        <a href="javascript:void(0)" class="tab-item active" id="tab-today-btn" onclick="showTab('today')">
             <span class="tab-icon">📑</span>
             <span>Today</span>
         </a>
-        <a href="#" class="tab-item" onclick="switchTab('search')">
+        <a href="javascript:void(0)" class="tab-item" id="tab-search-btn" onclick="showTab('search')">
             <span class="tab-icon">🔍</span>
             <span>Search</span>
         </a>
     </nav>
 
     <script>
-        let allApps = [];
-        let prodApps = [];
+        let allData = [];
+        let prodData = [];
 
-        // タブ切り替えロジック
-        function switchTab(tabName) {
-            document.getElementById('page-today').classList.toggle('hidden', tabName !== 'today');
-            document.getElementById('page-search').classList.toggle('hidden', tabName !== 'search');
-            
-            // アイコンの色変更
-            document.querySelectorAll('.tab-item').forEach((el, idx) => {
-                el.classList.toggle('active', (tabName === 'today' && idx === 0) || (tabName === 'search' && idx === 1));
-            });
+        function showTab(name) {
+            document.getElementById('page-today').classList.toggle('hidden', name !== 'today');
+            document.getElementById('page-search').classList.toggle('hidden', name !== 'search');
+            document.getElementById('tab-today-btn').classList.toggle('active', name === 'today');
+            document.getElementById('tab-search-btn').classList.toggle('active', name === 'search');
             window.scrollTo(0,0);
         }
 
         async function init() {
-            // 日付設定
-            const options = { weekday: 'long', month: 'long', day: 'numeric' };
-            document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-US', options);
+            // 日付表示
+            const d = new Date();
+            document.getElementById('display-date').textContent = d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
             const ts = new Date().getTime();
             try {
-                // データの読み込み
                 const [apps, oapps, iapps, prod] = await Promise.all([
                     fetch(`../apps.json?${ts}`).then(r => r.json()).catch(() => []),
                     fetch(`../oapps.json?${ts}`).then(r => r.json()).catch(() => []),
@@ -164,54 +138,67 @@
                     fetch(`../prod.json?${ts}`).then(r => r.json()).catch(() => [])
                 ]);
 
-                prodApps = prod;
-                allApps = [...apps, ...oapps, ...iapps, ...prod];
+                prodData = prod;
+                allData = [...apps, ...oapps, ...iapps, ...prod];
 
-                renderToday();
-            } catch (e) { console.error(e); }
+                renderPlayNow();
+            } catch (e) { console.error("Load error:", e); }
         }
 
-        // Todayタブのレンダリング (大きなカード)
-        function renderToday() {
-            const container = document.getElementById('today-content');
-            prodApps.forEach(app => {
-                const card = document.createElement('a');
-                card.href = app.link;
-                card.className = 'today-card';
-                // header.pngを背景に、なければアイコン
-                const bg = app.codename ? `../resources/${app.codename}/header.png` : `../resources/${app.codename}/icon.png`;
-                card.style.backgroundImage = `url(${bg})`;
-                
-                card.innerHTML = `
-                    <div class="today-card-overlay">
-                        <div class="category">Featured Mod</div>
-                        <div class="title">${app.name}</div>
+        async function renderPlayNow() {
+            const container = document.getElementById('today-list');
+            const ts = new Date().getTime();
+            
+            for (const app of prodData) {
+                const item = document.createElement('a');
+                item.href = app.link;
+                item.className = 'mod-item';
+
+                // バージョン情報取得
+                let desc = "Play, Create, and Connect";
+                if(app.codename) {
+                    try {
+                        const vRes = await fetch(`../resources/${app.codename}/version.json?${ts}`);
+                        if(vRes.ok) {
+                            const v = await vRes.json();
+                            desc = `V${v.version} • Updated: ${v.lastUpdated}`;
+                        }
+                    } catch(e) {}
+                }
+
+                const icon = app.icon || (app.codename ? `../resources/${app.codename}/icon.png` : '');
+
+                item.innerHTML = `
+                    <img src="${icon}" class="mod-icon" onerror="this.remove()">
+                    <div class="mod-info">
+                        <div class="mod-title">${app.name}</div>
+                        <div class="mod-desc">${desc}</div>
                     </div>
+                    <span class="mod-btn">GET</span>
                 `;
-                container.appendChild(card);
-            });
+                container.appendChild(item);
+            }
         }
 
-        // Searchタブのフィルタリング (以前のロジック)
-        function filterSearch() {
-            const q = document.getElementById('betaSearchBox').value.toLowerCase();
+        function runSearch() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
             const res = document.getElementById('search-results');
             res.innerHTML = "";
             if(!q) return;
 
-            allApps.filter(a => a.name.toLowerCase().includes(q)).forEach(app => {
+            allData.filter(a => a.name.toLowerCase().includes(q)).forEach(app => {
                 const item = document.createElement('a');
                 item.href = app.link;
-                item.className = 'prod-item';
+                item.className = 'mod-item';
                 const icon = app.icon || (app.codename ? `../resources/${app.codename}/icon.png` : '');
-                
+
                 item.innerHTML = `
-                    ${icon ? `<img src="${icon}" class="prod-icon" onerror="this.remove()">` : ''}
-                    <div class="prod-info">
-                        <div class="prod-title">${app.name}</div>
-                        <div class="prod-desc">${app.description || 'Mod for Brawl Stars'}</div>
+                    ${icon ? `<img src="${icon}" class="mod-icon" onerror="this.remove()">` : ''}
+                    <div class="mod-info">
+                        <div class="mod-title">${app.name}</div>
+                        <div class="mod-desc">${app.type || 'Mod'}</div>
                     </div>
-                    <span class="prod-get-btn">GET</span>
+                    <span class="mod-btn">GET</span>
                 `;
                 res.appendChild(item);
             });
