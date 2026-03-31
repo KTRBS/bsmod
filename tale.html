@@ -14,7 +14,7 @@
             --btn-green: #28a745;
         }
 
-        /* ダークモード設定: 端末がダークモードなら自動切り替え */
+        /* ダークモード自動検知 */
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-color: #121212;
@@ -33,19 +33,30 @@
             transition: background 0.3s;
         }
 
-        /* グラデーションヘッダー */
+        /* ヘッダー画像とグラデーション */
         .hero {
             position: relative;
-            height: 280px;
+            height: 250px;
             background: url('../resources/tale/header.png') center/cover no-repeat;
-            display: flex; align-items: flex-end; justify-content: center;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start; /* 左端寄せ */
         }
         .hero::after {
             content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100%;
             background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--grad-color) 100%);
         }
 
-        .mod-name { position: relative; z-index: 10; font-size: 2.2rem; font-weight: 800; margin-bottom: 15px; text-shadow: 0 0 10px var(--grad-color); }
+        /* Mod Name を左端に固定 */
+        .mod-name {
+            position: relative;
+            z-index: 10;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0 0 20px 20px;
+            text-align: left;
+            text-shadow: 0 0 10px var(--grad-color);
+        }
 
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
@@ -67,22 +78,28 @@
 
         /* スクリーンショット横スクロール (App Store風) */
         .ss-container {
-            display: flex; overflow-x: auto; gap: 12px; margin: 0 -20px 30px -20px;
-            padding: 0 20px; scroll-snap-type: x mandatory;
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            margin: 0 -20px 30px -20px;
+            padding: 0 30px; /* 両脇にスペース */
+            scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
         }
         .ss-container::-webkit-scrollbar { display: none; }
         .ss-container img {
-            flex: 0 0 75%;
-            max-width: 280px; border-radius: 18px; scroll-snap-align: start;
+            flex: 0 0 calc(100% - 10px);
+            max-width: 320px;
+            aspect-ratio: 16 / 9; /* 16:9固定 */
+            object-fit: cover;    /* 引き延ばし防止 */
+            border-radius: 18px;
+            scroll-snap-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        /* コンテンツエリア */
+        /* 導入方法セクション */
         .section-title { font-size: 1.25rem; font-weight: bold; border-bottom: 1px solid var(--secondary-text); padding-bottom: 10px; margin-bottom: 18px; text-align: left; }
         .content-body { text-align: left; font-size: 1rem; color: var(--secondary-text); line-height: 1.7; }
-        
-        /* info内のリスト等を綺麗に見せる用 */
         .content-body ul { padding-left: 20px; }
         .content-body li { margin-bottom: 8px; }
 
@@ -92,7 +109,7 @@
 <body>
 
     <section class="hero">
-        <div class="mod-name">Tale Stars</div>
+        <div class="mod-name" id="ui-mod-name">Tale Stars</div>
     </section>
 
     <div class="container">
@@ -111,7 +128,6 @@
             <img src="../resources/tale/ss1.png" alt="Screenshot 1">
             <img src="../resources/tale/ss2.png" alt="Screenshot 2">
             <img src="../resources/tale/ss3.png" alt="Screenshot 3">
-            <img src="../resources/tale/ss4.png" alt="Screenshot 4">
         </div>
 
         <h2 class="section-title" id="ui-howto-title">How to Install</h2>
@@ -147,21 +163,21 @@
             const ts = new Date().getTime();
             const t = uiText[lang];
 
-            // UI基本テキストの設定
+            // 言語によるUIテキスト書き換え
             document.getElementById('ui-updated').firstChild.textContent = t.updated;
             document.getElementById('ui-howto-title').textContent = t.howto;
             document.getElementById('ui-back').textContent = t.back;
             document.getElementById('js-download-link').textContent = t.download;
 
             try {
-                // 1. version.jsonの取得
+                // 1. version.json の読み込み
                 const vRes = await fetch(`../resources/tale/version.json?${ts}`);
                 const vData = await vRes.json();
                 
                 document.getElementById('js-version').textContent = vData.version;
                 document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
                 
-                // ステータスの日本語化対応
+                // ステータスの言語化
                 const statusEl = document.getElementById('js-status');
                 const rawStatus = vData.status.toLowerCase();
                 if (rawStatus === 'available') {
@@ -172,7 +188,7 @@
                     statusEl.className = 'status-badge status-outdated';
                 }
 
-                // ダウンロードリンクの設定
+                // ダウンロードURLのセット
                 const dlBtn = document.getElementById('js-download-link');
                 if (vData.downloadUrl) {
                     dlBtn.href = vData.downloadUrl;
@@ -181,13 +197,13 @@
                     dlBtn.style.display = "none";
                 }
 
-                // 2. 言語別info.htmlの取得
+                // 2. 言語別 info_XX.html の読み込み
                 const infoFile = isJa ? 'info_ja.html' : 'info_en.html';
                 const infoRes = await fetch(`../resources/tale/${infoFile}?${ts}`);
                 document.getElementById('js-info-content').innerHTML = await infoRes.text();
 
             } catch (e) {
-                console.error("Load error:", e);
+                console.error("Failed to load details:", e);
                 document.getElementById('js-info-content').textContent = "Content could not be loaded.";
             }
         }
