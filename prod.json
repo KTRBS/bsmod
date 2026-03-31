@@ -1,26 +1,30 @@
 [
     {
-        "name": "a - メンテナンス中🛠️",
-        "codename": "soon",
-        "link": "https://KTRBS.github.io/bsmod/soon.html",
-        "icon": "resources/soon/icon.png"
+        "name": "KazareWare",
+        "codename": "kazare",
+        "link": "https://KTRBS.github.io/bsmod/kazare",
+        "icon": "resources/kazare/icon.png",
+        "ss1": "resources/kazare/ss1.png"
     },
     {
         "name": "Tale Stars [Android]",
         "codename": "tale",
         "link": "https://ktr.brawlmods.com/tale",
-        "icon": "resources/tale/icon.png"
+        "icon": "resources/tale/icon.png",
+        "ss1": "resources/tale/ss1.png"
     },
     {
         "name": "Tale Stars [iOS]",
         "codename": "tale",
         "link": "https://KTRBS.github.io/bsmod/taleiOS.html",
-        "icon": "resources/tale/icon.png"
+        "icon": "resources/tale/icon.png",
+        "ss1": "resources/tale/ss1.png"
     },
     {
         "name": "Null Rythm [Android]",
         "codename": "rythm",
         "link": "https://ktr.brawlmods.com/rythm",
-        "icon": "resources/rythm/icon.png"
+        "icon": "resources/rythm/icon.png",
+        "ss1": "resources/rythm/ss1.png"
     }    
 ]
