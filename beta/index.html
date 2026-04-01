@@ -8,11 +8,11 @@
         :root {
             --ios-blue: #007aff;
             --ios-gray: #8e8e93;
-            --ios-bg: #f2f2f7; /* 背景を少しグレーに（カードを目立たせるため） */
+            --ios-bg: #ffffff;
             --card-bg: #ffffff;
             --search-bg: rgba(142, 142, 147, 0.12);
             --text-color: #000000;
-            --line: rgba(0,0,0,0.05);
+            --line: rgba(0,0,0,0.1);
             --tab-bg: rgba(255, 255, 255, 0.94);
         }
         @media (prefers-color-scheme: dark) {
@@ -21,8 +21,8 @@
                 --card-bg: #1c1c1e;
                 --search-bg: rgba(255, 255, 255, 0.12);
                 --text-color: #ffffff;
-                --line: rgba(255,255,255,0.1);
-                --tab-bg: rgba(20, 20, 20, 0.85);
+                --line: rgba(255,255,255,0.15);
+                --tab-bg: rgba(20, 20, 20, 0.94);
             }
         }
 
@@ -31,101 +31,94 @@
             background-color: var(--ios-bg);
             color: var(--text-color);
             margin: 0;
-            padding: 0 15px 110px 15px; /* セーフエリアとタブバー分の余白 */
+            padding: 0 16px 80px 16px;
             -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
         }
 
         .hidden { display: none !important; }
 
-        header { padding: 30px 0 15px 0; }
-        .date-str { color: var(--ios-gray); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
-        h1 { font-size: 2.1rem; margin: 0; font-weight: 800; letter-spacing: -1px; }
+        /* --- Header --- */
+        header { padding: 20px 0 10px 0; }
+        .date-str { color: var(--ios-gray); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
+        h1 { font-size: 1.8rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
 
-        /* --- Today Grid Layout (横画面対応) --- */
+        /* --- Today Layout --- */
         #page-today-container {
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
         }
-
         @media (orientation: landscape) or (min-width: 768px) {
-            #page-today-container {
-                grid-template-columns: 1fr 1fr; /* 横画面・タブレットで2列 */
-                column-gap: 30px;
-                padding-top: 20px;
-            }
+            #page-today-container { grid-template-columns: 1fr 1fr; column-gap: 25px; }
         }
 
-        /* --- Featured Card (Big Image) --- */
+        /* --- Featured Card (Mobile 21:9 Force) --- */
         .random-featured-card {
-            display: block; width: 100%; aspect-ratio: 1 / 1.1; 
+            display: block; width: 100%; 
+            aspect-ratio: 21 / 9; /* モバイルでも21:9を強制適用 */
             background-size: cover; background-position: center;
-            border-radius: 16px; position: relative; text-decoration: none;
-            color: #fff; overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-radius: 14px; position: relative; text-decoration: none;
+            color: #fff; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         }
         .random-overlay {
-            position: absolute; bottom: 0; left: 0; right: 0; padding: 25px;
-            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            position: absolute; bottom: 0; left: 0; right: 0; padding: 15px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
         }
-        .random-tag { font-size: 0.8rem; font-weight: 700; opacity: 0.8; text-transform: uppercase; }
-        .random-title { font-size: 1.8rem; font-weight: 800; margin-top: 5px; }
+        .random-tag { font-size: 0.7rem; font-weight: 700; opacity: 0.9; text-transform: uppercase; }
+        .random-title { font-size: 1.4rem; font-weight: 800; margin-top: 2px; }
 
-        /* --- List Card Section --- */
+        /* --- Play These Mods Card --- */
         .today-card {
-            background: var(--card-bg); border-radius: 16px; padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            background: var(--card-bg); border-radius: 14px; padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line);
         }
-        .card-header-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 15px; }
+        .card-header-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; }
 
-        /* --- Row Item Styling --- */
+        /* --- Row Item (コンパクト化) --- */
         .mod-row {
-            display: flex; align-items: center; gap: 12px; padding: 12px 0;
+            display: flex; align-items: center; padding: 10px 0;
             text-decoration: none; color: inherit; border-bottom: 1px solid var(--line);
         }
         .mod-row:last-child { border-bottom: none; }
         
-        .mod-icon { width: 62px; height: 62px; border-radius: 14px; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .mod-info { flex: 1; min-width: 0; }
-        .mod-name { font-size: 1rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .mod-sub { font-size: 0.85rem; color: var(--ios-gray); margin-top: 2px; }
+        .mod-icon { width: 52px; height: 52px; border-radius: 11px; object-fit: cover; flex-shrink: 0; }
+        .mod-info { flex: 1; min-width: 0; padding: 0 10px; }
+        .mod-name { font-size: 0.9rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mod-sub { font-size: 0.75rem; color: var(--ios-gray); margin-top: 1px; line-height: 1.2; }
 
-        /* Get Button (Apple Standard Capsule Shape) */
+        /* --- GET Button (引き締め版) --- */
         .get-btn {
             background: #f0f0f7; color: var(--ios-blue); font-weight: 800;
-            padding: 6px 22px; border-radius: 20px; font-size: 0.9rem;
-            min-width: 72px; text-align: center;
+            padding: 5px 14px; border-radius: 15px; font-size: 0.78rem;
+            min-width: 60px; text-align: center; flex-shrink: 0;
         }
         @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
 
-        /* --- Search View (画像2枚目のスタイル) --- */
-        .search-wrapper { position: relative; margin: 20px 0; }
-        .search-wrapper input {
-            width: 100%; padding: 12px 12px 12px 40px; border-radius: 12px; border: none; 
-            background: var(--search-bg); font-size: 17px; color: var(--text-color); outline: none;
-        }
-        .search-icon { position: absolute; left: 12px; top: 12px; color: var(--ios-gray); }
-
+        /* --- Search View --- */
         .search-container { max-width: 800px; margin: 0 auto; }
-        .search-result-item { display: flex; flex-direction: column; padding: 25px 0; border-bottom: 1px solid var(--line); text-decoration: none; color: inherit; }
-        
-        /* Screenshot Container */
-        .ss-preview-container {
-            width: 100%; border-radius: 12px; overflow: hidden; margin-top: 15px;
-            aspect-ratio: 16 / 9; background: var(--search-bg); box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        .search-wrapper { position: relative; margin: 15px 0; }
+        .search-wrapper input {
+            width: 100%; box-sizing: border-box; padding: 8px 10px 8px 35px; border-radius: 10px; border: none; 
+            background: var(--search-bg); font-size: 16px; color: var(--text-color); outline: none;
         }
-        .ss-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .search-icon { position: absolute; left: 10px; top: 9px; color: var(--ios-gray); font-size: 14px; }
 
-        /* --- Tab Bar --- */
+        /* Search Card Style (以前のスタイルに戻す) */
+        .search-result-item { display: flex; flex-direction: column; padding: 20px 0; border-bottom: 1px solid var(--line); text-decoration: none; color: inherit; }
+        .ss-container { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line); }
+        .ss-img { width: 100%; display: block; object-fit: cover; }
+
+        /* --- Slim Tab Bar --- */
         .tab-bar {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 85px;
-            background: var(--tab-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-top: 0.5px solid var(--line);
-            display: flex; justify-content: space-around; padding-top: 10px; z-index: 100;
+            position: fixed; bottom: 0; left: 0; right: 0; height: 50px;
+            padding-bottom: env(safe-area-inset-bottom);
+            background: var(--tab-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-top: 0.5px solid var(--line); display: flex; justify-content: space-around; align-items: center; z-index: 100;
         }
-        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 10px; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 9px; width: 50%; }
         .tab-item.active { color: var(--ios-blue); }
-        .tab-icon { font-size: 24px; margin-bottom: 4px; }
+        .tab-icon { font-size: 20px; margin-bottom: 1px; }
     </style>
 </head>
 <body>
@@ -135,10 +128,8 @@
             <p class="date-str" id="display-date"></p>
             <h1>Today</h1>
         </header>
-
         <div id="page-today-container">
             <div id="random-featured-area"></div>
-
             <div class="today-card">
                 <div class="card-header-title">Play These Mods</div>
                 <div id="today-list"></div>
@@ -158,14 +149,8 @@
     </div>
 
     <nav class="tab-bar">
-        <a href="javascript:void(0)" class="tab-item active" onclick="showTab('today')">
-            <span class="tab-icon">📑</span>
-            <span>Today</span>
-        </a>
-        <a href="javascript:void(0)" class="tab-item" onclick="showTab('search')">
-            <span class="tab-icon">🔍</span>
-            <span>Search</span>
-        </a>
+        <a href="javascript:void(0)" class="tab-item active" onclick="showTab('today')"><span class="tab-icon">📑</span>Today</a>
+        <a href="javascript:void(0)" class="tab-item" onclick="showTab('search')"><span class="tab-icon">🔍</span>Search</a>
     </nav>
 
     <script>
@@ -189,36 +174,38 @@
                     fetch(`../iapps.json?${ts}`).then(r => r.json()).catch(() => []),
                     fetch(`../prod.json?${ts}`).then(r => r.json()).catch(() => [])
                 ]);
-
                 prodData = prod.map(a => ({...a, type:'prod', color:'#ff3b30'}));
-                allData = [...apps, ...oapps, ...iapps, ...prodData];
-
+                allData = [
+                    ...apps.map(a => ({...a, type:'offline', color:'#8e8e93'})),
+                    ...oapps.map(a => ({...a, type:'online', color:'#28a745'})),
+                    ...iapps.map(a => ({...a, type:'ipa', color:'#007aff'})),
+                    ...prodData
+                ];
                 renderRandomFeatured();
                 renderToday();
             } catch (e) { console.error(e); }
         }
 
-        // Today's Mod のランダム Featuredカード
+        function formatVersion(v) {
+            if (!v) return "";
+            return "v" + v.toString().trim().replace(/^[vV]+/, "");
+        }
+
         function renderRandomFeatured() {
             const area = document.getElementById('random-featured-area');
-            // 画像がある candidates
             const candidates = allData.filter(a => a.ss1 || a.codename);
-            if (candidates.length === 0) return;
-
+            if (!candidates.length) return;
             const picked = candidates[Math.floor(Math.random() * candidates.length)];
-            const img = picked.ss1 ? `../${picked.ss1}` : (picked.codename ? `../resources/${picked.codename}/ss1.png` : '');
-            
+            const img = picked.ss1 ? `../${picked.ss1}` : `../resources/${picked.codename}/ss1.png`;
             area.innerHTML = `
                 <a href="${picked.link}" class="random-featured-card" style="background-image: url('${img}')">
                     <div class="random-overlay">
                         <div class="random-tag">Today's Mod</div>
                         <div class="random-title">${picked.name}</div>
                     </div>
-                </a>
-            `;
+                </a>`;
         }
 
-        // Today用のリスト
         async function renderToday() {
             const container = document.getElementById('today-list');
             container.innerHTML = "";
@@ -226,62 +213,20 @@
                 const row = document.createElement('a');
                 row.href = app.link;
                 row.className = 'mod-row';
-
-                let versionText = "Play now";
+                let vTxt = "Play now";
                 if (app.codename) {
                     try {
-                        const vRes = await fetch(`../resources/${app.codename}/version.json`);
-                        if(vRes.ok) {
-                            const vData = await vRes.json();
-                            versionText = `v${vData.version}<br>Updated: ${vData.lastUpdated}`;
-                        }
+                        const v = await fetch(`../resources/${app.codename}/version.json`).then(r => r.json());
+                        vTxt = `${formatVersion(v.version)}<br>Updated: ${v.lastUpdated}`;
                     } catch(e) {}
                 }
-
                 const iconPath = app.icon ? `../${app.icon}` : `../resources/${app.codename}/icon.png`;
                 row.innerHTML = `
                     <img src="${iconPath}" class="mod-icon">
-                    <div class="mod-info">
-                        <div class="mod-name">${app.name}</div>
-                        <div class="mod-sub">${versionText}</div>
-                    </div>
-                    <div class="get-btn">GET</div>
-                `;
+                    <div class="mod-info"><div class="mod-name">${app.name}</div><div class="mod-sub">${vTxt}</div></div>
+                    <div class="get-btn">GET</div>`;
                 container.appendChild(row);
             }
-        }
-
-        // 検索結果カード作成用のヘルパー
-        function createSearchCard(app) {
-            const card = document.createElement('a');
-            card.href = app.link;
-            card.className = 'search-result-item';
-
-            const iconUrl = app.icon ? `../${app.icon}` : (app.codename ? `../resources/${app.codename}/icon.png` : null);
-            const ssUrl = app.ss1 ? `../${app.ss1}` : (app.codename ? `../resources/${app.codename}/ss1.png` : null);
-
-            // 上部（アイコン、名前、GET）
-            let html = `<div style="display:flex; align-items:center;">`;
-            if(iconUrl) html += `<img src="${iconUrl}" class="mod-icon">`;
-            html += `
-                <div class="mod-info">
-                    <div class="mod-name">${app.name}</div>
-                    <div class="mod-sub">${app.type || 'Mod'}</div>
-                </div>
-                <div class="get-btn">GET</div>
-            </div>`;
-
-            // スクリーンショット（存在する場合のみ）
-            if (ssUrl) {
-                html += `
-                    <div class="ss-preview-container">
-                        <img src="${ssUrl}" class="ss-img" onerror="this.parentElement.style.display='none'">
-                    </div>
-                `;
-            }
-
-            card.innerHTML = html;
-            return card;
         }
 
         function runSearch() {
@@ -289,12 +234,20 @@
             const res = document.getElementById('search-results');
             res.innerHTML = "";
             if(!q) return;
-
             allData.filter(a => a.name.toLowerCase().includes(q)).forEach(app => {
-                res.appendChild(createSearchCard(app));
+                const item = document.createElement('a');
+                item.href = app.link;
+                item.className = 'search-result-item';
+                const iconUrl = app.icon ? `../${app.icon}` : (app.codename ? `../resources/${app.codename}/icon.png` : null);
+                const ssUrl = app.ss1 ? `../${app.ss1}` : (app.codename ? `../resources/${app.codename}/ss1.png` : null);
+                let html = `<div class="mod-row" style="border:none; padding:0;">`;
+                if(iconUrl) html += `<img src="${iconUrl}" class="mod-icon">`;
+                html += `<div class="mod-info"><div class="mod-name">${app.name}</div><div class="mod-sub"><span style="color:${app.color}; font-weight:bold;">${app.type.toUpperCase()}</span> • Mod</div></div><div class="get-btn">GET</div></div>`;
+                if(ssUrl) html += `<div class="ss-container"><img src="${ssUrl}" class="ss-img" onerror="this.parentElement.remove()"></div>`;
+                item.innerHTML = html;
+                res.appendChild(item);
             });
         }
-
         window.onload = init;
     </script>
 </body>
