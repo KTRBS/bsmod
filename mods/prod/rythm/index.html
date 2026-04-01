@@ -7,7 +7,7 @@
     
     <meta id="meta-desc" property="og:description" content="Null Rythm 最新版をダウンロード">
     <meta id="og-title" property="og:title" content="Null Rythm - Details">
-    <meta property="og:image" content="../../resources/rythm/icon.png">
+    <meta property="og:image" content="../../../resources/rythm/icon.png">
     <meta property="og:type" content="website">
 
     <style>
@@ -67,7 +67,8 @@
         /* --- Hero --- */
         .hero {
             position: relative; height: 240px;
-            background: url('../../resources/rythm/header.png') center/cover no-repeat;
+            /* 3階層上からリソースを参照 */
+            background: url('../../../resources/rythm/header.png') center/cover no-repeat;
             display: flex; align-items: flex-end;
         }
         .hero::after {
@@ -94,7 +95,6 @@
         .status-available { background: #28a745; color: white; }
         .status-outdated { background: #8e8e93; color: white; }
 
-        /* Author List */
         .author-section { margin-top: 10px; }
         .author-label { color: var(--secondary-text); font-size: 0.75rem; font-weight: 600; margin-bottom: 4px; }
         .author-list { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -103,7 +103,7 @@
             background: var(--card-bg); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem;
         }
 
-        /* --- Download Buttons --- */
+        /* --- Download Area --- */
         #js-dl-area { margin-bottom: 30px; }
         .download-btn {
             display: block; background: var(--btn-blue); color: white; text-decoration: none;
@@ -127,7 +127,6 @@
         .section-title { font-size: 1.2rem; font-weight: 800; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px; }
         .content-body { line-height: 1.6; color: var(--secondary-text); font-size: 1rem; }
         
-        /* Telegram / Support Button */
         .dev-contact-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
         .contact-btn {
             display: flex; align-items: center; justify-content: space-between;
@@ -143,7 +142,7 @@
 
     <div id="js-sticky-header" class="sticky-header">
         <div class="sticky-info">
-            <img src="../../resources/rythm/icon.png" alt="Icon">
+            <img src="../../../resources/rythm/icon.png" alt="Icon">
             <span>Null Rythm</span>
         </div>
         <a href="#" class="sticky-dl-btn">GET</a>
@@ -155,7 +154,7 @@
 
     <div class="container">
         <div class="info-header">
-            <div class="icon-box"><img src="../../resources/rythm/icon.png" alt="Icon"></div>
+            <div class="icon-box"><img src="../../../resources/rythm/icon.png" alt="Icon"></div>
             <div>
                 <div class="version-wrapper">
                     <p class="version-num" id="js-version">v---</p>
@@ -172,9 +171,9 @@
         <div id="js-dl-area"></div>
 
         <div class="ss-container">
-            <img src="../../resources/rythm/ss1.png" alt="SS1">
-            <img src="../../resources/rythm/ss2.png" alt="SS2">
-            <img src="../../resources/rythm/ss3.png" alt="SS3">
+            <img src="../../../resources/rythm/ss1.png" alt="SS1">
+            <img src="../../../resources/rythm/ss2.png" alt="SS2">
+            <img src="../../../resources/rythm/ss3.png" alt="SS3">
         </div>
 
         <h2 class="section-title" id="ui-howto-title">How to Install</h2>
@@ -182,7 +181,7 @@
 
         <div class="dev-contact-section" id="js-contact-area"></div>
 
-        <a href="../../index.html" class="back-link" id="ui-back">← Back to List</a>
+        <a href="../../../index.html" class="back-link" id="ui-back">← Back to List</a>
     </div>
 
     <script>
@@ -210,35 +209,34 @@
             const stickyBtn = document.querySelector('.sticky-dl-btn');
 
             try {
-                // リソースパスは ../../resources/rythm/
-                const vRes = await fetch(`../../resources/${codename}/version.json?${ts}`);
+                // パスを「../../../resources/」に修正
+                const vRes = await fetch(`../../../resources/${codename}/version.json?${ts}`);
                 const vData = await vRes.json();
                 
-                // 基本テキスト
                 document.getElementById('js-version').textContent = 'v' + vData.version;
                 document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
                 document.getElementById('ui-author-label').textContent = t.dev;
                 stickyBtn.textContent = t.get;
 
-                // ステータス判定
+                // デバイス判定
                 const isCompatible = (device === "ios" ? vData.iossupport === "available" : (device === "android" ? vData.androidsupport === "available" : true));
                 const statusEl = document.getElementById('js-status');
                 statusEl.textContent = isCompatible ? t.available : t.unsupported;
                 statusEl.className = 'status-badge-inline ' + (isCompatible ? 'status-available' : 'status-outdated');
 
-                // 作者リスト生成
+                // 作者リスト (リンクも3つ戻る)
                 const authorContainer = document.getElementById('js-author-list');
                 if (vData.authors) {
                     vData.authors.forEach(auth => {
                         const a = document.createElement('a');
-                        a.href = `../../authors/${auth.id}/index.html`;
+                        a.href = `../../../authors/${auth.id}/index.html`;
                         a.className = 'author-link';
                         a.textContent = auth.name;
                         authorContainer.appendChild(a);
                     });
                 }
 
-                // ボタン生成
+                // ボタンロジック
                 if (device === "pc") {
                     dlArea.className = "dl-section-pc";
                     dlArea.innerHTML = `
@@ -257,19 +255,17 @@
                     dlArea.appendChild(btn);
                 }
 
-                // Telegramリンク
                 if (vData.telegram) {
                     document.getElementById('js-contact-area').innerHTML = `<a href="${vData.telegram}" target="_blank" class="contact-btn"><span>Telegram</span></a>`;
                 }
 
-                // info読み込み
+                // infoファイルも3つ戻る
                 const infoFile = isJa ? 'info_ja.html' : 'info_en.html';
-                const infoRes = await fetch(`../../resources/${codename}/${infoFile}?${ts}`);
+                const infoRes = await fetch(`../../../resources/${codename}/${infoFile}?${ts}`);
                 if (infoRes.ok) document.getElementById('js-info-content').innerHTML = await infoRes.text();
 
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Initialize failed:", e); }
 
-            // Scroll Effect
             const stickyHeader = document.getElementById('js-sticky-header');
             const mainTitle = document.getElementById('ui-main-title');
             window.addEventListener('scroll', () => {
