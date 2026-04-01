@@ -1,6 +1,12 @@
 {
     "version": "V12.420",
-    "status": "available",
     "lastUpdated": "2025-12-31",
-    "downloadUrl": "https://t.me/monibrawl/1309"
+    "iossupport": "unavailable",
+    "androidsupport": "available",
+    "iosDownloadUrl": "",
+    "androidDownloadUrl": "https://t.me/monibrawl/1309",
+    "authors": [
+        { "name": "Detomoni", "id": "moni" }
+    ],
+    "telegram": "https://t.me/monibrawl"
 }
