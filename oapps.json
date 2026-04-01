@@ -1,2 +1,9 @@
 [
+    {
+        "name": "Moni Brawl",
+        "codename": "moni",
+        "link": "https://ktr.brawlmods.com/moni",
+        "icon": "resources/moni/icon.png",
+        "ss1": "resources/moni/ss1.png"
+    }    
 ]
