@@ -2,33 +2,35 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tale Stars - Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Null Rythm - Details</title>
     
-    <meta id="meta-desc" property="og:description" content="Tale stars 最新版をダウンロード">
-    <meta id="og-title" property="og:title" content="Tale Stars - Details">
-    <meta property="og:image" content="https://KTRBS.github.io/resources/tale/icon.png">
-    <meta property="og:url" content="https://KTRBS.github.io/bsmod/tale">
+    <meta id="meta-desc" property="og:description" content="Null Rythm 最新版をダウンロード">
+    <meta id="og-title" property="og:title" content="Null Rythm - Details">
+    <meta property="og:image" content="../../../resources/rythm/icon.png">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Brawl Stars Mods">
 
     <style>
         :root {
             --bg-color: #ffffff;
-            --text-color: #333;
-            --secondary-text: #666;
+            --text-color: #000000;
+            --secondary-text: #8e8e93;
             --grad-color: rgba(255,255,255,1);
-            --header-bg: rgba(255,255,255,0.9);
-            --btn-green: #28a745;
+            --header-bg: rgba(255,255,255,0.85);
+            --btn-blue: #007aff;
+            --line: rgba(0,0,0,0.1);
+            --card-bg: #f2f2f7;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-color: #121212;
-                --text-color: #f0f0f0;
-                --secondary-text: #bbb;
-                --grad-color: rgba(18,18,18,1);
-                --header-bg: rgba(18,18,18,0.9);
+                --bg-color: #000000;
+                --text-color: #ffffff;
+                --secondary-text: #8e8e93;
+                --grad-color: rgba(0,0,0,1);
+                --header-bg: rgba(20,20,20,0.85);
+                --line: rgba(255,255,255,0.15);
+                --card-bg: #1c1c1e;
             }
         }
 
@@ -37,195 +39,273 @@
             margin: 0; padding: 0;
             background-color: var(--bg-color);
             color: var(--text-color);
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- スティッキーヘッダー (スクロール後に上に出る) --- */
+        /* --- Sticky Header --- */
         .sticky-header {
             position: fixed; top: 0; left: 0; right: 0;
-            height: 65px; background: var(--header-bg);
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            height: 60px; background: var(--header-bg);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 20px; z-index: 100;
             transform: translateY(-100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
-            opacity: 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+            opacity: 0; border-bottom: 0.5px solid var(--line);
         }
         .sticky-header.active { transform: translateY(0); opacity: 1; }
-        
-        .sticky-info { display: flex; align-items: center; gap: 12px; }
-        .sticky-info img { width: 38px; height: 38px; border-radius: 9px; }
-        .sticky-info span { font-weight: bold; font-size: 1.1rem; }
-        
+        .sticky-info { display: flex; align-items: center; gap: 10px; }
+        .sticky-info img { width: 34px; height: 34px; border-radius: 8px; }
+        .sticky-info span { font-weight: 700; font-size: 1rem; }
         .sticky-dl-btn {
-            background: var(--btn-green); color: white; text-decoration: none;
-            padding: 7px 18px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;
+            background: #f0f0f7; color: var(--btn-blue); text-decoration: none;
+            padding: 6px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem;
         }
+        @media (prefers-color-scheme: dark) { .sticky-dl-btn { background: #3a3a3c; } }
 
-
-        /* --- 通常のメインヘッダー --- */
+        /* --- Hero --- */
         .hero {
-            position: relative; height: 250px;
-            background: url('../../resources/tale/header.png') center/cover no-repeat;
+            position: relative; height: 240px;
+            background: url('../../../resources/rythm/header.png') center/cover no-repeat;
             display: flex; align-items: flex-end;
         }
         .hero::after {
-            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100%;
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100px;
             background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--grad-color) 100%);
         }
-        .mod-name {
+        .mod-name-hero {
             position: relative; z-index: 10; font-size: 2.2rem; font-weight: 800;
-            margin: 0 0 20px 20px; text-shadow: 0 0 10px var(--grad-color);
+            margin: 0 0 20px 20px; letter-spacing: -1px;
         }
 
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
-        .info-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
-        .icon-box img { width: 85px; height: 85px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .version-num { font-size: 1.3rem; font-weight: bold; margin: 0; }
-        .status-badge { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; margin-top: 6px; }
+        /* --- Info Header --- */
+        .info-header { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; }
+        .icon-box img { width: 92px; height: 92px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        .version-wrapper { display: flex; align-items: center; gap: 8px; }
+        .version-num { font-size: 1.4rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
+        .status-badge-inline { 
+            font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; 
+            font-weight: 800; text-transform: uppercase; 
+        }
         .status-available { background: #28a745; color: white; }
-        .status-outdated { background: #dc3545; color: white; }
+        .status-outdated { background: #8e8e93; color: white; }
 
-        .download-btn {
-            display: block; background: var(--btn-green); color: white; text-decoration: none;
-            text-align: center; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 1.1rem;
-            margin-bottom: 30px;
+        /* Author Section (横並び) */
+        .author-section { 
+            margin-top: 6px; 
+            display: flex; 
+            align-items: baseline; 
+            gap: 6px; 
+        }
+        .author-label { 
+            color: var(--secondary-text); 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            white-space: nowrap;
+        }
+        .author-list { display: flex; flex-wrap: wrap; gap: 4px; }
+        .author-link { 
+            color: var(--btn-blue); 
+            text-decoration: none; 
+            font-weight: 600; 
+            font-size: 0.85rem;
+        }
+        /* 複数名いる場合にカンマを追加 */
+        .author-link:not(:last-child)::after {
+            content: ',';
+            color: var(--secondary-text);
+            margin-left: 1px;
         }
 
+        /* --- Download Area --- */
+        #js-dl-area { margin-bottom: 30px; }
+        .download-btn {
+            display: block; background: var(--btn-blue); color: white; text-decoration: none;
+            text-align: center; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 1.1rem;
+        }
+        .download-btn.unsupported { background: #8e8e93 !important; cursor: not-allowed; opacity: 0.7; }
+        .dl-section-pc { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .pc-btn { padding: 14px !important; font-size: 0.95rem !important; }
+
+        /* --- Screenshots --- */
         .ss-container {
-            display: flex; overflow-x: auto; gap: 15px; margin: 0 -20px 30px -20px; padding: 0 30px;
+            display: flex; overflow-x: auto; gap: 14px; margin: 0 -20px 30px -20px; padding: 0 20px;
             scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
         }
         .ss-container::-webkit-scrollbar { display: none; }
         .ss-container img {
-            flex: 0 0 calc(100% - 10px); max-width: 320px; aspect-ratio: 16 / 9;
-            object-fit: cover; border-radius: 18px; scroll-snap-align: center;
+            flex: 0 0 85%; max-width: 380px; aspect-ratio: 16 / 9;
+            object-fit: cover; border-radius: 12px; scroll-snap-align: center; border: 0.5px solid var(--line);
         }
 
-        .section-title { font-size: 1.25rem; font-weight: bold; border-bottom: 1px solid var(--secondary-text); padding-bottom: 10px; margin-bottom: 18px; }
-        .content-body { line-height: 1.7; color: var(--secondary-text); }
-        .back-link { display: inline-block; margin: 40px 0; color: #007bff; text-decoration: none; font-weight: bold; }
+        .section-title { font-size: 1.2rem; font-weight: 800; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px; }
+        .content-body { line-height: 1.6; color: var(--secondary-text); font-size: 1rem; }
+        
+        .dev-contact-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
+        .contact-btn {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 15px; background: var(--card-bg); border-radius: 12px;
+            text-decoration: none; color: var(--btn-blue); font-weight: 600;
+        }
+        .contact-btn::after { content: '›'; font-size: 1.4rem; color: var(--secondary-text); }
+
+        .back-link { display: inline-block; margin: 40px 0; color: var(--btn-blue); text-decoration: none; font-weight: 700; }
     </style>
 </head>
 <body>
 
     <div id="js-sticky-header" class="sticky-header">
         <div class="sticky-info">
-            <img src="../../resources/tale/icon.png" alt="Icon">
-            <span>Tale Stars</span>
+            <img src="../../../resources/rythm/icon.png" alt="Icon">
+            <span>Null Rythm</span>
         </div>
-        <a href="#" class="sticky-dl-btn js-dl-link">GET</a>
+        <a href="#" class="sticky-dl-btn">GET</a>
     </div>
 
     <section class="hero">
-        <div class="mod-name">Tale Stars</div>
+        <div class="mod-name-hero" id="ui-main-title">Null Rythm</div>
     </section>
 
-    <div class="container" id="js-trigger">
+    <div class="container">
         <div class="info-header">
-            <div class="icon-box"><img src="../../resources/tale/icon.png" alt="Icon"></div>
+            <div class="icon-box"><img src="../../../resources/rythm/icon.png" alt="Icon"></div>
             <div>
-                <p class="version-num" id="js-version">v---</p>
-                <div id="js-status" class="status-badge">----</div>
-                <p style="font-size: 0.85rem; margin: 6px 0 0;" id="ui-updated">Last Updated: --</p>
+                <div class="version-wrapper">
+                    <p class="version-num" id="js-version">v---</p>
+                    <div id="js-status" class="status-badge-inline">----</div>
+                </div>
+                
+                <div class="author-section">
+                    <div class="author-label" id="ui-author-label">Developer</div>
+                    <div id="js-author-list" class="author-list"></div>
+                </div>
+                
+                <p style="font-size: 0.8rem; margin: 6px 0 0; color: var(--secondary-text);" id="ui-updated">Last Updated: --</p>
             </div>
         </div>
 
-        <a href="#" class="download-btn js-dl-link" id="ui-download">DOWNLOAD</a>
+        <div id="js-dl-area"></div>
 
         <div class="ss-container">
-            <img src="../../resources/tale/ss1.png" alt="S1">
-            <img src="../../resources/tale/ss2.png" alt="S2">
-            <img src="../../resources/tale/ss3.png" alt="S3">
+            <img src="../../../resources/rythm/ss1.png" alt="SS1">
+            <img src="../../../resources/rythm/ss2.png" alt="SS2">
+            <img src="../../../resources/rythm/ss3.png" alt="SS3">
         </div>
 
         <h2 class="section-title" id="ui-howto-title">How to Install</h2>
         <div class="content-body" id="js-info-content">Loading...</div>
 
-        <a href="../../index.html" class="back-link" id="ui-back">← Back to List</a>
+        <div class="dev-contact-section" id="js-contact-area"></div>
+
+        <a href="../../../index.html" class="back-link" id="ui-back">← Back to List</a>
     </div>
 
     <script>
         const isJa = navigator.language.includes('ja');
         const lang = isJa ? 'ja' : 'en';
-        
+        const codename = 'rythm';
+
         const uiText = {
-            ja: { title: "Tale Stars - 詳細", desc: "Tale stars 最新版をダウンロード", updated: "最終更新: ", howto: "導入方法", back: "← リストに戻る", download: "ダウンロード", available: "利用可能", outdated: "旧バージョン", get: "入手" },
-            en: { title: "Tale Stars - Details", desc: "Download the latest version of Tale stars", updated: "Last Updated: ", howto: "How to Install", back: "← Back to List", download: "DOWNLOAD", available: "Available", outdated: "Outdated", get: "GET" }
+            ja: { available: "利用可能", unsupported: "非対応", updated: "最終更新: ", howto: "導入方法", back: "← リストに戻る", download: "ダウンロード", get: "入手", ios: "iOS (IPA)", android: "Android (APK)", dev: "開発者" },
+            en: { available: "Available", unsupported: "Unsupported", updated: "Last Updated: ", howto: "How to Install", back: "← Back to List", download: "DOWNLOAD", get: "GET", ios: "iOS (IPA)", android: "Android (APK)", dev: "Developer" }
         };
+
+        function getOS() {
+            const ua = navigator.userAgent;
+            if (/android/i.test(ua)) return "android";
+            if (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return "ios";
+            return "pc";
+        }
 
         async function initPage() {
             const ts = new Date().getTime();
             const t = uiText[lang];
-
-            // テキスト流し込み (前回と同様)
-            document.title = t.title;
-            document.getElementById('meta-desc').setAttribute('content', t.desc);
-            document.getElementById('ui-updated').firstChild.textContent = t.updated;
-            document.getElementById('ui-howto-title').textContent = t.howto;
-            document.getElementById('ui-back').textContent = t.back;
-            document.getElementById('ui-download').textContent = t.download;
-            document.querySelector('.sticky-dl-btn').textContent = t.get;
+            const device = getOS();
+            const dlArea = document.getElementById('js-dl-area');
+            const stickyBtn = document.querySelector('.sticky-dl-btn');
 
             try {
-                const vRes = await fetch(`../../resources/tale/version.json?${ts}`);
+                // version.jsonの取得
+                const vRes = await fetch(`../../../resources/${codename}/version.json?${ts}`);
                 const vData = await vRes.json();
-                document.getElementById('js-version').textContent = vData.version;
-                document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
-                const statusEl = document.getElementById('js-status');
-                const rawStatus = vData.status.toLowerCase();
-                statusEl.textContent = rawStatus === 'available' ? t.available : t.outdated;
-                statusEl.className = 'status-badge ' + (rawStatus === 'available' ? 'status-available' : 'status-outdated');
                 
-                const dlLinks = document.querySelectorAll('.js-dl-link');
-                dlLinks.forEach(link => {
-                    if (vData.downloadUrl) { link.href = vData.downloadUrl; link.target = "_blank"; }
-                });
+                document.getElementById('js-version').textContent = 'v' + vData.version;
+                document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
+                document.getElementById('ui-author-label').textContent = t.dev;
+                stickyBtn.textContent = t.get;
 
+                // 互換性チェック
+                const isCompatible = (device === "ios" ? vData.iossupport === "available" : (device === "android" ? vData.androidsupport === "available" : true));
+                const statusEl = document.getElementById('js-status');
+                statusEl.textContent = isCompatible ? t.available : t.unsupported;
+                statusEl.className = 'status-badge-inline ' + (isCompatible ? 'status-available' : 'status-outdated');
+
+                // 作者リストの生成 (名前を横に並べる)
+                const authorContainer = document.getElementById('js-author-list');
+                authorContainer.innerHTML = "";
+                if (vData.authors) {
+                    vData.authors.forEach(auth => {
+                        const a = document.createElement('a');
+                        a.href = `../../../authors/${auth.id}/index.html`;
+                        a.className = 'author-link';
+                        a.textContent = auth.name;
+                        authorContainer.appendChild(a);
+                    });
+                }
+
+                // ボタンロジック
+                if (device === "pc") {
+                    dlArea.className = "dl-section-pc";
+                    dlArea.innerHTML = `
+                        <a href="${vData.iosDownloadUrl}" class="download-btn pc-btn btn-ipa ${vData.iossupport==='available'?'':'unsupported'}" target="_blank">${vData.iossupport==='available'?t.ios:t.unsupported}</a>
+                        <a href="${vData.androidDownloadUrl}" class="download-btn pc-btn btn-apk ${vData.androidsupport==='available'?'':'unsupported'}" target="_blank">${vData.androidsupport==='available'?t.android:t.unsupported}</a>
+                    `;
+                    stickyBtn.href = vData.iosDownloadUrl || vData.androidDownloadUrl;
+                } else {
+                    const isiOS = (device === "ios");
+                    const url = isiOS ? vData.iosDownloadUrl : vData.androidDownloadUrl;
+                    const btn = document.createElement('a');
+                    btn.className = "download-btn" + (isCompatible ? "" : " unsupported");
+                    btn.textContent = isCompatible ? `${t.download} (${isiOS?'IPA':'APK'})` : t.unsupported;
+                    if (isCompatible) { 
+                        btn.href = url; btn.target = "_blank"; stickyBtn.href = url; 
+                    } else { 
+                        btn.href = "javascript:void(0)";
+                        stickyBtn.style.display = "none"; 
+                    }
+                    dlArea.appendChild(btn);
+                }
+
+                // Telegramリンク
+                if (vData.telegram) {
+                    document.getElementById('js-contact-area').innerHTML = `<a href="${vData.telegram}" target="_blank" class="contact-btn"><span>Telegram</span></a>`;
+                }
+
+                // 紹介文の読み込み
                 const infoFile = isJa ? 'info_ja.html' : 'info_en.html';
-                const infoRes = await fetch(`../../resources/tale/${infoFile}?${ts}`);
-                document.getElementById('js-info-content').innerHTML = await infoRes.text();
-            } catch (e) { console.error(e); }
+                const infoRes = await fetch(`../../../resources/${codename}/${infoFile}?${ts}`);
+                if (infoRes.ok) document.getElementById('js-info-content').innerHTML = await infoRes.text();
 
-            // --- ★ スクロール連動アニメーションの核心部分 ---
+            } catch (e) { console.error("Load error:", e); }
+
+            // スクロールエフェクト
             const stickyHeader = document.getElementById('js-sticky-header');
-            const mainTitle = document.querySelector('.mod-name');
-            const heroSection = document.querySelector('.hero');
-
+            const mainTitle = document.getElementById('ui-main-title');
             window.addEventListener('scroll', () => {
                 const scrollY = window.scrollY;
-                const heroHeight = heroSection.offsetHeight;
-                
-                // 1. メインタイトルのアニメーション (上に移動しながら消える)
-                // スクロール量に合わせて 0〜1 の比率を計算
-                const fadeStart = 50;  // 50pxスクロールしたらフェード開始
-                const fadeEnd = 150;   // 150pxで完全に消える
-                let opacity = 1 - (scrollY - fadeStart) / (fadeEnd - fadeStart);
-                let translateY = (scrollY - fadeStart) * -0.5; // 上にせり上がる速度
-
-                if (scrollY <= fadeStart) {
-                    opacity = 1;
-                    translateY = 0;
-                } else if (scrollY >= fadeEnd) {
-                    opacity = 0;
-                }
-
-                mainTitle.style.opacity = opacity;
-                mainTitle.style.transform = `translateY(${translateY}px)`;
-
-                // 2. スティッキーヘッダーの表示切り替え
-                // タイトルがほぼ消えた(150px)タイミングでヘッダーを出す
-                if (scrollY > fadeEnd - 20) {
-                    stickyHeader.classList.add('active');
-                } else {
-                    stickyHeader.classList.remove('active');
-                }
-            });
+                const end = 150;
+                let opacity = 1 - (scrollY / end);
+                mainTitle.style.opacity = Math.max(opacity, 0);
+                mainTitle.style.transform = `translateY(${scrollY * -0.3}px)`;
+                if (scrollY > end) stickyHeader.classList.add('active');
+                else stickyHeader.classList.remove('active');
+            }, { passive: true });
         }
-
         window.onload = initPage;
     </script>
-
 </body>
 </html>
