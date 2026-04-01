@@ -31,7 +31,7 @@
             background-color: var(--ios-bg);
             color: var(--text-color);
             margin: 0;
-            padding: 0 20px 80px 20px; /* タブバーが細くなった分調整 */
+            padding: 0 20px 80px 20px;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -41,13 +41,17 @@
         .date-str { color: var(--ios-gray); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
         h1 { font-size: 2.1rem; margin: 0; font-weight: 800; letter-spacing: -1px; }
 
-        /* --- Today's Mod (Random Card) --- */
+        /* --- Today's Mod (Featured Card) --- */
         .random-featured-card {
-            display: block; width: 100%; aspect-ratio: 1 / 1.1; 
+            display: block; width: 100%; aspect-ratio: 16 / 9; 
             background-size: cover; background-position: center;
             border-radius: 16px; position: relative; text-decoration: none;
             color: #fff; overflow: hidden; margin-bottom: 25px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        /* 横画面ではFeaturedも少し高さを抑える */
+        @media (orientation: landscape) {
+            .random-featured-card { aspect-ratio: 21 / 9; max-height: 400px; }
         }
         .random-overlay {
             position: absolute; bottom: 0; left: 0; right: 0; padding: 20px;
@@ -64,39 +68,50 @@
         }
         .card-header-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 12px; }
 
+        /* --- Grid System (横画面対応) --- */
+        #today-list {
+            display: grid;
+            grid-template-columns: 1fr; /* デフォルトは1列 */
+            gap: 0;
+        }
+
+        @media (orientation: landscape) or (min-width: 768px) {
+            #today-list {
+                grid-template-columns: 1fr 1fr; /* 横画面・タブレットで2列 */
+                column-gap: 30px;
+            }
+        }
+
         .mod-row {
-            display: flex; align-items: center; padding: 10px 0;
+            display: flex; align-items: center; padding: 12px 0;
             text-decoration: none; color: inherit; border-bottom: 1px solid var(--line);
             cursor: pointer;
         }
-        .mod-row:last-child { border-bottom: none; }
+        /* 2列の時は境界線の出方を調整 */
+        @media (orientation: landscape) or (min-width: 768px) {
+            .mod-row:nth-last-child(-n+2) { border-bottom: none; }
+        }
+        @media (orientation: portrait) and (max-width: 767px) {
+            .mod-row:last-child { border-bottom: none; }
+        }
+
         .mod-icon { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; flex-shrink: 0; }
         .mod-info { flex: 1; min-width: 0; padding: 0 12px; }
         .mod-name { font-size: 0.95rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .mod-sub { font-size: 0.75rem; color: var(--ios-gray); margin-top: 2px; line-height: 1.2; }
 
-        /* --- GET Button (Slim & Functional) --- */
+        /* --- GET Button --- */
         .get-btn {
             background: #f0f0f7; color: var(--ios-blue); font-weight: 800;
             padding: 5px 14px; border-radius: 15px; font-size: 0.8rem;
             min-width: 64px; text-align: center; flex-shrink: 0;
-            pointer-events: none; /* 親の<a>タグに反応させる */
+            pointer-events: none;
         }
         @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
 
-        /* --- Search View --- */
-        .search-wrapper { position: relative; margin: 15px 0; }
-        .search-wrapper input {
-            width: 100%; box-sizing: border-box; padding: 10px 10px 10px 35px; border-radius: 10px; border: none; 
-            background: var(--search-bg); font-size: 16px; color: var(--text-color); outline: none;
-        }
-        .search-icon { position: absolute; left: 10px; top: 10px; color: var(--ios-gray); font-size: 14px; }
-        .ss-container { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line); }
-        .ss-img { width: 100%; display: block; }
-
         /* --- Slim Tab Bar --- */
         .tab-bar {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 50px; /* 細く修正 */
+            position: fixed; bottom: 0; left: 0; right: 0; height: 50px;
             padding-bottom: env(safe-area-inset-bottom);
             background: var(--tab-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             border-top: 0.5px solid var(--line); display: flex; justify-content: space-around; align-items: center; z-index: 100;
@@ -104,6 +119,16 @@
         .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 9px; width: 50%; }
         .tab-item.active { color: var(--ios-blue); }
         .tab-icon { font-size: 20px; margin-bottom: 1px; }
+
+        /* Search Results Grid */
+        #search-results {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        @media (orientation: landscape) {
+            #search-results { grid-template-columns: 1fr 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -124,9 +149,11 @@
 
     <div id="page-search" class="hidden">
         <header><h1>Search</h1></header>
-        <div class="search-wrapper">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Apps, Mods, and more" oninput="runSearch()">
+        <div style="position: relative; margin: 15px 0;">
+            <span style="position: absolute; left: 10px; top: 10px; color: var(--ios-gray); font-size: 14px;">🔍</span>
+            <input type="text" id="searchInput" placeholder="Apps, Mods, and more" 
+            style="width: 100%; box-sizing: border-box; padding: 10px 10px 10px 35px; border-radius: 10px; border: none; background: var(--search-bg); font-size: 16px; color: var(--text-color); outline: none;" 
+            oninput="runSearch()">
         </div>
         <div id="search-results"></div>
     </div>
@@ -173,11 +200,11 @@
 
         function renderRandomFeatured() {
             const area = document.getElementById('random-featured-area');
-            // 写真（ss1またはicon）があるModを抽出
             const candidates = allData.filter(a => a.ss1 || a.icon || a.codename);
             if (candidates.length === 0) return;
 
             const picked = candidates[Math.floor(Math.random() * candidates.length)];
+            // ss1があれば優先、なければicon
             const img = picked.ss1 ? `../${picked.ss1}` : (picked.codename ? `../resources/${picked.codename}/ss1.png` : `../resources/${picked.codename}/icon.png`);
             
             area.innerHTML = `
@@ -202,8 +229,7 @@
                 if (app.codename) {
                     try {
                         const v = await fetch(`../resources/${app.codename}/version.json`).then(r => r.json());
-                        const vNum = v.version.toLowerCase().startsWith('v') ? v.version : 'v' + v.version;
-                        versionText = `${vNum}<br>Updated: ${v.lastUpdated}`;
+                        versionText = `v${v.version}<br>Updated: ${v.lastUpdated}`;
                     } catch(e) {}
                 }
 
@@ -229,17 +255,14 @@
             allData.filter(a => a.name.toLowerCase().includes(q)).forEach(app => {
                 const item = document.createElement('a');
                 item.href = app.link;
-                item.className = 'search-result-item';
-                item.style.textDecoration = "none";
-                item.style.color = "inherit";
-                item.style.display = "block";
+                item.style.cssText = "text-decoration:none; color:inherit; display:block; padding:15px 0; border-bottom:1px solid var(--line);";
 
                 const iconUrl = app.icon ? `../${app.icon}` : (app.codename ? `../resources/${app.codename}/icon.png` : null);
                 const ssUrl = (app.ss1) ? `../${app.ss1}` : (app.codename ? `../resources/${app.codename}/ss1.png` : null);
 
-                let topHtml = `<div class="mod-row" style="border:none; padding:15px 0;">`;
-                if(iconUrl) topHtml += `<img src="${iconUrl}" class="mod-icon">`;
-                topHtml += `
+                let content = `<div style="display:flex; align-items:center;">`;
+                if(iconUrl) content += `<img src="${iconUrl}" class="mod-icon">`;
+                content += `
                     <div class="mod-info">
                         <div class="mod-name">${app.name}</div>
                         <div class="mod-sub"><span style="color:${app.color}; font-weight:bold;">${app.type.toUpperCase()}</span> • Mod</div>
@@ -247,12 +270,11 @@
                     <div class="get-btn">GET</div>
                 </div>`;
 
-                let ssHtml = "";
                 if(app.ss1 || app.codename) {
-                    ssHtml = `<div class="ss-container"><img src="${ssUrl}" class="ss-img" onerror="this.parentElement.remove()"></div>`;
+                    content += `<div class="ss-container"><img src="${ssUrl}" class="ss-img" onerror="this.parentElement.remove()"></div>`;
                 }
 
-                item.innerHTML = topHtml + ssHtml;
+                item.innerHTML = content;
                 res.appendChild(item);
             });
         }
