@@ -2148,6 +2148,13 @@
         "link": "https://t.me/PrivateBSDownload/871"
     },
     {
+        "name": "NBS Offline",
+        "codename": "nbs",
+        "link": "https://ktr.brawlmods.com/nbs",
+        "icon": "resources/nbs/icon.png",
+        "ss1": "resources/nbs/ss1.png"
+    },
+    {
         "name": "Ne1qo Brawl.apk",
         "link": "https://t.me/PrivateBSDownload/1210"
     },
