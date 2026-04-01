@@ -10,50 +10,42 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-TMWFXQQD');</script>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; margin: 0; padding-bottom: 30px; }
+        body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
-        input { width: 94%; padding: 10px; margin-bottom: 20px; font-size: 16px; border: 1px solid #ddd; border-radius: 8px; }
+        input { width: 94%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
         .app-list { display: flex; flex-direction: column; gap: 5px; }
-        
-        /* 通常のカード */
         .app-card {
             display: flex; align-items: center; background: #fff; padding: 10px;
             border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
             margin-bottom: 5px;
         }
-
-        /* ★ PRODタブ専用：アイコン付きリッチ表示 */
-        .prod-rich-card {
-            display: flex; align-items: center; background: #fff; padding: 15px;
-            border-radius: 15px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 10px; gap: 15px; text-align: left;
-        }
-        .prod-rich-icon { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; }
-        .prod-rich-info { flex-grow: 1; min-width: 0; }
-        .prod-rich-info h3 { margin: 0; font-size: 1.1rem; }
-        .prod-rich-info p { margin: 4px 0 0; font-size: 0.85rem; color: #8e8e93; }
-
         .app-info { text-align: left; flex-grow: 1; }
         .app-info h3 { margin: 0; font-size: 16px; }
         .app-info p { margin: 5px 0; color: #666; font-size: 14px; }
         
+        /* ボタンコンテナ */
         .btn-group { display: flex; gap: 5px; align-items: center; }
+
         .download-btn, .detail-btn {
-            padding: 7px 14px; color: white; text-decoration: none;
-            border-radius: 6px; font-size: 14px; white-space: nowrap;
-            font-weight: bold;
+            padding: 5px 12px; color: white; text-decoration: none;
+            border-radius: 5px; font-size: 14px; white-space: nowrap;
+            display: inline-block; min-width: fit-content;
         }
         .download-btn { background: #007bff; }
-        .detail-btn { background: #6c757d; }
+        .detail-btn { background: #6c757d; } /* 詳細ボタンはグレー */
 
-        .filter-buttons { display: flex; gap: 5px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
-        .filter-buttons button { padding: 6px 12px; border-radius: 20px; border: 1px solid #ddd; background: white; cursor: pointer; }
-        .filter-buttons button.active { background: #007bff; color: white; border-color: #007bff; }
-
-        .lang-switcher { position: fixed; top: 10px; right: 10px; z-index: 1000; background: white; padding: 5px; border-radius: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-        .lang-btn { cursor: pointer; font-size: 18px; border: none; background: none; }
-        
+        .no-results { color: #999; margin-top: 10px; font-size: 14px; }
+        .app-description { font-size: 14px; color: #555; margin-top: 5px; word-wrap: break-word; }
+        .checkbox-container { display: inline-flex; align-items: center; gap: 2px; margin-bottom: 10px; }
+        .checkbox-container input { margin: 0; width: 16px; height: 16px; }
+        .checkbox-container label { font-size: 14px; white-space: nowrap; }
+        .partner-link, .discord-link, .telegram-link { display: inline-block; padding: 10px 20px; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; margin: 5px; }
+        .partner-link, .telegram-link { background-color: #007bff; }
+        .discord-link { background-color: #5865F2; }
         .hidden { display: none; }
+        .lang-switcher { position: fixed; top: 10px; right: 10px; z-index: 1000; background: white; padding: 5px 8px; border-radius: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: flex; gap: 5px; }
+        .lang-btn { cursor: pointer; font-size: 18px; border: none; background: none; padding: 2px 4px; border-radius: 50%; }
+
         @media (min-width: 768px) {
             .container { max-width: 1200px; }
             .app-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -74,44 +66,40 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </div>
         <input type="text" id="searchBox" placeholder="名前で検索...">
             
-        <div class="filter-buttons" id="filterGroup">
+        <div class="filter-buttons">
             <button onclick="filterByTag('offline')">Offline</button>
             <button onclick="filterByTag('online')">Online</button>
             <button onclick="filterByTag('ipa')">IPA</button>
-            <button onclick="filterByTag('prod')" style="color:red; font-weight:bold;">PROD</button>
+            <button onclick="filterByTag('prod')">PROD</button>
         </div>
-
-        <div style="font-size: 13px; color: #666; margin-bottom: 15px;">
-            <p id="totalMods"><span id="ui-total-label">合計数:</span> <span id="modCount">0</span></p>
-            <p id="lastUpdated"><span id="ui-updated-label">最終更新:</span> <span id="updateDate">----</span></p>
-            <p id="resourcesUpdated"><span id="ui-res-label">リソース更新:</span> <span id="resourcesUpdateDate">----</span></p>
-            <p id="searchResults" class="hidden"><span id="ui-search-label">検索結果:</span> <span id="searchCount">0</span></p>
-        </div>
-
+        <p id="totalMods"><span id="ui-total-label">合計数:</span> <span id="modCount">0</span></p>
+        <p id="lastUpdated"><span id="ui-updated-label">最終更新:</span> <span id="updateDate">----</span></p>
+        <p id="resourcesUpdated"><span id="ui-res-label">リソース更新:</span> <span id="resourcesUpdateDate">----</span></p>
+        <p id="searchResults" class="hidden"><span id="ui-search-label">検索結果:</span> <span id="searchCount">0</span></p>
         <div class="app-list" id="appList"></div>
         <p class="no-results hidden" id="noResults">一致する結果がありません</p>
     </div>
 
     <div class="partner-link-container">
-        <a href="https://brawlmods.natesworks.com/" target="_blank" class="partner-link" style="display:inline-block; padding:10px 20px; background:#007bff; color:white; text-decoration:none; border-radius:5px; margin:5px;">Partner</a>
-        <a href="./beta/" style="display:inline-block; padding:10px 20px; background:#28a745; color:white; text-decoration:none; border-radius:5px; margin:5px; font-weight:bold;">Try Beta Store ✨</a>
+        <a href="https://brawlmods.natesworks.com/" target="_blank" class="partner-link" id="ui-partner-btn">パートナー</a>
+        <a href="https://discord.com/invite/fwdX8jZBsX" target="_blank" class="discord-link">Discord Server</a>
+        <a href="https://t.me/AllModsBrawlStars" target="_blank" class="telegram-link">Telegram Channel</a>
     </div>
 
     <script>
         const i18n = {
             ja: {
-                title: "ブロスタ mod", toggle: " リストを隠す", search: "名前で検索...", total: "合計数:", updated: "最終更新:", resUpdated: "リソース更新:", searchRes: "検索結果:", noRes: "一致する結果がありません", download: "ダウンロード", detail: "詳細",
+                title: "ブロスタ mod", toggle: " リストを隠す", search: "名前で検索...", total: "合計数:", updated: "最終更新:", resUpdated: "リソース更新:", searchRes: "検索結果:", noRes: "一致する結果がありません", download: "ダウンロード", detail: "詳細", partner: "パートナー",
                 status: { offline: "オフライン", online: "オンライン", ipa: "IPA", prod: "PROD" }
             },
             en: {
-                title: "APK List", toggle: " Hide mod list", search: "Search by name...", total: "Total Mods:", updated: "Last Updated:", resUpdated: "Resources Update:", searchRes: "Search Results:", noRes: "No results", download: "Download", detail: "Info",
+                title: "APK List", toggle: " Hide mod list", search: "Search by name...", total: "Total Mods:", updated: "Last Updated:", resUpdated: "Resources Update:", searchRes: "Search Results:", noRes: "No matching results", download: "Download", detail: "Info", partner: "Partner",
                 status: { offline: "offline", online: "online", ipa: "ipa", prod: "PROD" }
             }
         };
 
         let currentLang = localStorage.getItem('lang') || (navigator.language.includes('ja') ? 'ja' : 'en');
         let allAppsGlobal = [];
-        let currentFilter = "";
 
         function changeLanguage(lang) {
             currentLang = lang;
@@ -130,6 +118,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             document.getElementById('ui-res-label').textContent = t.resUpdated;
             document.getElementById('ui-search-label').textContent = t.searchRes;
             document.getElementById('noResults').textContent = t.noRes;
+            document.getElementById('ui-partner-btn').textContent = t.partner;
         }
 
         async function loadApps() {
@@ -162,10 +151,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             } catch (e) { console.error(e); }
         }
 
-        async function displayApps(filteredData) {
+        function displayApps(filteredData) {
             const appList = document.getElementById('appList');
             const t = i18n[currentLang];
-            const ts = new Date().getTime();
             appList.innerHTML = "";
             
             if (filteredData.length === 0) {
@@ -174,64 +162,30 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             }
             document.getElementById('noResults').classList.add("hidden");
 
-            for (const app of filteredData) {
+            filteredData.forEach(app => {
                 const statusTxt = t.status[app.type];
-                
-                // ★ PRODタブ表示中、かつPRODアイテムの場合だけリッチ表示にする
-                if (currentFilter === 'prod' && app.type === 'prod') {
-                    const iconPath = app.codename ? `resources/${app.codename}/icon.png` : 'resources/soon/icon.png';
-                    
-                    const card = document.createElement('div');
-                    card.className = 'prod-rich-card';
-                    card.innerHTML = `
-                        <img src="${iconPath}" class="prod-rich-icon" onerror="this.src='https://via.placeholder.com/60?text=Mod'">
-                        <div class="prod-rich-info">
-                            <h3>${app.name}</h3>
-                            <p id="desc-${app.codename || 'none'}">Loading details...</p>
-                        </div>
-                        <div class="btn-group">
-                            <a href="${app.detail || '#'}" class="detail-btn">${t.detail}</a>
-                            <a href="${app.link}" target="_blank" class="download-btn">${t.download}</a>
-                        </div>
-                    `;
-                    appList.appendChild(card);
+                const detailBtn = (app.type === 'prod' && app.detail) 
+                    ? `<a href="${app.detail}" class="detail-btn">${t.detail}</a>` 
+                    : "";
 
-                    // 非同期でバージョン情報を取得
-                    if (app.codename) {
-                        fetch(`resources/${app.codename}/version.json?${ts}`)
-                            .then(r => r.json())
-                            .then(v => {
-                                document.getElementById(`desc-${app.codename}`).textContent = `v${v.version} • ${v.lastUpdated}`;
-                            }).catch(() => {
-                                document.getElementById(`desc-${app.codename}`).textContent = "PROD Version";
-                            });
-                    }
-                } else {
-                    // 通常のリスト表示
-                    const detailBtn = (app.type === 'prod' && app.detail) 
-                        ? `<a href="${app.detail}" class="detail-btn">${t.detail}</a>` 
-                        : "";
-
-                    const appCard = document.createElement('div');
-                    appCard.classList.add('app-card');
-                    appCard.innerHTML = `
-                        <div class="app-info">
-                            <h3>${app.name}</h3>
-                            <p class="app-description"><span style="color: ${app.color}; font-weight:bold;">${statusTxt}</span>${app.description ? ' - ' + app.description : ''}</p>
-                        </div>
-                        <div class="btn-group">
-                            ${detailBtn}
-                            <a href="${app.link}" target="_blank" class="download-btn">${t.download}</a>
-                        </div>
-                    `;
-                    appList.appendChild(appCard);
-                }
-            }
+                const appCard = document.createElement('div');
+                appCard.classList.add('app-card');
+                appCard.innerHTML = `
+                    <div class="app-info">
+                        <h3>${app.name}</h3>
+                        <p class="app-description"><span style="color: ${app.color}; font-weight:bold;">${statusTxt}</span>${app.description ? ' - ' + app.description : ''}</p>
+                    </div>
+                    <div class="btn-group">
+                        ${detailBtn}
+                        <a href="${app.link}" target="_blank" class="download-btn">${t.download}</a>
+                    </div>
+                `;
+                appList.appendChild(appCard);
+            });
         }
 
         function applySearch(val) {
             const term = val.trim().toLowerCase();
-            currentFilter = term; // 現在のフィルタ状態を保存
             const filtered = allAppsGlobal.filter(app => app.name.toLowerCase().includes(term) || app.type.toLowerCase() === term);
             displayApps(filtered);
             
