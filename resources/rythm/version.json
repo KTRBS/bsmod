@@ -1,6 +1,8 @@
 {
     "version": "v66.263",
-    "status": "available",
     "lastUpdated": "2026-03-31",
-    "downloadUrl": "https://gofile.io/d/Vn8lKu"
+    "iossupport": "unavailable",
+    "androidsupport": "available",
+    "iosDownloadUrl": "",
+    "androidDownloadUrl": "https://gofile.io/d/Vn8lKu"
 }
