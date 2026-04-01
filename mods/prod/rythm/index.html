@@ -67,7 +67,6 @@
         /* --- Hero --- */
         .hero {
             position: relative; height: 240px;
-            /* 3階層上からリソースを参照 */
             background: url('../../../resources/rythm/header.png') center/cover no-repeat;
             display: flex; align-items: flex-end;
         }
@@ -82,7 +81,7 @@
 
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
-        /* --- Info Section --- */
+        /* --- Info Header --- */
         .info-header { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; }
         .icon-box img { width: 92px; height: 92px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
@@ -95,12 +94,31 @@
         .status-available { background: #28a745; color: white; }
         .status-outdated { background: #8e8e93; color: white; }
 
-        .author-section { margin-top: 10px; }
-        .author-label { color: var(--secondary-text); font-size: 0.75rem; font-weight: 600; margin-bottom: 4px; }
-        .author-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        /* Author Section (横並び) */
+        .author-section { 
+            margin-top: 6px; 
+            display: flex; 
+            align-items: baseline; 
+            gap: 6px; 
+        }
+        .author-label { 
+            color: var(--secondary-text); 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            white-space: nowrap;
+        }
+        .author-list { display: flex; flex-wrap: wrap; gap: 4px; }
         .author-link { 
-            color: var(--btn-blue); text-decoration: none; font-weight: 600;
-            background: var(--card-bg); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem;
+            color: var(--btn-blue); 
+            text-decoration: none; 
+            font-weight: 600; 
+            font-size: 0.85rem;
+        }
+        /* 複数名いる場合にカンマを追加 */
+        .author-link:not(:last-child)::after {
+            content: ',';
+            color: var(--secondary-text);
+            margin-left: 1px;
         }
 
         /* --- Download Area --- */
@@ -160,11 +178,13 @@
                     <p class="version-num" id="js-version">v---</p>
                     <div id="js-status" class="status-badge-inline">----</div>
                 </div>
+                
                 <div class="author-section">
                     <div class="author-label" id="ui-author-label">Developer</div>
                     <div id="js-author-list" class="author-list"></div>
                 </div>
-                <p style="font-size: 0.8rem; margin: 8px 0 0; color: var(--secondary-text);" id="ui-updated">Last Updated: --</p>
+                
+                <p style="font-size: 0.8rem; margin: 6px 0 0; color: var(--secondary-text);" id="ui-updated">Last Updated: --</p>
             </div>
         </div>
 
@@ -209,7 +229,7 @@
             const stickyBtn = document.querySelector('.sticky-dl-btn');
 
             try {
-                // パスを「../../../resources/」に修正
+                // version.jsonの取得
                 const vRes = await fetch(`../../../resources/${codename}/version.json?${ts}`);
                 const vData = await vRes.json();
                 
@@ -218,14 +238,15 @@
                 document.getElementById('ui-author-label').textContent = t.dev;
                 stickyBtn.textContent = t.get;
 
-                // デバイス判定
+                // 互換性チェック
                 const isCompatible = (device === "ios" ? vData.iossupport === "available" : (device === "android" ? vData.androidsupport === "available" : true));
                 const statusEl = document.getElementById('js-status');
                 statusEl.textContent = isCompatible ? t.available : t.unsupported;
                 statusEl.className = 'status-badge-inline ' + (isCompatible ? 'status-available' : 'status-outdated');
 
-                // 作者リスト (リンクも3つ戻る)
+                // 作者リストの生成 (名前を横に並べる)
                 const authorContainer = document.getElementById('js-author-list');
+                authorContainer.innerHTML = "";
                 if (vData.authors) {
                     vData.authors.forEach(auth => {
                         const a = document.createElement('a');
@@ -250,22 +271,28 @@
                     const btn = document.createElement('a');
                     btn.className = "download-btn" + (isCompatible ? "" : " unsupported");
                     btn.textContent = isCompatible ? `${t.download} (${isiOS?'IPA':'APK'})` : t.unsupported;
-                    if (isCompatible) { btn.href = url; btn.target = "_blank"; stickyBtn.href = url; }
-                    else { stickyBtn.style.display = "none"; }
+                    if (isCompatible) { 
+                        btn.href = url; btn.target = "_blank"; stickyBtn.href = url; 
+                    } else { 
+                        btn.href = "javascript:void(0)";
+                        stickyBtn.style.display = "none"; 
+                    }
                     dlArea.appendChild(btn);
                 }
 
+                // Telegramリンク
                 if (vData.telegram) {
                     document.getElementById('js-contact-area').innerHTML = `<a href="${vData.telegram}" target="_blank" class="contact-btn"><span>Telegram</span></a>`;
                 }
 
-                // infoファイルも3つ戻る
+                // 紹介文の読み込み
                 const infoFile = isJa ? 'info_ja.html' : 'info_en.html';
                 const infoRes = await fetch(`../../../resources/${codename}/${infoFile}?${ts}`);
                 if (infoRes.ok) document.getElementById('js-info-content').innerHTML = await infoRes.text();
 
-            } catch (e) { console.error("Initialize failed:", e); }
+            } catch (e) { console.error("Load error:", e); }
 
+            // スクロールエフェクト
             const stickyHeader = document.getElementById('js-sticky-header');
             const mainTitle = document.getElementById('ui-main-title');
             window.addEventListener('scroll', () => {
