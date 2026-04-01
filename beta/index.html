@@ -43,20 +43,20 @@
         .date-str { color: var(--ios-gray); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
         h1 { font-size: 1.8rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
 
-        /* --- Today Layout --- */
-        #page-today-container {
+        /* --- Grid Layout (Today & Search共通) --- */
+        .grid-container {
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
         }
         @media (orientation: landscape) or (min-width: 768px) {
-            #page-today-container { grid-template-columns: 1fr 1fr; column-gap: 25px; }
+            .grid-container { grid-template-columns: 1fr 1fr; column-gap: 25px; }
         }
 
-        /* --- Featured Card (Mobile 21:9 Force) --- */
+        /* --- Featured Card (Mobile 21:9) --- */
         .random-featured-card {
             display: block; width: 100%; 
-            aspect-ratio: 21 / 9; /* モバイルでも21:9を強制適用 */
+            aspect-ratio: 21 / 9;
             background-size: cover; background-position: center;
             border-radius: 14px; position: relative; text-decoration: none;
             color: #fff; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.1);
@@ -68,14 +68,14 @@
         .random-tag { font-size: 0.7rem; font-weight: 700; opacity: 0.9; text-transform: uppercase; }
         .random-title { font-size: 1.4rem; font-weight: 800; margin-top: 2px; }
 
-        /* --- Play These Mods Card --- */
+        /* --- Card Section --- */
         .today-card {
             background: var(--card-bg); border-radius: 14px; padding: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line);
         }
         .card-header-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; }
 
-        /* --- Row Item (コンパクト化) --- */
+        /* --- Mod Row --- */
         .mod-row {
             display: flex; align-items: center; padding: 10px 0;
             text-decoration: none; color: inherit; border-bottom: 1px solid var(--line);
@@ -87,7 +87,7 @@
         .mod-name { font-size: 0.9rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .mod-sub { font-size: 0.75rem; color: var(--ios-gray); margin-top: 1px; line-height: 1.2; }
 
-        /* --- GET Button (引き締め版) --- */
+        /* --- GET Button --- */
         .get-btn {
             background: #f0f0f7; color: var(--ios-blue); font-weight: 800;
             padding: 5px 14px; border-radius: 15px; font-size: 0.78rem;
@@ -96,18 +96,26 @@
         @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
 
         /* --- Search View --- */
-        .search-container { max-width: 800px; margin: 0 auto; }
-        .search-wrapper { position: relative; margin: 15px 0; }
+        .search-wrapper { position: relative; margin: 15px 0 25px 0; }
         .search-wrapper input {
             width: 100%; box-sizing: border-box; padding: 8px 10px 8px 35px; border-radius: 10px; border: none; 
             background: var(--search-bg); font-size: 16px; color: var(--text-color); outline: none;
         }
         .search-icon { position: absolute; left: 10px; top: 9px; color: var(--ios-gray); font-size: 14px; }
 
-        /* Search Card Style (以前のスタイルに戻す) */
-        .search-result-item { display: flex; flex-direction: column; padding: 20px 0; border-bottom: 1px solid var(--line); text-decoration: none; color: inherit; }
-        .ss-container { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line); }
-        .ss-img { width: 100%; display: block; object-fit: cover; }
+        /* Search Results Grid */
+        #search-results {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        @media (orientation: landscape) or (min-width: 768px) {
+            #search-results { grid-template-columns: 1fr 1fr; column-gap: 30px; }
+        }
+
+        .search-result-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+        .ss-container { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line); aspect-ratio: 16 / 9; background: var(--search-bg); }
+        .ss-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
         /* --- Slim Tab Bar --- */
         .tab-bar {
@@ -128,7 +136,7 @@
             <p class="date-str" id="display-date"></p>
             <h1>Today</h1>
         </header>
-        <div id="page-today-container">
+        <div id="page-today-container" class="grid-container">
             <div id="random-featured-area"></div>
             <div class="today-card">
                 <div class="card-header-title">Play These Mods</div>
@@ -138,14 +146,12 @@
     </div>
 
     <div id="page-search" class="hidden">
-        <div class="search-container">
-            <header><h1>Search</h1></header>
-            <div class="search-wrapper">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" placeholder="Apps, Mods, and more" oninput="runSearch()">
-            </div>
-            <div id="search-results"></div>
+        <header><h1>Search</h1></header>
+        <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Apps, Mods, and more" oninput="runSearch()">
         </div>
+        <div id="search-results"></div>
     </div>
 
     <nav class="tab-bar">
@@ -240,10 +246,14 @@
                 item.className = 'search-result-item';
                 const iconUrl = app.icon ? `../${app.icon}` : (app.codename ? `../resources/${app.codename}/icon.png` : null);
                 const ssUrl = app.ss1 ? `../${app.ss1}` : (app.codename ? `../resources/${app.codename}/ss1.png` : null);
+                
                 let html = `<div class="mod-row" style="border:none; padding:0;">`;
                 if(iconUrl) html += `<img src="${iconUrl}" class="mod-icon">`;
                 html += `<div class="mod-info"><div class="mod-name">${app.name}</div><div class="mod-sub"><span style="color:${app.color}; font-weight:bold;">${app.type.toUpperCase()}</span> • Mod</div></div><div class="get-btn">GET</div></div>`;
-                if(ssUrl) html += `<div class="ss-container"><img src="${ssUrl}" class="ss-img" onerror="this.parentElement.remove()"></div>`;
+                
+                if(ssUrl) {
+                    html += `<div class="ss-container"><img src="${ssUrl}" class="ss-img" onerror="this.parentElement.remove()"></div>`;
+                }
                 item.innerHTML = html;
                 res.appendChild(item);
             });
