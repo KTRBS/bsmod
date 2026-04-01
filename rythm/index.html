@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Null Rythm - Details</title>
     
     <meta id="meta-desc" property="og:description" content="Null Rythm 最新版をダウンロード">
@@ -19,7 +19,8 @@
             --secondary-text: #666;
             --grad-color: rgba(255,255,255,1);
             --header-bg: rgba(255,255,255,0.9);
-            --btn-green: #28a745;
+            --btn-blue: #007aff;
+            --line: rgba(0,0,0,0.1);
         }
 
         @media (prefers-color-scheme: dark) {
@@ -29,6 +30,7 @@
                 --secondary-text: #bbb;
                 --grad-color: rgba(18,18,18,1);
                 --header-bg: rgba(18,18,18,0.9);
+                --line: rgba(255,255,255,0.1);
             }
         }
 
@@ -38,79 +40,89 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- スティッキーヘッダー (スクロール後に上に出る) --- */
+        /* --- スティッキーヘッダー --- */
         .sticky-header {
             position: fixed; top: 0; left: 0; right: 0;
-            height: 65px; background: var(--header-bg);
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            height: 60px; background: var(--header-bg);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 20px; z-index: 100;
             transform: translateY(-100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
             opacity: 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-bottom: 0.5px solid var(--line);
         }
         .sticky-header.active { transform: translateY(0); opacity: 1; }
-        
-        .sticky-info { display: flex; align-items: center; gap: 12px; }
-        .sticky-info img { width: 38px; height: 38px; border-radius: 9px; }
-        .sticky-info span { font-weight: bold; font-size: 1.1rem; }
-        
+        .sticky-info { display: flex; align-items: center; gap: 10px; }
+        .sticky-info img { width: 34px; height: 34px; border-radius: 8px; }
+        .sticky-info span { font-weight: 700; font-size: 1rem; }
         .sticky-dl-btn {
-            background: var(--btn-green); color: white; text-decoration: none;
-            padding: 7px 18px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;
+            background: #f0f0f7; color: var(--btn-blue); text-decoration: none;
+            padding: 6px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem;
         }
+        @media (prefers-color-scheme: dark) { .sticky-dl-btn { background: #3a3a3c; } }
 
-        /* --- メインヘッダー --- */
+        /* --- ヒーローエリア --- */
         .hero {
-            position: relative; height: 260px;
+            position: relative; height: 240px;
             background: url('../../resources/rythm/header.png') center/cover no-repeat;
             display: flex; align-items: flex-end;
             overflow: hidden;
         }
         .hero::after {
-            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 120px;
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100px;
             background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--grad-color) 100%);
         }
-        
-        .mod-name {
-            position: relative; z-index: 10; font-size: 2.4rem; font-weight: 800;
-            margin: 0 0 25px 25px; 
-            text-shadow: 0 0 15px var(--grad-color);
+        .mod-name-hero {
+            position: relative; z-index: 10; font-size: 2.2rem; font-weight: 800;
+            margin: 0 0 20px 20px; letter-spacing: -1px;
             will-change: transform, opacity;
         }
 
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; position: relative; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
-        .info-header { display: flex; align-items: center; gap: 18px; margin-bottom: 30px; }
-        .icon-box img { width: 90px; height: 90px; border-radius: 22px; box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
-        .version-num { font-size: 1.4rem; font-weight: bold; margin: 0; }
-        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 7px; font-size: 0.8rem; font-weight: bold; margin-top: 8px; }
+        /* --- 情報ヘッダー --- */
+        .info-header { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; }
+        .icon-box img { width: 92px; height: 92px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .version-num { font-size: 1.4rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; margin-top: 8px; text-transform: uppercase; }
         .status-available { background: #28a745; color: white; }
-        .status-outdated { background: #dc3545; color: white; }
+        .status-outdated { background: #8e8e93; color: white; }
 
+        /* --- ダウンロードエリア --- */
+        #js-dl-area { margin-bottom: 30px; }
         .download-btn {
-            display: block; background: var(--btn-green); color: white; text-decoration: none;
-            text-align: center; padding: 18px; border-radius: 16px; font-weight: bold; font-size: 1.2rem;
-            margin-bottom: 35px; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+            display: block; background: var(--btn-blue); color: white; text-decoration: none;
+            text-align: center; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 1.1rem;
+            transition: transform 0.1s;
         }
+        .download-btn:active { transform: scale(0.98); }
+        .download-btn.unsupported { background: #8e8e93 !important; cursor: not-allowed; opacity: 0.7; }
 
+        /* PC用2列レイアウト */
+        .dl-section-pc { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .pc-btn { padding: 14px !important; font-size: 0.95rem !important; }
+        .btn-ipa { background: #007aff; }
+        .btn-apk { background: #34c759; }
+
+        /* --- スクリーンショット --- */
         .ss-container {
-            display: flex; overflow-x: auto; gap: 16px; margin: 0 -20px 35px -20px; padding: 0 30px;
+            display: flex; overflow-x: auto; gap: 14px; margin: 0 -20px 30px -20px; padding: 0 20px;
             scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
         }
         .ss-container::-webkit-scrollbar { display: none; }
         .ss-container img {
-            flex: 0 0 calc(100% - 10px); max-width: 340px; aspect-ratio: 16 / 9;
-            object-fit: cover; border-radius: 20px; scroll-snap-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            flex: 0 0 85%; max-width: 380px; aspect-ratio: 16 / 9;
+            object-fit: cover; border-radius: 12px; scroll-snap-align: center;
+            border: 0.5px solid var(--line);
         }
 
-        .section-title { font-size: 1.3rem; font-weight: bold; border-bottom: 1px solid var(--secondary-text); padding-bottom: 12px; margin-bottom: 20px; }
-        .content-body { line-height: 1.8; color: var(--secondary-text); font-size: 1.05rem; }
-        .back-link { display: inline-block; margin: 45px 0; color: #007bff; text-decoration: none; font-weight: bold; }
+        .section-title { font-size: 1.2rem; font-weight: 800; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px; }
+        .content-body { line-height: 1.6; color: var(--secondary-text); font-size: 1rem; }
+        .back-link { display: inline-block; margin: 40px 0; color: var(--btn-blue); text-decoration: none; font-weight: 700; font-size: 0.95rem; }
     </style>
 </head>
 <body>
@@ -120,24 +132,24 @@
             <img src="../../resources/rythm/icon.png" alt="Icon">
             <span>Null Rythm</span>
         </div>
-        <a href="#" class="sticky-dl-btn js-dl-link">GET</a>
+        <a href="#" class="sticky-dl-btn">GET</a>
     </div>
 
     <section class="hero">
-        <div class="mod-name" id="ui-main-title">Null Rythm</div>
+        <div class="mod-name-hero" id="ui-main-title">Null Rythm</div>
     </section>
 
-    <div class="container" id="js-content-start">
+    <div class="container">
         <div class="info-header">
             <div class="icon-box"><img src="../../resources/rythm/icon.png" alt="Icon"></div>
             <div>
                 <p class="version-num" id="js-version">v---</p>
                 <div id="js-status" class="status-badge">----</div>
-                <p style="font-size: 0.9rem; margin: 8px 0 0; color: var(--secondary-text);" id="ui-updated">Last Updated: --</p>
+                <p style="font-size: 0.85rem; margin: 8px 0 0; color: var(--secondary-text);" id="ui-updated">Last Updated: --</p>
             </div>
         </div>
 
-        <a href="#" class="download-btn js-dl-link" id="ui-download">DOWNLOAD</a>
+        <div id="js-dl-area"></div>
 
         <div class="ss-container">
             <img src="../../resources/rythm/ss1.png" alt="SS1">
@@ -154,101 +166,118 @@
     <script>
         const isJa = navigator.language.includes('ja');
         const lang = isJa ? 'ja' : 'en';
-        
+        const codename = 'rythm';
+
         const uiText = {
             ja: { 
-                title: "Null Rythm - 詳細", 
-                desc: "Null Rythm 最新版をダウンロード", 
+                available: "利用可能", 
+                unsupported: "非対応デバイス", 
                 updated: "最終更新: ", 
                 howto: "導入方法", 
                 back: "← リストに戻る", 
                 download: "ダウンロード", 
-                available: "利用可能", 
-                outdated: "旧バージョン", 
-                get: "入手" 
+                get: "入手",
+                ios: "iOS (IPA)",
+                android: "Android (APK)"
             },
             en: { 
-                title: "Null Rythm - Details", 
-                desc: "Download the latest version of Null Rythm", 
+                available: "Available", 
+                unsupported: "Unsupported", 
                 updated: "Last Updated: ", 
                 howto: "How to Install", 
                 back: "← Back to List", 
                 download: "DOWNLOAD", 
-                available: "Available", 
-                outdated: "Outdated", 
-                get: "GET" 
+                get: "GET",
+                ios: "iOS (IPA)",
+                android: "Android (APK)"
             }
         };
+
+        function getDeviceType() {
+            const ua = navigator.userAgent;
+            if (/android/i.test(ua)) return "android";
+            if (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return "ios";
+            return "pc";
+        }
 
         async function initPage() {
             const ts = new Date().getTime();
             const t = uiText[lang];
-
-            // UIテキスト設定
-            document.title = t.title;
-            document.getElementById('meta-desc').setAttribute('content', t.desc);
-            document.getElementById('og-title').setAttribute('content', t.title);
-            document.getElementById('ui-updated').firstChild.textContent = t.updated;
-            document.getElementById('ui-howto-title').textContent = t.howto;
-            document.getElementById('ui-back').textContent = t.back;
-            document.getElementById('ui-download').textContent = t.download;
-            document.querySelector('.sticky-dl-btn').textContent = t.get;
+            const device = getDeviceType();
+            const dlArea = document.getElementById('js-dl-area');
+            const stickyBtn = document.querySelector('.sticky-dl-btn');
+            const statusEl = document.getElementById('js-status');
 
             try {
-                // コードネーム rythm で通信
-                const vRes = await fetch(`../../resources/rythm/version.json?${ts}`);
+                const vRes = await fetch(`../../resources/${codename}/version.json?${ts}`);
                 const vData = await vRes.json();
                 
-                document.getElementById('js-version').textContent = vData.version;
+                document.getElementById('js-version').textContent = 'v' + vData.version;
                 document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
-                
-                const statusEl = document.getElementById('js-status');
-                const rawStatus = vData.status.toLowerCase();
-                statusEl.textContent = rawStatus === 'available' ? t.available : t.outdated;
-                statusEl.className = 'status-badge ' + (rawStatus === 'available' ? 'status-available' : 'status-outdated');
+                document.getElementById('ui-howto-title').textContent = t.howto;
+                document.getElementById('ui-back').textContent = t.back;
+                stickyBtn.textContent = t.get;
 
-                const dlLinks = document.querySelectorAll('.js-dl-link');
-                dlLinks.forEach(link => {
-                    if (vData.downloadUrl) { link.href = vData.downloadUrl; link.target = "_blank"; }
-                });
+                let isCompatible = false;
+
+                if (device === "pc") {
+                    dlArea.className = "dl-section-pc";
+                    dlArea.innerHTML = `
+                        <a href="${vData.iosDownloadUrl}" class="download-btn pc-btn btn-ipa ${vData.iossupport==='available'?'':'unsupported'}" ${vData.iossupport==='available'?'target="_blank"':''}>
+                            ${vData.iossupport==='available' ? t.ios : t.unsupported + ' (iOS)'}
+                        </a>
+                        <a href="${vData.androidDownloadUrl}" class="download-btn pc-btn btn-apk ${vData.androidsupport==='available'?'':'unsupported'}" ${vData.androidsupport==='available'?'target="_blank"':''}>
+                            ${vData.androidsupport==='available' ? t.android : t.unsupported + ' (Android)'}
+                        </a>
+                    `;
+                    isCompatible = (vData.iossupport === 'available' || vData.androidsupport === 'available');
+                    stickyBtn.href = vData.iosDownloadUrl || vData.androidDownloadUrl;
+                } else {
+                    const isiOS = (device === "ios");
+                    const support = isiOS ? vData.iossupport : vData.androidsupport;
+                    const url = isiOS ? vData.iosDownloadUrl : vData.androidDownloadUrl;
+                    isCompatible = (support === 'available');
+
+                    const btn = document.createElement('a');
+                    btn.className = "download-btn";
+                    if (isCompatible) {
+                        btn.href = url;
+                        btn.target = "_blank";
+                        btn.textContent = `${t.download} (${isiOS ? 'IPA' : 'APK'})`;
+                        stickyBtn.href = url;
+                    } else {
+                        btn.classList.add('unsupported');
+                        btn.textContent = t.unsupported;
+                        btn.href = "javascript:void(0)";
+                        stickyBtn.style.display = "none";
+                    }
+                    dlArea.appendChild(btn);
+                }
+
+                // ステータスバッジの更新（デバイス判定優先）
+                statusEl.textContent = isCompatible ? t.available : t.unsupported;
+                statusEl.className = 'status-badge ' + (isCompatible ? 'status-available' : 'status-outdated');
 
                 const infoFile = isJa ? 'info_ja.html' : 'info_en.html';
-                const infoRes = await fetch(`../../resources/rythm/${infoFile}?${ts}`);
-                document.getElementById('js-info-content').innerHTML = await infoRes.text();
+                const infoRes = await fetch(`../../resources/${codename}/${infoFile}?${ts}`);
+                if (infoRes.ok) document.getElementById('js-info-content').innerHTML = await infoRes.text();
 
             } catch (e) { console.error("Load failed:", e); }
 
-            // --- スクロールアニメーション制御 ---
+            // スクロールアニメーション
             const stickyHeader = document.getElementById('js-sticky-header');
             const mainTitle = document.getElementById('ui-main-title');
-            
             window.addEventListener('scroll', () => {
                 const scrollY = window.scrollY;
-                
-                // タイトル文字の吸い込みエフェクト (0px〜160pxの間で変化)
-                const start = 20;
-                const end = 160;
-                let opacity = 1 - (scrollY - start) / (end - start);
-                let moveY = (scrollY - start) * -0.6; // 文字を上に逃がす
-
-                if (scrollY <= start) {
-                    opacity = 1; moveY = 0;
-                } else if (scrollY >= end) {
-                    opacity = 0;
-                }
-
+                const end = 150;
+                let opacity = 1 - (scrollY / end);
+                if (opacity < 0) opacity = 0;
                 mainTitle.style.opacity = opacity;
-                mainTitle.style.transform = `translateY(${moveY}px)`;
-
-                // スティッキーヘッダーの出し入れタイミング
-                if (scrollY > end - 30) {
-                    stickyHeader.classList.add('active');
-                } else {
-                    stickyHeader.classList.remove('active');
-                }
+                mainTitle.style.transform = `translateY(${scrollY * -0.3}px)`;
+                if (scrollY > end) stickyHeader.classList.add('active');
+                else stickyHeader.classList.remove('active');
             }, { passive: true });
         }
-
         window.onload = initPage;
     </script>
 </body>
