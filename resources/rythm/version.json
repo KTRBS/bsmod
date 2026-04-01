@@ -4,5 +4,9 @@
     "iossupport": "unavailable",
     "androidsupport": "available",
     "iosDownloadUrl": "",
-    "androidDownloadUrl": "https://gofile.io/d/Vn8lKu"
+    "androidDownloadUrl": "https://gofile.io/d/Vn8lKu",
+    "authors": [
+        { "name": "Ryo", "id": "ryo" }
+    ],
+    "telegram": "https://t.me/nullrythm"
 }
