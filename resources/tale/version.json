@@ -1,6 +1,13 @@
 {
-    "version": "v8[v66]",
-    "status": "available",
+    "version": "66.263 [TS V8]",
     "lastUpdated": "2026-03-31",
-    "downloadUrl": "https://google.com"
+    "iossupport": "unavailable",
+    "androidsupport": "available",
+    "iosDownloadUrl": "",
+    "androidDownloadUrl": "https://gofile.io/d/Vn8lKu",
+    "authors": [
+        { "name": "sqk", "id": "sqk" }
+    ],
+    "telegram": "https://t.me/talemods",
+    "discord": "https://discord.gg/tsmod"
 }
