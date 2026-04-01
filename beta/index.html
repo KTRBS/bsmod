@@ -13,7 +13,7 @@
             --search-bg: rgba(142, 142, 147, 0.12);
             --text-color: #000000;
             --line: rgba(0,0,0,0.1);
-            --tab-bg: rgba(255, 255, 255, 0.94);
+            --tab-bg: rgba(255, 255, 255, 0.85); /* 透明度を上げて本物らしく */
         }
         @media (prefers-color-scheme: dark) {
             :root {
@@ -22,7 +22,7 @@
                 --search-bg: rgba(255, 255, 255, 0.12);
                 --text-color: #ffffff;
                 --line: rgba(255,255,255,0.15);
-                --tab-bg: rgba(20, 20, 20, 0.94);
+                --tab-bg: rgba(20, 20, 20, 0.85);
             }
         }
 
@@ -31,32 +31,25 @@
             background-color: var(--ios-bg);
             color: var(--text-color);
             margin: 0;
-            padding: 0 16px 80px 16px;
+            padding: 0 16px 70px 16px; /* タブバーが細くなった分調整 */
             -webkit-tap-highlight-color: transparent;
-            -webkit-font-smoothing: antialiased;
         }
 
         .hidden { display: none !important; }
 
-        /* --- Header --- */
+        /* --- Header & Grid --- */
         header { padding: 20px 0 10px 0; }
         .date-str { color: var(--ios-gray); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
         h1 { font-size: 1.8rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
 
-        /* --- Grid Layout (Today & Search共通) --- */
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
+        .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
         @media (orientation: landscape) or (min-width: 768px) {
             .grid-container { grid-template-columns: 1fr 1fr; column-gap: 25px; }
         }
 
         /* --- Featured Card (Mobile 21:9) --- */
         .random-featured-card {
-            display: block; width: 100%; 
-            aspect-ratio: 21 / 9;
+            display: block; width: 100%; aspect-ratio: 21 / 9;
             background-size: cover; background-position: center;
             border-radius: 14px; position: relative; text-decoration: none;
             color: #fff; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.1);
@@ -68,20 +61,14 @@
         .random-tag { font-size: 0.7rem; font-weight: 700; opacity: 0.9; text-transform: uppercase; }
         .random-title { font-size: 1.4rem; font-weight: 800; margin-top: 2px; }
 
-        /* --- Card Section --- */
+        /* --- Card & Row --- */
         .today-card {
             background: var(--card-bg); border-radius: 14px; padding: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line);
         }
         .card-header-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; }
-
-        /* --- Mod Row --- */
-        .mod-row {
-            display: flex; align-items: center; padding: 10px 0;
-            text-decoration: none; color: inherit; border-bottom: 1px solid var(--line);
-        }
+        .mod-row { display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 1px solid var(--line); }
         .mod-row:last-child { border-bottom: none; }
-        
         .mod-icon { width: 52px; height: 52px; border-radius: 11px; object-fit: cover; flex-shrink: 0; }
         .mod-info { flex: 1; min-width: 0; padding: 0 10px; }
         .mod-name { font-size: 0.9rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -95,38 +82,32 @@
         }
         @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
 
-        /* --- Search View --- */
-        .search-wrapper { position: relative; margin: 15px 0 25px 0; }
-        .search-wrapper input {
-            width: 100%; box-sizing: border-box; padding: 8px 10px 8px 35px; border-radius: 10px; border: none; 
-            background: var(--search-bg); font-size: 16px; color: var(--text-color); outline: none;
-        }
-        .search-icon { position: absolute; left: 10px; top: 9px; color: var(--ios-gray); font-size: 14px; }
-
-        /* Search Results Grid */
-        #search-results {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-        }
-        @media (orientation: landscape) or (min-width: 768px) {
-            #search-results { grid-template-columns: 1fr 1fr; column-gap: 30px; }
-        }
-
+        /* --- Search View Grid --- */
+        #search-results { display: grid; grid-template-columns: 1fr; gap: 30px; }
+        @media (orientation: landscape) or (min-width: 768px) { #search-results { grid-template-columns: 1fr 1fr; } }
         .search-result-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
         .ss-container { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line); aspect-ratio: 16 / 9; background: var(--search-bg); }
         .ss-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .search-wrapper { position: relative; margin: 15px 0 25px 0; }
+        .search-wrapper input { width: 100%; box-sizing: border-box; padding: 8px 10px 8px 35px; border-radius: 10px; border: none; background: var(--search-bg); font-size: 16px; color: var(--text-color); outline: none; }
+        .search-icon-svg { position: absolute; left: 10px; top: 9px; width: 16px; height: 16px; fill: var(--ios-gray); }
 
-        /* --- Slim Tab Bar --- */
+        /* --- SLIM TAB BAR (3/4 Size) --- */
         .tab-bar {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 50px;
+            position: fixed; bottom: 0; left: 0; right: 0; 
+            height: 48px; /* 以前の50px〜60pxからさらにスリム化 */
             padding-bottom: env(safe-area-inset-bottom);
-            background: var(--tab-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border-top: 0.5px solid var(--line); display: flex; justify-content: space-around; align-items: center; z-index: 100;
+            background: var(--tab-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-top: 0.5px solid var(--line); display: flex; justify-content: space-around; align-items: center; z-index: 1000;
         }
-        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 9px; width: 50%; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 9px; width: 50%; padding-top: 4px; }
         .tab-item.active { color: var(--ios-blue); }
-        .tab-icon { font-size: 20px; margin-bottom: 1px; }
+        .tab-item.active svg { fill: var(--ios-blue); }
+        
+        /* SVG Icon Settings */
+        .tab-icon-svg {
+            width: 22px; height: 22px; margin-bottom: 2px; fill: var(--ios-gray); transition: fill 0.2s;
+        }
     </style>
 </head>
 <body>
@@ -148,15 +129,21 @@
     <div id="page-search" class="hidden">
         <header><h1>Search</h1></header>
         <div class="search-wrapper">
-            <span class="search-icon">🔍</span>
+            <svg class="search-icon-svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             <input type="text" id="searchInput" placeholder="Apps, Mods, and more" oninput="runSearch()">
         </div>
         <div id="search-results"></div>
     </div>
 
     <nav class="tab-bar">
-        <a href="javascript:void(0)" class="tab-item active" onclick="showTab('today')"><span class="tab-icon">📑</span>Today</a>
-        <a href="javascript:void(0)" class="tab-item" onclick="showTab('search')"><span class="tab-icon">🔍</span>Search</a>
+        <a href="javascript:void(0)" class="tab-item active" onclick="showTab('today')">
+            <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            Today
+        </a>
+        <a href="javascript:void(0)" class="tab-item" onclick="showTab('search')">
+            <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            Search
+        </a>
     </nav>
 
     <script>
@@ -166,7 +153,10 @@
         function showTab(name) {
             document.getElementById('page-today').classList.toggle('hidden', name !== 'today');
             document.getElementById('page-search').classList.toggle('hidden', name !== 'search');
-            document.querySelectorAll('.tab-item').forEach((el, i) => el.classList.toggle('active', (name==='today' && i===0) || (name==='search' && i===1)));
+            document.querySelectorAll('.tab-item').forEach((el, i) => {
+                const isActive = (name==='today' && i===0) || (name==='search' && i===1);
+                el.classList.toggle('active', isActive);
+            });
             window.scrollTo(0,0);
         }
 
