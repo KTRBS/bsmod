@@ -30,15 +30,16 @@
             margin: 0; padding: 0;
             background-color: var(--bg-color);
             color: var(--text-color);
+            overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- Header / Navigation --- */
+        /* --- Navigation --- */
         .nav-bar {
             position: sticky; top: 0; z-index: 100;
             background: rgba(255,255,255,0.8); backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            padding: 10px 15px; display: flex; align-items: center;
+            padding: 12px 15px; display: flex; align-items: center;
         }
         @media (prefers-color-scheme: dark) { .nav-bar { background: rgba(0,0,0,0.7); } }
 
@@ -46,16 +47,16 @@
             text-decoration: none; color: var(--btn-blue);
             font-size: 1.1rem; font-weight: 500; display: flex; align-items: center;
         }
-        /* 戻るアイコン (<) */
         .back-btn::before {
             content: ''; display: inline-block; width: 10px; height: 10px;
             border-left: 2.5px solid var(--btn-blue); border-bottom: 2.5px solid var(--btn-blue);
-            transform: rotate(45deg); margin-right: 8px; margin-top: 1px;
+            transform: rotate(45deg); margin-right: 8px;
         }
 
-        .container { max-width: 600px; margin: 0 auto; padding: 15px 20px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 10px 20px 40px; }
         
-        .dev-header { margin: 10px 0 30px; }
+        /* --- Header --- */
+        .dev-header { margin: 10px 0 35px; }
         .dev-name { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; margin: 0; }
 
         .section-title h2 { font-size: 1.4rem; font-weight: 700; margin: 0 0 15px; }
@@ -67,9 +68,9 @@
         }
         .app-scroll-container::-webkit-scrollbar { display: none; }
 
-        /* 3つ1組のカラム */
+        /* 3つのアイテムを保持する縦列 */
         .app-column {
-            flex: 0 0 calc(100% - 10px); /* 少し次のカラムが見えるように調整 */
+            flex: 0 0 calc(100% - 15px); /* 次の列がチラ見えするように調整 */
             display: flex; flex-direction: column; gap: 12px;
             scroll-snap-align: start;
         }
@@ -78,7 +79,7 @@
             display: flex; align-items: center; gap: 15px;
             text-decoration: none; color: inherit;
         }
-        .app-item:active { opacity: 0.6; } /* タップ時のフィードバック */
+        .app-item:active { opacity: 0.6; }
 
         .app-icon {
             width: 62px; height: 62px; border-radius: 14px;
@@ -87,18 +88,25 @@
         .app-info {
             flex: 1; border-bottom: 0.5px solid var(--line);
             padding: 2px 0 14px; display: flex; align-items: center; justify-content: space-between;
+            min-width: 0; /* 文字省略のために必要 */
         }
-        /* 各カラムの最後のアイテムは線を消す */
         .app-column .app-item:last-child .app-info { border-bottom: none; }
         
-        .app-text { display: flex; flex-direction: column; width: 60%; }
-        .app-title { font-size: 1.05rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .app-subtitle { font-size: 0.85rem; color: var(--secondary-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .app-text { display: flex; flex-direction: column; min-width: 0; padding-right: 10px; }
+        .app-title { 
+            font-size: 1.05rem; font-weight: 600; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
+        .app-subtitle { 
+            font-size: 0.85rem; color: var(--secondary-text); 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
 
         .get-btn {
             background: var(--btn-bg); color: var(--btn-blue);
             padding: 6px 0; width: 74px; border-radius: 20px;
-            font-size: 0.9rem; font-weight: 800; text-align: center;
+            font-size: 0.85rem; font-weight: 800; text-align: center;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -125,29 +133,36 @@
     <script>
         async function initDevPage() {
             try {
-                // data.jsonを読み込み
+                // 同じフォルダにある data.json を読み込み
                 const response = await fetch(`./data.json?${new Date().getTime()}`);
                 const data = await response.json();
 
+                // ページタイトルの設定
+                document.title = `${data.displayName} - Developer Profile`;
                 document.getElementById('js-dev-name').textContent = data.displayName;
-                const listContainer = document.getElementById('js-app-list');
                 
+                const listContainer = document.getElementById('js-app-list');
                 const apps = data.apps;
                 let currentColumn;
 
                 apps.forEach((app, index) => {
-                    // 3つごとに新しい縦列（app-column）を作る
+                    // 1. 3つごとに新しいカラム（縦列）を作成
                     if (index % 3 === 0) {
                         currentColumn = document.createElement('div');
                         currentColumn.className = 'app-column';
                         listContainer.appendChild(currentColumn);
                     }
 
-                    const appItem = document.createElement('a');
-                    appItem.href = `../../mods/prod/${app.id}/index.html`;
-                    appItem.className = 'app-item';
-                    appItem.innerHTML = `
-                        <img src="../../../resources/${app.id}/icon.png" class="app-icon" alt="icon">
+                    // 2. リンク先の決定 (online/offline/prod)
+                    const mode = app.mode || 'prod';
+                    const targetUrl = `../../mods/${mode}/${app.id}/index.html`;
+
+                    // 3. アプリ項目のHTML生成
+                    const appLink = document.createElement('a');
+                    appLink.href = targetUrl;
+                    appLink.className = 'app-item';
+                    appLink.innerHTML = `
+                        <img src="../../../resources/${app.id}/icon.png" class="app-icon" alt="${app.name} icon">
                         <div class="app-info">
                             <div class="app-text">
                                 <span class="app-title">${app.name}</span>
@@ -156,16 +171,17 @@
                             <div class="get-btn">GET</div>
                         </div>
                     `;
-                    currentColumn.appendChild(appItem);
+                    
+                    currentColumn.appendChild(appLink);
                 });
 
             } catch (e) {
                 console.error("データの読み込みに失敗しました:", e);
-                document.getElementById('js-dev-name').textContent = "Error";
+                document.getElementById('js-dev-name').textContent = "Developer Name";
             }
         }
 
-        initDevPage();
+        window.onload = initDevPage;
     </script>
 </body>
 </html>
