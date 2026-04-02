@@ -1,6 +1,6 @@
 {
   "displayName": "Detomoni",
   "apps": [
-    { "id": "moni", "name": "Moni Brawl", "subtitle": "New Brawler Lwara!" }
+    { "id": "moni", "mode": "online", "name": "Moni Brawl", "subtitle": "New Brawler Lwara!" }
   ]
 }
