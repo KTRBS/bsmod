@@ -21,6 +21,8 @@
             --line: rgba(0,0,0,0.1);
             --card-bg: #f2f2f7;
             --discord: #5865F2;
+            --status-green: #28a745;
+            --status-gray: #8e8e93;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -36,12 +38,29 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", sans-serif;
             margin: 0; padding: 0;
             background-color: var(--bg-color);
             color: var(--text-color);
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
+            line-height: 1.4;
+        }
+
+        /* --- Global Back Button --- */
+        .top-back-btn {
+            position: absolute; top: 20px; left: 20px; z-index: 50;
+            width: 32px; height: 32px; background: rgba(255,255,255,0.8);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        @media (prefers-color-scheme: dark) { .top-back-btn { background: rgba(40,40,40,0.8); } }
+        
+        .back-icon {
+            width: 10px; height: 10px;
+            border-left: 2.5px solid var(--btn-blue);
+            border-bottom: 2.5px solid var(--btn-blue);
+            transform: rotate(45deg); margin-left: 4px;
         }
 
         /* --- Sticky Header --- */
@@ -50,18 +69,21 @@
             height: 60px; background: var(--header-bg);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; z-index: 100;
+            padding: 0 15px; z-index: 100;
             transform: translateY(-100%);
             transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
             opacity: 0; border-bottom: 0.5px solid var(--line);
         }
         .sticky-header.active { transform: translateY(0); opacity: 1; }
+        
+        .sticky-left { display: flex; align-items: center; gap: 12px; }
         .sticky-info { display: flex; align-items: center; gap: 10px; }
-        .sticky-info img { width: 34px; height: 34px; border-radius: 8px; }
-        .sticky-info span { font-weight: 700; font-size: 1rem; }
+        .sticky-info img { width: 30px; height: 30px; border-radius: 7px; }
+        .sticky-info span { font-weight: 700; font-size: 0.95rem; color: var(--text-color); }
+        
         .sticky-dl-btn {
-            background: #f0f0f7; color: var(--btn-blue); text-decoration: none;
-            padding: 6px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem;
+            background: #f0f0f7; color: var(--btn-blue) !important; text-decoration: none;
+            padding: 5px 16px; border-radius: 20px; font-weight: 700; font-size: 0.8rem;
         }
         @media (prefers-color-scheme: dark) { .sticky-dl-btn { background: #3a3a3c; } }
 
@@ -76,9 +98,8 @@
             background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--grad-color) 100%);
         }
         .mod-name-hero {
-            position: relative; z-index: 10; font-size: 2.2rem; font-weight: 800;
-            margin: 0 0 20px 20px; letter-spacing: -1px;
-            text-shadow: 0 0 20px var(--grad-color);
+            position: relative; z-index: 10; font-size: 2.2rem; font-weight: 700;
+            margin: 0 0 20px 20px; letter-spacing: -1px; color: var(--text-color);
         }
 
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -88,30 +109,34 @@
         .icon-box img { width: 92px; height: 92px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
         .version-wrapper { display: flex; align-items: center; gap: 8px; }
-        .version-num { font-size: 1.4rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
+        .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
+        
         .status-badge-inline { 
             font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; 
-            font-weight: 800; text-transform: uppercase; 
+            font-weight: 700; text-transform: uppercase; color: white !important;
         }
-        .status-available { background: #28a745; color: white; }
-        .status-outdated { background: #8e8e93; color: white; }
+        .status-available { background-color: var(--status-green) !important; }
+        .status-outdated { background-color: var(--status-gray) !important; }
 
-        /* Developer Section */
-        .author-section { margin-top: 6px; display: flex; align-items: baseline; gap: 6px; }
-        .author-label { color: var(--secondary-text); font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
-        .author-list { display: flex; flex-wrap: wrap; gap: 4px; }
-        .author-link { color: var(--btn-blue); text-decoration: none; font-weight: 600; font-size: 0.85rem; }
-        .author-link:not(:last-child)::after { content: ','; color: var(--secondary-text); margin-left: 1px; }
+        /* Developer Section Optimized */
+        .author-section { margin-top: 6px; display: flex; align-items: center; gap: 6px; overflow: hidden; }
+        .author-label { color: var(--secondary-text); font-size: 0.85rem; font-weight: 500; white-space: nowrap; }
+        .author-list { display: flex; flex-wrap: nowrap; gap: 4px; overflow: hidden; }
+        .author-link { color: var(--btn-blue) !important; text-decoration: none; font-weight: 600; font-size: 0.85rem; white-space: nowrap; }
 
         /* --- Download Area --- */
         #js-dl-area { margin-bottom: 30px; }
         .download-btn {
-            display: block; background: var(--btn-blue); color: white; text-decoration: none;
-            text-align: center; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 1.1rem;
+            display: block; background-color: var(--btn-blue); color: white !important; text-decoration: none;
+            text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem;
         }
-        .download-btn.unsupported { background: #8e8e93 !important; cursor: not-allowed; opacity: 0.7; }
+        .download-btn.unsupported { 
+            background-color: var(--status-gray) !important; 
+            color: white !important;
+            cursor: not-allowed; 
+            opacity: 0.8;
+        }
         .dl-section-pc { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .pc-btn { padding: 14px !important; font-size: 0.95rem !important; }
 
         /* --- Screenshots --- */
         .ss-container {
@@ -124,28 +149,36 @@
             object-fit: cover; border-radius: 12px; scroll-snap-align: center; border: 0.5px solid var(--line);
         }
 
-        .section-title { font-size: 1.2rem; font-weight: 800; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px; }
+        .section-title { font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px; }
         .content-body { line-height: 1.6; color: var(--secondary-text); font-size: 1rem; }
         
-        /* Contact Section */
+        /* SNS Support Area */
         .dev-contact-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
         .contact-btn {
             display: flex; align-items: center; justify-content: space-between;
             padding: 12px 15px; background: var(--card-bg); border-radius: 12px;
-            text-decoration: none; color: var(--btn-blue); font-weight: 600;
+            text-decoration: none; color: var(--btn-blue) !important;
         }
-        .contact-btn::after { content: '›'; font-size: 1.4rem; color: var(--secondary-text); }
-        .contact-btn.discord { color: var(--discord); }
-
-        .back-link { display: inline-block; margin: 40px 0; color: var(--btn-blue); text-decoration: none; font-weight: 700; }
+        .contact-btn span { font-weight: 600; }
+        .contact-btn::after { content: '›'; font-size: 1.2rem; color: var(--secondary-text); }
+        .contact-btn.discord { color: var(--discord) !important; }
     </style>
 </head>
 <body>
 
+    <a href="javascript:history.back()" class="top-back-btn">
+        <div class="back-icon"></div>
+    </a>
+
     <div id="js-sticky-header" class="sticky-header">
-        <div class="sticky-info">
-            <img src="../../../resources/tale/icon.png" alt="Icon">
-            <span>Tale Stars</span>
+        <div class="sticky-left">
+            <a href="javascript:history.back()" style="text-decoration:none; display:flex; align-items:center; margin-right:5px;">
+                <div class="back-icon" style="width:8px; height:8px; border-width:2px;"></div>
+            </a>
+            <div class="sticky-info">
+                <img src="../../../resources/tale/icon.png" alt="Icon">
+                <span>Tale Stars</span>
+            </div>
         </div>
         <a href="#" class="sticky-dl-btn">GET</a>
     </div>
@@ -183,10 +216,7 @@
         <h2 class="section-title" id="ui-howto-title">How to Install</h2>
         <div class="content-body" id="js-info-content">Loading...</div>
 
-        <div class="dev-contact-section" id="js-contact-area">
-            </div>
-
-        <a href="../../../index.html" class="back-link" id="ui-back">← Back to List</a>
+        <div class="dev-contact-section" id="js-contact-area"></div>
     </div>
 
     <script>
@@ -195,8 +225,8 @@
         const codename = 'tale';
 
         const uiText = {
-            ja: { available: "利用可能", unsupported: "非対応", updated: "最終更新: ", howto: "導入方法", back: "← リストに戻る", download: "ダウンロード", get: "入手", ios: "iOS (IPA)", android: "Android (APK)", dev: "開発者" },
-            en: { available: "Available", unsupported: "Unsupported", updated: "Last Updated: ", howto: "How to Install", back: "← Back to List", download: "DOWNLOAD", get: "GET", ios: "iOS (IPA)", android: "Android (APK)", dev: "Developer" }
+            ja: { available: "利用可能", unsupported: "非対応", updated: "最終更新: ", howto: "導入方法", download: "ダウンロード", get: "入手", ios: "iOS (IPA)", android: "Android (APK)", dev: "開発者" },
+            en: { available: "Available", unsupported: "Unsupported", updated: "Last Updated: ", howto: "How to Install", download: "DOWNLOAD", get: "GET", ios: "iOS (IPA)", android: "Android (APK)", dev: "Developer" }
         };
 
         function getOS() {
@@ -222,31 +252,28 @@
                 document.getElementById('ui-author-label').textContent = t.dev;
                 stickyBtn.textContent = t.get;
 
-                // 互換性チェック
                 const isCompatible = (device === "ios" ? vData.iossupport === "available" : (device === "android" ? vData.androidsupport === "available" : true));
                 const statusEl = document.getElementById('js-status');
                 statusEl.textContent = isCompatible ? t.available : t.unsupported;
                 statusEl.className = 'status-badge-inline ' + (isCompatible ? 'status-available' : 'status-outdated');
 
-                // 作者リスト
                 const authorContainer = document.getElementById('js-author-list');
                 authorContainer.innerHTML = "";
                 if (vData.authors) {
-                    vData.authors.forEach(auth => {
+                    vData.authors.forEach((auth, idx) => {
                         const a = document.createElement('a');
                         a.href = `../../../authors/${auth.id}/index.html`;
                         a.className = 'author-link';
-                        a.textContent = auth.name;
+                        a.textContent = auth.name + (idx < vData.authors.length - 1 ? ',' : '');
                         authorContainer.appendChild(a);
                     });
                 }
 
-                // ボタンロジック
                 if (device === "pc") {
                     dlArea.className = "dl-section-pc";
                     dlArea.innerHTML = `
-                        <a href="${vData.iosDownloadUrl}" class="download-btn pc-btn btn-ipa ${vData.iossupport==='available'?'':'unsupported'}" target="_blank">${vData.iossupport==='available'?t.ios:t.unsupported}</a>
-                        <a href="${vData.androidDownloadUrl}" class="download-btn pc-btn btn-apk ${vData.androidsupport==='available'?'':'unsupported'}" target="_blank">${vData.androidsupport==='available'?t.android:t.unsupported}</a>
+                        <a href="${vData.iosDownloadUrl}" class="download-btn btn-ipa ${vData.iossupport==='available'?'':'unsupported'}" target="_blank" style="font-size:0.9rem">${vData.iossupport==='available'?t.ios:t.unsupported}</a>
+                        <a href="${vData.androidDownloadUrl}" class="download-btn btn-apk ${vData.androidsupport==='available'?'':'unsupported'}" target="_blank" style="font-size:0.9rem">${vData.androidsupport==='available'?t.android:t.unsupported}</a>
                     `;
                     stickyBtn.href = vData.iosDownloadUrl || vData.androidDownloadUrl;
                 } else {
@@ -255,12 +282,15 @@
                     const btn = document.createElement('a');
                     btn.className = "download-btn" + (isCompatible ? "" : " unsupported");
                     btn.textContent = isCompatible ? `${t.download} (${isiOS?'IPA':'APK'})` : t.unsupported;
-                    if (isCompatible) { btn.href = url; btn.target = "_blank"; stickyBtn.href = url; }
-                    else { btn.href = "javascript:void(0)"; stickyBtn.style.display = "none"; }
+                    if (isCompatible) { 
+                        btn.href = url; btn.target = "_blank"; stickyBtn.href = url; 
+                    } else { 
+                        btn.href = "javascript:void(0)"; 
+                        stickyBtn.style.display = "none"; 
+                    }
                     dlArea.appendChild(btn);
                 }
 
-                // サポートボタン (Discord / Telegram)
                 const contactArea = document.getElementById('js-contact-area');
                 if (vData.discord) {
                     contactArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="contact-btn discord"><span>Discord Server</span></a>`;
@@ -275,7 +305,6 @@
 
             } catch (e) { console.error(e); }
 
-            // --- Scroll Animation ---
             const stickyHeader = document.getElementById('js-sticky-header');
             const mainTitle = document.getElementById('ui-main-title');
             window.addEventListener('scroll', () => {
@@ -283,7 +312,7 @@
                 const end = 150;
                 let opacity = 1 - (scrollY / end);
                 mainTitle.style.opacity = Math.max(opacity, 0);
-                mainTitle.style.transform = `translateY(${scrollY * -0.4}px)`; // 少し速めに上に消える
+                mainTitle.style.transform = `translateY(${scrollY * -0.4}px)`;
                 if (scrollY > end) stickyHeader.classList.add('active');
                 else stickyHeader.classList.remove('active');
             }, { passive: true });
