@@ -1,0 +1,6 @@
+{
+  "displayName": "sqk",
+  "apps": [
+    { "id": "tale", "mode": "prod", "name": "Tale Stars", "subtitle": "Original Version" }
+  ]
+}
