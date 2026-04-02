@@ -21,6 +21,8 @@
             --line: rgba(0,0,0,0.1);
             --card-bg: #f2f2f7;
             --discord: #5865F2;
+            --status-green: #28a745;
+            --status-gray: #8e8e93;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -36,7 +38,6 @@
         }
 
         body {
-            /* Androidでのフォントの太さを安定させるため標準的なウェイトを使用 */
             font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", sans-serif;
             margin: 0; padding: 0;
             background-color: var(--bg-color);
@@ -78,10 +79,10 @@
         .sticky-left { display: flex; align-items: center; gap: 12px; }
         .sticky-info { display: flex; align-items: center; gap: 10px; }
         .sticky-info img { width: 30px; height: 30px; border-radius: 7px; }
-        .sticky-info span { font-weight: 700; font-size: 0.95rem; }
+        .sticky-info span { font-weight: 700; font-size: 0.95rem; color: var(--text-color); }
         
         .sticky-dl-btn {
-            background: var(--btn-bg, #f0f0f7); color: var(--btn-blue); text-decoration: none;
+            background: #f0f0f7; color: var(--btn-blue) !important; text-decoration: none;
             padding: 5px 16px; border-radius: 20px; font-weight: 700; font-size: 0.8rem;
         }
         @media (prefers-color-scheme: dark) { .sticky-dl-btn { background: #3a3a3c; } }
@@ -98,7 +99,7 @@
         }
         .mod-name-hero {
             position: relative; z-index: 10; font-size: 2.2rem; font-weight: 700;
-            margin: 0 0 20px 20px; letter-spacing: -1px;
+            margin: 0 0 20px 20px; letter-spacing: -1px; color: var(--text-color);
         }
 
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -109,22 +110,33 @@
         
         .version-wrapper { display: flex; align-items: center; gap: 8px; }
         .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
+        
+        /* Status Badge - 強制的に背景色を適用 */
         .status-badge-inline { 
             font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; 
-            font-weight: 700; text-transform: uppercase; 
+            font-weight: 700; text-transform: uppercase; color: white !important;
         }
+        .status-available { background-color: var(--status-green) !important; }
+        .status-outdated { background-color: var(--status-gray) !important; }
 
-        /* Author Section Optimized for Android */
+        /* Author Section */
         .author-section { margin-top: 6px; display: flex; align-items: center; gap: 6px; overflow: hidden; }
         .author-label { color: var(--secondary-text); font-size: 0.85rem; font-weight: 500; white-space: nowrap; }
-        .author-list { display: flex; flex-wrap: nowrap; gap: 4px; overflow: hidden; text-overflow: ellipsis; }
-        .author-link { color: var(--btn-blue); text-decoration: none; font-weight: 600; font-size: 0.85rem; white-space: nowrap; }
+        .author-list { display: flex; flex-wrap: nowrap; gap: 4px; overflow: hidden; }
+        .author-link { color: var(--btn-blue) !important; text-decoration: none; font-weight: 600; font-size: 0.85rem; white-space: nowrap; }
 
         /* --- Download Area --- */
         #js-dl-area { margin-bottom: 30px; }
         .download-btn {
-            display: block; background: var(--btn-blue); color: white; text-decoration: none;
+            display: block; background-color: var(--btn-blue); color: white !important; text-decoration: none;
             text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem;
+        }
+        /* 非対応時の灰色ボタン - Androidの青上書きを防止 */
+        .download-btn.unsupported { 
+            background-color: var(--status-gray) !important; 
+            color: white !important;
+            cursor: not-allowed; 
+            opacity: 0.8;
         }
         .dl-section-pc { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
@@ -142,15 +154,16 @@
         .section-title { font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px; }
         .content-body { line-height: 1.6; color: var(--secondary-text); font-size: 1rem; }
         
-        /* SNS Support Area - Android Weight Fix */
+        /* SNS Support Area */
         .dev-contact-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
         .contact-btn {
             display: flex; align-items: center; justify-content: space-between;
             padding: 12px 15px; background: var(--card-bg); border-radius: 12px;
-            text-decoration: none; color: var(--btn-blue); font-weight: 500;
+            text-decoration: none; color: var(--btn-blue) !important;
         }
         .contact-btn span { font-weight: 600; }
         .contact-btn::after { content: '›'; font-size: 1.2rem; color: var(--secondary-text); }
+        .contact-btn.discord { color: var(--discord) !important; }
     </style>
 </head>
 <body>
@@ -206,7 +219,7 @@
         <div class="content-body" id="js-info-content">Loading...</div>
 
         <div class="dev-contact-section" id="js-contact-area"></div>
-        </div>
+    </div>
 
     <script>
         const isJa = navigator.language.includes('ja');
@@ -244,6 +257,8 @@
                 const isCompatible = (device === "ios" ? vData.iossupport === "available" : (device === "android" ? vData.androidsupport === "available" : true));
                 const statusEl = document.getElementById('js-status');
                 statusEl.textContent = isCompatible ? t.available : t.unsupported;
+                
+                // CSSクラスの適用と背景色の強制
                 statusEl.className = 'status-badge-inline ' + (isCompatible ? 'status-available' : 'status-outdated');
 
                 const authorContainer = document.getElementById('js-author-list');
@@ -271,8 +286,12 @@
                     const btn = document.createElement('a');
                     btn.className = "download-btn" + (isCompatible ? "" : " unsupported");
                     btn.textContent = isCompatible ? `${t.download} (${isiOS?'IPA':'APK'})` : t.unsupported;
-                    if (isCompatible) { btn.href = url; btn.target = "_blank"; stickyBtn.href = url; }
-                    else { btn.href = "javascript:void(0)"; stickyBtn.style.display = "none"; }
+                    if (isCompatible) { 
+                        btn.href = url; btn.target = "_blank"; stickyBtn.href = url; 
+                    } else { 
+                        btn.href = "javascript:void(0)"; 
+                        stickyBtn.style.display = "none"; 
+                    }
                     dlArea.appendChild(btn);
                 }
 
