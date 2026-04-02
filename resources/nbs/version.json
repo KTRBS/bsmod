@@ -1,0 +1,14 @@
+{
+    "version": "NBS Offline Beta6",
+    "lastUpdated": "2026-01-18",
+    "iossupport": "unavailable",
+    "androidsupport": "available",
+    "iosDownloadUrl": "",
+    "androidDownloadUrl": "https://t.me/nbsoffline/529",
+    "authors": [
+        { "name": "Natesworks", "id": "nate" },
+        { "name": "Bananae", "id": "banae" }
+    ],
+    "telegram": "https://t.me/nbsoffline",
+    "discord": "https://discord.gg/tsmod"
+}
