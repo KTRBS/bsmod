@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Author Profile</title>
+    <style>
+        /* 前述のDetailsページと共通のiOS風スタイルをここに記述 */
+        :root { --bg-color: #ffffff; --text-color: #000000; --btn-blue: #007aff; }
+        @media (prefers-color-scheme: dark) { :root { --bg-color: #000000; --text-color: #ffffff; } }
+        body { font-family: -apple-system, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; text-align: center; }
+        .back-btn { display: inline-block; margin-bottom: 20px; color: var(--btn-blue); text-decoration: none; }
+        .profile-icon { width: 100px; height: 100px; border-radius: 50%; margin-bottom: 10px; }
+        h1 { margin: 10px 0; font-size: 1.8rem; }
+        .bio { color: #8e8e93; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-btn">← Back</a>
+        <div id="js-content">Loading...</div>
+    </div>
+
+    <script>
+        async function initAuthor() {
+            // URLから ?id=xxx を取得
+            const params = new URLSearchParams(window.location.search);
+            const authorId = params.get('id');
+
+            if (!authorId) {
+                document.getElementById('js-content').textContent = "Author not found.";
+                return;
+            }
+
+            try {
+                // その作者のフォルダにある data.json を読み込む
+                const res = await fetch(`./${authorId}/data.json`);
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+
+                // 画面を書き換え
+                document.title = `${data.name} - Profile`;
+                document.getElementById('js-content').innerHTML = `
+                    <img src="./${authorId}/icon.png" class="profile-icon" onerror="this.src='../resources/default-user.png'">
+                    <h1>${data.name}</h1>
+                    <p class="bio">${data.bio || ''}</p>
+                    <div class="links">
+                        ${data.twitter ? `<a href="https://twitter.com/${data.twitter}" class="back-btn">Twitter</a>` : ''}
+                    </div>
+                `;
+            } catch (e) {
+                document.getElementById('js-content').textContent = "Error loading author data.";
+            }
+        }
+        window.onload = initAuthor;
+    </script>
+</body>
+</html>
