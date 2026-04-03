@@ -1,1 +1,6 @@
-
+{
+  "displayName": "AlbyxHacc",
+  "apps": [
+    { "id": "Funneh", "mode": "online", "name": "Funneh Brawl", "subtitle": "tuffest v18 🐳🐟" }
+  ]
+}
