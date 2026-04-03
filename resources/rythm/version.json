@@ -1,12 +1,14 @@
 {
-    "version": "66.263",
-    "lastUpdated": "2026-03-31",
+    "name": "Null Rythm",
+    "version": "66.2",
+    "lastUpdated": "2026-04-03",
     "iossupport": "unavailable",
     "androidsupport": "available",
     "iosDownloadUrl": "",
-    "androidDownloadUrl": "https://gofile.io/d/Vn8lKu",
+    "androidDownloadUrl": "https://t.me/nullrythm/194",
     "authors": [
         { "name": "Ryo", "id": "ryo" }
     ],
-    "telegram": "https://t.me/nullrythm"
+    "telegram": "https://t.me/nullrythm",
+    "discord": "https://dsc.gg/nullrythm"
 }
