@@ -1,0 +1,6 @@
+{
+  "displayName": "NatesWorks",
+  "apps": [
+    { "id": "nbs", "mode": "offline", "name": "NBS Offline", "subtitle": "V59 offline mod😱" }
+  ]
+}
