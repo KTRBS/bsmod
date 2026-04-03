@@ -5,132 +5,218 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Details</title>
     
+    <meta id="meta-desc" property="og:description" content="最新版をダウンロード">
+    <meta id="og-title" property="og:title" content="Details">
+    <meta id="og-img" property="og:image" content="">
+    <meta property="og:type" content="website">
+
     <style>
         :root {
-            --bg-color: #ffffff; --text-color: #000000; --secondary-text: #8e8e93;
-            --btn-blue: #007aff; --line: rgba(0,0,0,0.1); --card-bg: #f2f2f7;
-            --nav-bg: rgba(255,255,255,0.8); --status-green: #28a745; --status-gray: #8e8e93;
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --secondary-text: #8e8e93;
+            --grad-color: rgba(255,255,255,1);
+            --header-bg: rgba(255,255,255,0.85);
+            --btn-blue: #007aff;
+            --line: rgba(0,0,0,0.1);
+            --card-bg: #f2f2f7;
+            --discord: #5865F2;
+            --status-green: #28a745;
+            --status-gray: #8e8e93;
         }
+
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-color: #000000; --text-color: #ffffff; --secondary-text: #8e8e93;
-                --line: rgba(255,255,255,0.15); --card-bg: #1c1c1e;
-                --nav-bg: rgba(0,0,0,0.7);
+                --bg-color: #000000;
+                --text-color: #ffffff;
+                --secondary-text: #8e8e93;
+                --grad-color: rgba(0,0,0,1);
+                --header-bg: rgba(20,20,20,0.85);
+                --line: rgba(255,255,255,0.15);
+                --card-bg: #1c1c1e;
             }
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0; background-color: var(--bg-color); color: var(--text-color);
-            overflow-x: hidden; -webkit-tap-highlight-color: transparent; line-height: 1.4;
+            font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", sans-serif;
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            line-height: 1.4;
         }
 
-        /* --- Navigation (Sticky) --- */
-        .nav-bar {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-            background: var(--nav-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            padding: 12px 15px; display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 0.5px solid transparent; transition: border-color 0.3s;
+        .top-back-btn {
+            position: absolute; top: 20px; left: 20px; z-index: 50;
+            width: 32px; height: 32px; background: rgba(255,255,255,0.8);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        .nav-bar.scrolled { border-bottom-color: var(--line); }
-
-        .back-btn {
-            text-decoration: none; color: var(--btn-blue);
-            font-size: 1.1rem; font-weight: 500; display: flex; align-items: center;
-        }
-        .back-btn::before {
-            content: ''; display: inline-block; width: 10px; height: 10px;
-            border-left: 2.5px solid var(--btn-blue); border-bottom: 2.5px solid var(--btn-blue);
-            transform: rotate(45deg); margin-right: 8px;
+        @media (prefers-color-scheme: dark) { .top-back-btn { background: rgba(40,40,40,0.8); } }
+        
+        .back-icon {
+            width: 10px; height: 10px;
+            border-left: 2.5px solid var(--btn-blue);
+            border-bottom: 2.5px solid var(--btn-blue);
+            transform: rotate(45deg); margin-left: 4px;
         }
 
-        .nav-title {
-            position: absolute; left: 50%; transform: translateX(-50%);
-            font-weight: 600; font-size: 1.05rem; opacity: 0;
-            transition: opacity 0.2s, transform 0.2s; white-space: nowrap;
+        .sticky-header {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 60px; background: var(--header-bg);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 15px; z-index: 100;
+            transform: translateY(-100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+            opacity: 0; border-bottom: 0.5px solid var(--line);
         }
-        .nav-title.visible { opacity: 1; }
+        .sticky-header.active { transform: translateY(0); opacity: 1; }
+        
+        .sticky-left { display: flex; align-items: center; gap: 12px; }
+        .sticky-info { display: flex; align-items: center; gap: 10px; }
+        .sticky-info img { width: 30px; height: 30px; border-radius: 7px; }
+        .sticky-info span { font-weight: 700; font-size: 0.95rem; color: var(--text-color); }
+        
+        .sticky-dl-btn {
+            background: #f0f0f7; color: var(--btn-blue) !important; text-decoration: none;
+            padding: 5px 16px; border-radius: 20px; font-weight: 700; font-size: 0.8rem;
+        }
+        @media (prefers-color-scheme: dark) { .sticky-dl-btn { background: #3a3a3c; } }
 
-        /* --- Hero / Header --- */
         .hero {
-            position: relative; height: 240px; background-position: center; background-size: cover;
-            display: flex; align-items: flex-end; margin-top: 0;
+            position: relative; height: 240px;
+            background: center/cover no-repeat;
+            display: flex; align-items: flex-end;
         }
         .hero::after {
             content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--bg-color) 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--grad-color) 100%);
         }
         .mod-name-hero {
-            position: relative; z-index: 10; font-size: 2.2rem; font-weight: 800;
-            margin: 0 0 20px 20px; letter-spacing: -1px; transition: opacity 0.1s;
+            position: relative; z-index: 10; font-size: 2.2rem; font-weight: 700;
+            margin: 0 0 20px 20px; letter-spacing: -1px; color: var(--text-color);
         }
 
-        .container { max-width: 600px; margin: 0 auto; padding: 0 20px 40px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
-        /* --- Info Section --- */
         .info-header { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; }
         .icon-box img { width: 92px; height: 92px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; }
         
-        .status-badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; color: white !important; }
-        .status-available { background: var(--status-green) !important; }
-        .status-outdated { background: var(--status-gray) !important; }
-
-        .author-link { color: var(--btn-blue) !important; text-decoration: none; font-weight: 600; font-size: 0.85rem; }
-
-        .download-btn {
-            display: block; background: var(--btn-blue); color: white !important; text-decoration: none;
-            text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; margin-bottom: 30px;
+        .version-wrapper { display: flex; align-items: center; gap: 8px; }
+        .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
+        
+        .status-badge-inline { 
+            font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; 
+            font-weight: 700; text-transform: uppercase; color: white !important;
         }
-        .download-btn.unsupported { background: var(--status-gray) !important; opacity: 0.8; cursor: not-allowed; }
+        .status-available { background-color: var(--status-green) !important; }
+        .status-outdated { background-color: var(--status-gray) !important; }
 
-        .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 0 -20px 30px -20px; padding: 0 20px; scroll-snap-type: x mandatory; }
+        .author-section { margin-top: 6px; display: flex; align-items: center; gap: 6px; overflow: hidden; }
+        .author-label { color: var(--secondary-text); font-size: 0.85rem; font-weight: 500; white-space: nowrap; }
+        .author-list { display: flex; flex-wrap: nowrap; gap: 4px; overflow: hidden; }
+        .author-link { color: var(--btn-blue) !important; text-decoration: none; font-weight: 600; font-size: 0.85rem; white-space: nowrap; }
+
+        #js-dl-area { margin-bottom: 30px; }
+        .download-btn {
+            display: block; background-color: var(--btn-blue); color: white !important; text-decoration: none;
+            text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem;
+        }
+        .download-btn.unsupported { 
+            background-color: var(--status-gray) !important; 
+            color: white !important;
+            cursor: not-allowed; 
+            opacity: 0.8;
+        }
+        .dl-section-pc { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .ss-container {
+            display: flex; overflow-x: auto; gap: 14px; margin: 0 -20px 30px -20px; padding: 0 20px;
+            scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+        }
         .ss-container::-webkit-scrollbar { display: none; }
-        .ss-container img { flex: 0 0 85%; max-width: 380px; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; scroll-snap-align: center; border: 0.5px solid var(--line); }
+        .ss-container img {
+            flex: 0 0 85%; max-width: 380px; aspect-ratio: 16 / 9;
+            object-fit: cover; border-radius: 12px; scroll-snap-align: center; border: 0.5px solid var(--line);
+        }
 
         .section-title { font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px; }
         .content-body { line-height: 1.6; color: var(--secondary-text); font-size: 1rem; }
+        
+        .dev-contact-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+        .contact-btn {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 15px; background: var(--card-bg); border-radius: 12px;
+            text-decoration: none; color: var(--btn-blue) !important;
+        }
+        .contact-btn span { font-weight: 600; }
+        .contact-btn::after { content: '›'; font-size: 1.2rem; color: var(--secondary-text); }
+        .contact-btn.discord { color: var(--discord) !important; }
     </style>
 </head>
 <body>
 
-    <nav class="nav-bar" id="js-nav-bar">
-        <a href="javascript:history.back()" class="back-btn">Back</a>
-        <span class="nav-title" id="js-nav-title">---</span>
-        <div style="width:50px;"></div>
-    </nav>
+    <a href="javascript:history.back()" class="top-back-btn">
+        <div class="back-icon"></div>
+    </a>
 
-    <section id="js-hero" class="hero">
-        <div class="mod-name-hero" id="js-large-title">---</div>
+    <div id="js-sticky-header" class="sticky-header">
+        <div class="sticky-left">
+            <a href="javascript:history.back()" style="text-decoration:none; display:flex; align-items:center; margin-right:5px;">
+                <div class="back-icon" style="width:8px; height:8px; border-width:2px;"></div>
+            </a>
+            <div class="sticky-info">
+                <img id="js-sticky-icon" src="" alt="Icon">
+                <span id="js-sticky-name">---</span>
+            </div>
+        </div>
+        <a href="#" class="sticky-dl-btn" id="js-sticky-dl-btn">GET</a>
+    </div>
+
+    <section class="hero" id="js-hero">
+        <div class="mod-name-hero" id="ui-main-title">---</div>
     </section>
 
     <div class="container">
         <div class="info-header">
-            <div class="icon-box"><img id="js-icon" src="" alt=""></div>
+            <div class="icon-box"><img id="js-main-icon" src="" alt="Icon"></div>
             <div>
-                <div style="display:flex; align-items:center; gap:8px;">
+                <div class="version-wrapper">
                     <p class="version-num" id="js-version">v---</p>
-                    <div id="js-status" class="status-badge">----</div>
+                    <div id="js-status" class="status-badge-inline">----</div>
                 </div>
-                <div style="margin-top:4px; font-size:0.85rem;">
-                    <span style="color:var(--secondary-text)">Developer: </span>
-                    <span id="js-author-list"></span>
+                
+                <div class="author-section">
+                    <div class="author-label" id="ui-author-label">Developer</div>
+                    <div id="js-author-list" class="author-list"></div>
                 </div>
-                <p style="font-size: 0.75rem; margin: 4px 0 0; color: var(--secondary-text);" id="js-updated">--</p>
+                
+                <p style="font-size: 0.8rem; margin: 6px 0 0; color: var(--secondary-text);" id="ui-updated">Last Updated: --</p>
             </div>
         </div>
 
         <div id="js-dl-area"></div>
+
         <div class="ss-container" id="js-ss-container"></div>
 
-        <h2 class="section-title">How to Install</h2>
+        <h2 class="section-title" id="ui-howto-title">How to Install</h2>
         <div class="content-body" id="js-info-content">Loading...</div>
+
+        <div class="dev-contact-section" id="js-contact-area"></div>
     </div>
 
     <script>
         const isJa = navigator.language.includes('ja');
         const lang = isJa ? 'ja' : 'en';
+        // URLパラメータからIDを取得 (?id=nbs など)
         const codename = new URLSearchParams(window.location.search).get('id');
+
+        const uiText = {
+            ja: { available: "利用可能", unsupported: "非対応", updated: "最終更新: ", howto: "導入方法", download: "ダウンロード", get: "入手", ios: "iOS (IPA)", android: "Android (APK)", dev: "開発者" },
+            en: { available: "Available", unsupported: "Unsupported", updated: "Last Updated: ", howto: "How to Install", download: "DOWNLOAD", get: "GET", ios: "iOS (IPA)", android: "Android (APK)", dev: "Developer" }
+        };
 
         function getOS() {
             const ua = navigator.userAgent;
@@ -140,86 +226,101 @@
         }
 
         async function initPage() {
-            if (!codename) return;
+            if(!codename) return;
+            const ts = new Date().getTime();
+            const t = uiText[lang];
+            const device = getOS();
+            const dlArea = document.getElementById('js-dl-area');
+            const stickyBtn = document.getElementById('js-sticky-dl-btn');
             const resDir = `../resources/${codename}`;
-            const t = isJa ? { dl:"ダウンロード", un:"非対応", av:"利用可能" } : { dl:"DOWNLOAD", un:"Unsupported", av:"Available" };
 
             try {
-                const res = await fetch(`${resDir}/version.json?${Date.now()}`);
-                const data = await res.json();
-
-                // UI Data Fill
-                document.title = data.name;
-                document.getElementById('js-large-title').textContent = data.name;
-                document.getElementById('js-nav-title').textContent = data.name;
+                const vRes = await fetch(`${resDir}/version.json?${ts}`);
+                const vData = await vRes.json();
+                
+                // データ反映
+                document.title = `${vData.name} - Details`;
+                document.getElementById('ui-main-title').textContent = vData.name;
+                document.getElementById('js-sticky-name').textContent = vData.name;
+                document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
+                document.getElementById('js-main-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-hero').style.backgroundImage = `url('${resDir}/header.png')`;
-                document.getElementById('js-icon').src = `${resDir}/icon.png`;
-                document.getElementById('js-version').textContent = 'v' + data.version;
-                document.getElementById('js-updated').textContent = 'Last Updated: ' + data.lastUpdated;
+                
+                document.getElementById('js-version').textContent = 'v' + vData.version;
+                document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
+                document.getElementById('ui-author-label').textContent = t.dev;
+                document.getElementById('ui-howto-title').textContent = t.howto;
+                stickyBtn.textContent = t.get;
 
-                // Status & Compatibility
-                const os = getOS();
-                const isComp = (os === "ios" ? data.iossupport === "available" : (os === "android" ? data.androidsupport === "available" : true));
+                const isCompatible = (device === "ios" ? vData.iossupport === "available" : (device === "android" ? vData.androidsupport === "available" : true));
                 const statusEl = document.getElementById('js-status');
-                statusEl.textContent = isComp ? t.av : t.un;
-                statusEl.className = 'status-badge ' + (isComp ? 'status-available' : 'status-outdated');
+                statusEl.textContent = isCompatible ? t.available : t.unsupported;
+                statusEl.className = 'status-badge-inline ' + (isCompatible ? 'status-available' : 'status-outdated');
 
-                // Authors
-                const authArea = document.getElementById('js-author-list');
-                data.authors.forEach((a, i) => {
-                    const link = document.createElement('a');
-                    link.href = `../dev/?id=${a.id}`;
-                    link.className = 'author-link';
-                    link.textContent = a.name + (i < data.authors.length - 1 ? ', ' : '');
-                    authArea.appendChild(link);
-                });
+                const authorContainer = document.getElementById('js-author-list');
+                authorContainer.innerHTML = "";
+                if (vData.authors) {
+                    vData.authors.forEach((auth, idx) => {
+                        const a = document.createElement('a');
+                        a.href = `../dev/?id=${auth.id}`;
+                        a.className = 'author-link';
+                        a.textContent = auth.name + (idx < vData.authors.length - 1 ? ',' : '');
+                        authorContainer.appendChild(a);
+                    });
+                }
 
-                // Download Button
-                const dlUrl = (os === "ios") ? data.iosDownloadUrl : data.androidDownloadUrl;
-                const btn = document.createElement('a');
-                btn.className = "download-btn" + (isComp ? "" : " unsupported");
-                btn.textContent = isComp ? `${t.dl} (${os.toUpperCase()})` : t.un;
-                if (isComp) { btn.href = dlUrl; btn.target = "_blank"; }
-                document.getElementById('js-dl-area').appendChild(btn);
+                if (device === "pc") {
+                    dlArea.className = "dl-section-pc";
+                    dlArea.innerHTML = `
+                        <a href="${vData.iosDownloadUrl}" class="download-btn btn-ipa ${vData.iossupport==='available'?'':'unsupported'}" target="_blank" style="font-size:0.9rem">${vData.iossupport==='available'?t.ios:t.unsupported}</a>
+                        <a href="${vData.androidDownloadUrl}" class="download-btn btn-apk ${vData.androidsupport==='available'?'':'unsupported'}" target="_blank" style="font-size:0.9rem">${vData.androidsupport==='available'?t.android:t.unsupported}</a>
+                    `;
+                    stickyBtn.href = vData.iosDownloadUrl || vData.androidDownloadUrl;
+                } else {
+                    const isiOS = (device === "ios");
+                    const url = isiOS ? vData.iosDownloadUrl : vData.androidDownloadUrl;
+                    const btn = document.createElement('a');
+                    btn.className = "download-btn" + (isCompatible ? "" : " unsupported");
+                    btn.textContent = isCompatible ? `${t.download} (${isiOS?'IPA':'APK'})` : t.unsupported;
+                    if (isCompatible) { 
+                        btn.href = url; btn.target = "_blank"; stickyBtn.href = url; 
+                    } else { 
+                        btn.href = "javascript:void(0)"; 
+                        stickyBtn.style.display = "none"; 
+                    }
+                    dlArea.appendChild(btn);
+                }
 
-                // Screenshots
+                // スクリーンショット生成
                 const ssContainer = document.getElementById('js-ss-container');
                 [1,2,3].forEach(n => {
                     const img = document.createElement('img');
                     img.src = `${resDir}/ss${n}.png`;
+                    img.alt = `Screenshot ${n}`;
                     ssContainer.appendChild(img);
                 });
 
-                // Info Content
-                const infoRes = await fetch(`${resDir}/info_${lang}.html`);
+                const contactArea = document.getElementById('js-contact-area');
+                if (vData.discord) contactArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="contact-btn discord"><span>Discord Server</span></a>`;
+                if (vData.telegram) contactArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="contact-btn"><span>Telegram Channel</span></a>`;
+
+                const infoFile = isJa ? 'info_ja.html' : 'info_en.html';
+                const infoRes = await fetch(`${resDir}/${infoFile}?${ts}`);
                 if (infoRes.ok) document.getElementById('js-info-content').innerHTML = await infoRes.text();
 
-                // --- iOS Scroll Logic ---
-                const navBar = document.getElementById('js-nav-bar');
-                const navTitle = document.getElementById('js-nav-title');
-                const largeTitle = document.getElementById('js-large-title');
-
-                window.addEventListener('scroll', () => {
-                    const scrollPos = window.scrollY;
-                    
-                    // 150px程度スクロールしたらナビバーをアクティブにする
-                    if (scrollPos > 160) {
-                        navTitle.classList.add('visible');
-                        navBar.classList.add('scrolled');
-                    } else {
-                        navTitle.classList.remove('visible');
-                        navBar.classList.remove('scrolled');
-                    }
-
-                    // 大きいタイトルを徐々に透明にする
-                    if (scrollPos > 0) {
-                        largeTitle.style.opacity = Math.max(0, 1 - (scrollPos / 140));
-                    } else {
-                        largeTitle.style.opacity = 1;
-                    }
-                }, { passive: true });
-
             } catch (e) { console.error(e); }
+
+            const stickyHeader = document.getElementById('js-sticky-header');
+            const mainTitle = document.getElementById('ui-main-title');
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                const end = 150;
+                let opacity = 1 - (scrollY / end);
+                mainTitle.style.opacity = Math.max(opacity, 0);
+                mainTitle.style.transform = `translateY(${scrollY * -0.4}px)`;
+                if (scrollY > end) stickyHeader.classList.add('active');
+                else stickyHeader.classList.remove('active');
+            }, { passive: true });
         }
         window.onload = initPage;
     </script>
