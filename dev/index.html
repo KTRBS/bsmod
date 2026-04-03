@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Author Profile</title>
+    <style>
+        :root { --bg-color: #ffffff; --text-color: #000000; --btn-blue: #007aff; }
+        @media (prefers-color-scheme: dark) { :root { --bg-color: #000000; --text-color: #ffffff; } }
+        body { font-family: -apple-system, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 40px 20px; }
+        .container { max-width: 600px; margin: 0 auto; text-align: center; position: relative; }
+        .back-btn { position: absolute; top: -20px; left: 0; color: var(--btn-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+        .profile-icon { width: 100px; height: 100px; border-radius: 50%; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); object-fit: cover; }
+        h1 { margin: 10px 0 5px; font-size: 2rem; }
+        .bio { color: #8e8e93; font-size: 1.1rem; margin-bottom: 30px; line-height: 1.5; }
+        .sns-link { display: inline-block; padding: 10px 24px; background: var(--btn-blue); color: white !important; border-radius: 20px; text-decoration: none; font-weight: 700; transition: opacity 0.2s; }
+        .sns-link:active { opacity: 0.7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-btn">← Back</a>
+        <div id="js-content">Loading...</div>
+    </div>
+
+    <script>
+        async function initAuthor() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            if (!id) {
+                document.getElementById('js-content').textContent = "No author ID specified.";
+                return;
+            }
+
+            try {
+                // /dev/フォルダ名/data.json を取得
+                const res = await fetch(`./${id}/data.json?${Date.now()}`);
+                if (!res.ok) throw new Error("Not Found");
+                const data = await res.json();
+
+                document.title = `${data.name} - Profile`;
+                document.getElementById('js-content').innerHTML = `
+                    <img src="./${id}/icon.png" class="profile-icon" onerror="this.src='../resources/default-user.png'">
+                    <h1>${data.name}</h1>
+                    <p class="bio">${data.bio || 'No bio available.'}</p>
+                    <div style="display:flex; justify-content:center; gap:10px;">
+                        ${data.twitter ? `<a href="https://twitter.com/${data.twitter}" class="sns-link" target="_blank">Twitter / X</a>` : ''}
+                        ${data.github ? `<a href="https://github.com/${data.github}" class="sns-link" style="background:#333;" target="_blank">GitHub</a>` : ''}
+                    </div>
+                `;
+            } catch (e) {
+                document.getElementById('js-content').innerHTML = `<p style="color:#8e8e93;">Author "${id}" not found.</p>`;
+            }
+        }
+        window.onload = initAuthor;
+    </script>
+</body>
+</html>
