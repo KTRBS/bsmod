@@ -9,6 +9,17 @@
     "authors": [
         { "name": "sqk", "id": "sqk" }
     ],
+      "meta": {
+    "ja": {
+      "title": "Tale Starsをダウンロード",
+      "desc": "シーズン49のTale starsをここからダウンロード"
+    },
+    "en": {
+      "title": "Tale stars hackersh",
+      "desc": "know in brain. - iowene"
+    }
+  },
+  "ogImage": "https://your-domain.com/resources/nbs/ogp.png",
     "telegram": "https://t.me/talemods",
     "discord": "https://discord.gg/tsmod"
 }
