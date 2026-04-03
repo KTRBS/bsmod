@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Details</title>
     
-    <meta id="meta-desc" property="og:description" content="最新版をダウンロード">
+    <title id="js-meta-title">Details</title>
+    <meta id="meta-desc" name="description" content="最新版をダウンロード">
     <meta id="og-title" property="og:title" content="Details">
+    <meta id="og-desc" property="og:description" content="最新版をダウンロード">
     <meta id="og-img" property="og:image" content="">
     <meta property="og:type" content="website">
 
@@ -47,6 +48,7 @@
             line-height: 1.4;
         }
 
+        /* --- Navigation --- */
         .top-back-btn {
             position: absolute; top: 20px; left: 20px; z-index: 50;
             width: 32px; height: 32px; background: rgba(255,255,255,0.8);
@@ -76,7 +78,7 @@
         
         .sticky-left { display: flex; align-items: center; gap: 12px; }
         .sticky-info { display: flex; align-items: center; gap: 10px; }
-        .sticky-info img { width: 30px; height: 30px; border-radius: 7px; }
+        .sticky-info img { width: 30px; height: 30px; border-radius: 7px; object-fit: cover; }
         .sticky-info span { font-weight: 700; font-size: 0.95rem; color: var(--text-color); }
         
         .sticky-dl-btn {
@@ -85,6 +87,7 @@
         }
         @media (prefers-color-scheme: dark) { .sticky-dl-btn { background: #3a3a3c; } }
 
+        /* --- Hero Section --- */
         .hero {
             position: relative; height: 240px;
             background: center/cover no-repeat;
@@ -101,8 +104,9 @@
 
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
+        /* --- Info Header --- */
         .info-header { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; }
-        .icon-box img { width: 92px; height: 92px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .icon-box img { width: 92px; height: 92px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); object-fit: cover; }
         
         .version-wrapper { display: flex; align-items: center; gap: 8px; }
         .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
@@ -114,24 +118,20 @@
         .status-available { background-color: var(--status-green) !important; }
         .status-outdated { background-color: var(--status-gray) !important; }
 
-        .author-section { margin-top: 6px; display: flex; align-items: center; gap: 6px; overflow: hidden; }
-        .author-label { color: var(--secondary-text); font-size: 0.85rem; font-weight: 500; white-space: nowrap; }
-        .author-list { display: flex; flex-wrap: nowrap; gap: 4px; overflow: hidden; }
-        .author-link { color: var(--btn-blue) !important; text-decoration: none; font-weight: 600; font-size: 0.85rem; white-space: nowrap; }
+        .author-section { margin-top: 6px; display: flex; align-items: center; gap: 6px; }
+        .author-label { color: var(--secondary-text); font-size: 0.85rem; font-weight: 500; }
+        .author-list { display: flex; flex-wrap: wrap; gap: 4px; }
+        .author-link { color: var(--btn-blue) !important; text-decoration: none; font-weight: 600; font-size: 0.85rem; }
 
         #js-dl-area { margin-bottom: 30px; }
         .download-btn {
             display: block; background-color: var(--btn-blue); color: white !important; text-decoration: none;
             text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem;
         }
-        .download-btn.unsupported { 
-            background-color: var(--status-gray) !important; 
-            color: white !important;
-            cursor: not-allowed; 
-            opacity: 0.8;
-        }
+        .download-btn.unsupported { background-color: var(--status-gray) !important; cursor: not-allowed; opacity: 0.8; }
         .dl-section-pc { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
+        /* --- Screenshots --- */
         .ss-container {
             display: flex; overflow-x: auto; gap: 14px; margin: 0 -20px 30px -20px; padding: 0 20px;
             scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
@@ -210,7 +210,6 @@
     <script>
         const isJa = navigator.language.includes('ja');
         const lang = isJa ? 'ja' : 'en';
-        // URLパラメータからIDを取得 (?id=nbs など)
         const codename = new URLSearchParams(window.location.search).get('id');
 
         const uiText = {
@@ -230,86 +229,94 @@
             const ts = new Date().getTime();
             const t = uiText[lang];
             const device = getOS();
-            const dlArea = document.getElementById('js-dl-area');
-            const stickyBtn = document.getElementById('js-sticky-dl-btn');
             const resDir = `../resources/${codename}`;
 
             try {
                 const vRes = await fetch(`${resDir}/version.json?${ts}`);
                 const vData = await vRes.json();
                 
-                // データ反映
-                document.title = `${vData.name} - Details`;
+                // --- OGP & Meta Data Handling ---
+                const metaInfo = vData.meta && vData.meta[lang] ? vData.meta[lang] : { 
+                    title: vData.name, 
+                    desc: isJa ? "最新版をダウンロード" : "Download the latest version" 
+                };
+                const ogpImg = vData.ogImage || `${window.location.origin}/resources/${codename}/header.png`;
+
+                document.title = metaInfo.title;
+                document.getElementById('og-title').setAttribute('content', metaInfo.title);
+                document.getElementById('meta-desc').setAttribute('content', metaInfo.desc);
+                document.getElementById('og-desc').setAttribute('content', metaInfo.desc);
+                document.getElementById('og-img').setAttribute('content', ogpImg);
+
+                // --- UI Update ---
                 document.getElementById('ui-main-title').textContent = vData.name;
                 document.getElementById('js-sticky-name').textContent = vData.name;
                 document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-main-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-hero').style.backgroundImage = `url('${resDir}/header.png')`;
-                
                 document.getElementById('js-version').textContent = 'v' + vData.version;
                 document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
                 document.getElementById('ui-author-label').textContent = t.dev;
                 document.getElementById('ui-howto-title').textContent = t.howto;
+
+                const stickyBtn = document.getElementById('js-sticky-dl-btn');
                 stickyBtn.textContent = t.get;
 
-                const isCompatible = (device === "ios" ? vData.iossupport === "available" : (device === "android" ? vData.androidsupport === "available" : true));
+                // --- Compatibility & Download Area ---
+                const isComp = (device === "ios" ? vData.iossupport === "available" : (device === "android" ? vData.androidsupport === "available" : true));
                 const statusEl = document.getElementById('js-status');
-                statusEl.textContent = isCompatible ? t.available : t.unsupported;
-                statusEl.className = 'status-badge-inline ' + (isCompatible ? 'status-available' : 'status-outdated');
+                statusEl.textContent = isComp ? t.available : t.unsupported;
+                statusEl.className = 'status-badge-inline ' + (isComp ? 'status-available' : 'status-outdated');
 
-                const authorContainer = document.getElementById('js-author-list');
-                authorContainer.innerHTML = "";
-                if (vData.authors) {
-                    vData.authors.forEach((auth, idx) => {
-                        const a = document.createElement('a');
-                        a.href = `../dev/?id=${auth.id}`;
-                        a.className = 'author-link';
-                        a.textContent = auth.name + (idx < vData.authors.length - 1 ? ',' : '');
-                        authorContainer.appendChild(a);
-                    });
-                }
-
+                const dlArea = document.getElementById('js-dl-area');
                 if (device === "pc") {
                     dlArea.className = "dl-section-pc";
                     dlArea.innerHTML = `
-                        <a href="${vData.iosDownloadUrl}" class="download-btn btn-ipa ${vData.iossupport==='available'?'':'unsupported'}" target="_blank" style="font-size:0.9rem">${vData.iossupport==='available'?t.ios:t.unsupported}</a>
-                        <a href="${vData.androidDownloadUrl}" class="download-btn btn-apk ${vData.androidsupport==='available'?'':'unsupported'}" target="_blank" style="font-size:0.9rem">${vData.androidsupport==='available'?t.android:t.unsupported}</a>
+                        <a href="${vData.iosDownloadUrl}" class="download-btn ${vData.iossupport==='available'?'':'unsupported'}" target="_blank" style="font-size:0.9rem">${vData.iossupport==='available'?t.ios:t.unsupported}</a>
+                        <a href="${vData.androidDownloadUrl}" class="download-btn ${vData.androidsupport==='available'?'':'unsupported'}" target="_blank" style="font-size:0.9rem">${vData.androidsupport==='available'?t.android:t.unsupported}</a>
                     `;
                     stickyBtn.href = vData.iosDownloadUrl || vData.androidDownloadUrl;
                 } else {
-                    const isiOS = (device === "ios");
-                    const url = isiOS ? vData.iosDownloadUrl : vData.androidDownloadUrl;
+                    const url = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
                     const btn = document.createElement('a');
-                    btn.className = "download-btn" + (isCompatible ? "" : " unsupported");
-                    btn.textContent = isCompatible ? `${t.download} (${isiOS?'IPA':'APK'})` : t.unsupported;
-                    if (isCompatible) { 
-                        btn.href = url; btn.target = "_blank"; stickyBtn.href = url; 
-                    } else { 
-                        btn.href = "javascript:void(0)"; 
-                        stickyBtn.style.display = "none"; 
-                    }
+                    btn.className = "download-btn" + (isComp ? "" : " unsupported");
+                    btn.textContent = isComp ? `${t.download} (${device.toUpperCase()})` : t.unsupported;
+                    if (isComp) { btn.href = url; btn.target = "_blank"; stickyBtn.href = url; }
+                    else { stickyBtn.style.display = "none"; }
                     dlArea.appendChild(btn);
                 }
 
-                // スクリーンショット生成
+                // --- Authors ---
+                const authArea = document.getElementById('js-author-list');
+                vData.authors.forEach((a, i) => {
+                    const link = document.createElement('a');
+                    link.href = `../dev/?id=${a.id}`;
+                    link.className = 'author-link';
+                    link.textContent = a.name + (i < vData.authors.length - 1 ? ', ' : '');
+                    authArea.appendChild(link);
+                });
+
+                // --- Screenshots ---
                 const ssContainer = document.getElementById('js-ss-container');
                 [1,2,3].forEach(n => {
                     const img = document.createElement('img');
                     img.src = `${resDir}/ss${n}.png`;
-                    img.alt = `Screenshot ${n}`;
                     ssContainer.appendChild(img);
                 });
 
+                // --- Contacts ---
                 const contactArea = document.getElementById('js-contact-area');
                 if (vData.discord) contactArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="contact-btn discord"><span>Discord Server</span></a>`;
                 if (vData.telegram) contactArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="contact-btn"><span>Telegram Channel</span></a>`;
 
+                // --- Info Content ---
                 const infoFile = isJa ? 'info_ja.html' : 'info_en.html';
                 const infoRes = await fetch(`${resDir}/${infoFile}?${ts}`);
                 if (infoRes.ok) document.getElementById('js-info-content').innerHTML = await infoRes.text();
 
             } catch (e) { console.error(e); }
 
+            // --- Sticky Header & Hero Animation ---
             const stickyHeader = document.getElementById('js-sticky-header');
             const mainTitle = document.getElementById('ui-main-title');
             window.addEventListener('scroll', () => {
