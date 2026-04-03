@@ -1,0 +1,16 @@
+{
+    "name": "Cool Brawl",
+    "version": "3.0.0",
+    "lastUpdated": "idk",
+    "iossupport": "unavailable",
+    "androidsupport": "available",
+    "iosDownloadUrl": "",
+    "androidDownloadUrl": "https://www.mediafire.com/file/pgp15za8xdyw5e0/CoolBrawl_v3.0.0_010426.apk/file",
+    "authors": [
+        { "name": "xXCoobloyXx", "id": "boi" }
+    ],
+  },
+  "ogImage": "https://ktr.brawlmods.com/resources/cool/icon.png",
+    "telegram": "",
+    "discord": "http://dsc.gg/coolbrawl"
+}
