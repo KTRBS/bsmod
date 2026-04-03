@@ -1,1 +1,16 @@
-
+{
+    "name": "sqk Stars",
+    "version": "67",
+    "lastUpdated": "2",
+    "iossupport": "unavailable",
+    "androidsupport": "unavailable",
+    "iosDownloadUrl": "",
+    "androidDownloadUrl": "",
+    "authors": [
+        { "name": "sqk", "id": "sqk" }
+    ],
+  },
+  "ogImage": "https://cdn.discordapp.com/icons/964561414155034624/f269358df15e4ae0f2a4ece70772ac74.webp?size=1024",
+    "telegram": "",
+    "discord": "dsc.gg/sqkstars"
+}
