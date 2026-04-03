@@ -1,1 +1,6 @@
-
+{
+  "displayName": "Ryo",
+  "apps": [
+    { "id": "rythm", "mode": "prod", "name": "Null Rythm", "subtitle": "null rythm : a brawl stars cheat." }
+  ]
+}
