@@ -2,14 +2,14 @@
     {
         "name": "Tale Stars",
         "codename": "tale",
-        "link": "https://ktr.brawlmods.com/mods/prod/tale",
+        "link": "https://ktr.brawlmods.com/mods?id=tale",
         "icon": "resources/tale/icon.png",
         "ss1": "resources/tale/ss1.png"
     },
     {
         "name": "Null Rythm",
         "codename": "rythm",
-        "link": "https://ktr.brawlmods.com/mods/prod/rythm",
+        "link": "https://ktr.brawlmods.com/mods?id=rythm",
         "icon": "resources/rythm/icon.png",
         "ss1": "resources/rythm/ss1.png"
     }    
