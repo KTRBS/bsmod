@@ -41,12 +41,10 @@
         .date-str { color: var(--ios-gray); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
         h1 { font-size: 2.1rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
 
-        /* --- Search Bar --- */
         .search-wrapper { position: relative; margin: 15px 0 25px 0; }
         .search-wrapper input { width: 100%; box-sizing: border-box; padding: 10px 10px 10px 35px; border-radius: 12px; border: none; background: var(--search-bg); font-size: 17px; color: var(--text-color); outline: none; }
         .search-icon-svg { position: absolute; left: 10px; top: 12px; width: 18px; height: 18px; fill: var(--ios-gray); }
 
-        /* --- Today Grid --- */
         .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
         @media (min-width: 768px) { .grid-container { grid-template-columns: 1fr 1fr; } }
 
@@ -58,7 +56,6 @@
         .today-card { background: var(--card-bg); border-radius: 14px; padding: 16px; border: 1px solid var(--line); }
         .card-header-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 15px; }
 
-        /* --- Mod Row (Common) --- */
         .mod-row { display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 0.5px solid var(--line); }
         .mod-row:last-child { border-bottom: none; }
         .mod-icon { width: 60px; height: 60px; border-radius: 13px; object-fit: cover; flex-shrink: 0; }
@@ -70,13 +67,11 @@
         .get-btn { background: #f0f0f7; color: var(--ios-blue); font-weight: 800; padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; min-width: 50px; text-align: center; flex-shrink: 0; }
         @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
 
-        /* --- Search Result Specific --- */
         #search-results { display: grid; grid-template-columns: 1fr; gap: 30px; }
-        .search-result-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; padding-bottom: 5px; }
+        .search-result-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
         .ss-container { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 0.5px solid var(--line); aspect-ratio: 16 / 9; background: var(--search-bg); }
         .ss-img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- Tab Bar --- */
         .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; padding-bottom: env(safe-area-inset-bottom); background: var(--tab-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-top: 0.5px solid var(--line); display: flex; z-index: 1000; }
         .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--ios-gray); text-decoration: none; font-size: 10px; width: 50%; }
         .tab-item.active { color: var(--ios-blue); }
@@ -133,43 +128,66 @@
             window.scrollTo(0,0);
         }
 
+        async function getModDetails(app) {
+            if (!app.codename) return { version: "", desc: "Brawl Stars Mod" };
+            try {
+                // パスを修正（カレントディレクトリ基準）
+                const res = await fetch(`./resources/${app.codename}/version.json?${Date.now()}`);
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                const desc = (data.meta && data.meta[isJa ? 'ja' : 'en']) ? data.meta[isJa ? 'ja' : 'en'].desc : (data.description || "Latest version available");
+                return { version: "v" + data.version, desc: desc };
+            } catch (e) { 
+                return { version: "", desc: "Tap to see more details" }; 
+            }
+        }
+
         async function init() {
             document.getElementById('display-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
             const ts = Date.now();
             try {
+                // パスを ./ に統一
                 const fetchJson = (url) => fetch(url + `?${ts}`).then(r => r.ok ? r.json() : []);
                 const [apps, oapps, iapps, prod] = await Promise.all([
-                    fetchJson('../apps.json'), fetchJson('../oapps.json'),
-                    fetchJson('../iapps.json'), fetchJson('../prod.json')
+                    fetchJson('./apps.json'), fetchJson('./oapps.json'),
+                    fetchJson('./iapps.json'), fetchJson('./prod.json')
                 ]);
                 prodData = prod;
                 allData = [...apps, ...oapps, ...iapps, ...prod];
+                
+                // データの読み込みが終わってから描画
                 renderRandomFeatured();
-                renderToday();
-            } catch (e) { console.error(e); }
+                await renderToday();
+            } catch (e) { console.error("Init Error:", e); }
         }
 
-        async function getModDetails(app) {
-            if (!app.codename) return { version: "", desc: "Brawl Stars Mod" };
-            try {
-                const res = await fetch(`../resources/${app.codename}/version.json?${Date.now()}`);
-                const data = await res.json();
-                const desc = (data.meta && data.meta[isJa ? 'ja' : 'en']) ? data.meta[isJa ? 'ja' : 'en'].desc : (data.description || "Latest version available");
-                return { version: "v" + data.version, desc: desc };
-            } catch (e) { return { version: "", desc: "Tap to see more details" }; }
+        function renderRandomFeatured() {
+            const area = document.getElementById('random-featured-area');
+            const candidates = allData.filter(a => a.codename);
+            if (!candidates.length) return;
+            const picked = candidates[Math.floor(Math.random() * candidates.length)];
+            const img = `./resources/${picked.codename}/ss1.png`;
+            area.innerHTML = `
+                <a href="${picked.link}" class="random-featured-card" style="background-image: url('${img}')">
+                    <div class="random-overlay">
+                        <div class="random-tag">Recommended</div>
+                        <div class="random-title">${picked.name}</div>
+                    </div>
+                </a>`;
         }
 
         async function renderToday() {
             const container = document.getElementById('today-list');
+            if (!container) return;
             container.innerHTML = "";
             for (const app of prodData) {
                 const details = await getModDetails(app);
                 const row = document.createElement('a');
                 row.href = app.link;
                 row.className = 'mod-row';
-                const icon = `../resources/${app.codename}/icon.png`;
+                const icon = `./resources/${app.codename}/icon.png`;
                 row.innerHTML = `
-                    <img src="${icon}" class="mod-icon">
+                    <img src="${icon}" class="mod-icon" onerror="this.src='./resources/default-icon.png'">
                     <div class="mod-info">
                         <div class="mod-name">${app.name} <span class="version-label">${details.version}</span></div>
                         <div class="mod-sub">${details.desc}</div>
@@ -192,12 +210,12 @@
                 const item = document.createElement('a');
                 item.href = app.link;
                 item.className = 'search-result-item';
-                const icon = `../resources/${app.codename}/icon.png`;
-                const ss = `../resources/${app.codename}/ss1.png`;
+                const icon = `./resources/${app.codename}/icon.png`;
+                const ss = `./resources/${app.codename}/ss1.png`;
 
                 item.innerHTML = `
-                    <div style="display: flex; align-items: center; width: 100%;">
-                        <img src="${icon}" class="mod-icon">
+                    <div class="mod-row" style="border:none;">
+                        <img src="${icon}" class="mod-icon" onerror="this.src='./resources/default-icon.png'">
                         <div class="mod-info">
                             <div class="mod-name">${app.name} <span class="version-label">${details.version}</span></div>
                             <div class="mod-sub">${details.desc}</div>
