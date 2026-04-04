@@ -33,6 +33,7 @@
             margin: 0;
             padding: 0 16px 80px 16px;
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden; /* 横揺れ防止 */
         }
 
         .hidden { display: none !important; }
@@ -41,12 +42,10 @@
         .date-str { color: var(--ios-gray); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
         h1 { font-size: 2.1rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
 
-        /* --- Search Bar --- */
         .search-wrapper { position: relative; margin: 15px 0 25px 0; }
         .search-wrapper input { width: 100%; box-sizing: border-box; padding: 10px 10px 10px 35px; border-radius: 12px; border: none; background: var(--search-bg); font-size: 17px; color: var(--text-color); outline: none; }
         .search-icon-svg { position: absolute; left: 10px; top: 12px; width: 18px; height: 18px; fill: var(--ios-gray); }
 
-        /* --- Today Grid --- */
         .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
         @media (min-width: 768px) { .grid-container { grid-template-columns: 1fr 1fr; } }
 
@@ -55,24 +54,27 @@
         .random-tag { font-size: 0.7rem; font-weight: 700; opacity: 0.9; text-transform: uppercase; }
         .random-title { font-size: 1.4rem; font-weight: 800; margin-top: 2px; }
 
-        .today-card { background: var(--card-bg); border-radius: 14px; padding: 16px; border: 1px solid var(--line); }
+        .today-card { background: var(--card-bg); border-radius: 14px; padding: 16px; border: 1px solid var(--line); margin-bottom: 20px; }
         .card-header-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 15px; }
 
         /* --- Mod Row --- */
-        .mod-row { display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 0.5px solid var(--line); }
+        .mod-row { display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 0.5px solid var(--line); width: 100%; box-sizing: border-box; }
         .mod-row:last-child { border-bottom: none; }
-        .mod-icon { width: 60px; height: 60px; border-radius: 13px; object-fit: cover; flex-shrink: 0; }
-        .mod-info { flex: 1; min-width: 0; padding: 0 12px; }
+        .mod-icon { width: 60px; height: 60px; border-radius: 13px; object-fit: cover; flex-shrink: 0; background-color: var(--search-bg); }
+        .mod-info { flex: 1; min-width: 0; padding: 0 12px; overflow: hidden; } /* min-width: 0 が重要 */
         .mod-name { font-size: 1rem; font-weight: 700; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: baseline; gap: 6px; }
         .version-label { color: var(--ios-gray); font-weight: 400; font-size: 0.85rem; }
-        .mod-sub { font-size: 0.85rem; color: var(--ios-gray); margin-top: 2px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .mod-sub { font-size: 0.85rem; color: var(--ios-gray); margin-top: 2px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
 
         .get-btn { background: #f0f0f7; color: var(--ios-blue); font-weight: 800; padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; min-width: 50px; text-align: center; flex-shrink: 0; }
         @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
 
-        /* --- Search Result Layout --- */
+        /* --- Ad Section --- */
+        .ad-container { margin-top: 10px; text-align: center; overflow: hidden; }
+        .ad-label { font-size: 0.65rem; color: var(--ios-gray); text-transform: uppercase; margin-bottom: 5px; display: block; letter-spacing: 1px; }
+
         #search-results { display: grid; grid-template-columns: 1fr; gap: 30px; }
-        .search-result-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+        .search-result-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; width: 100%; }
         .ss-container { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 0.5px solid var(--line); aspect-ratio: 16 / 9; background: var(--search-bg); }
         .ss-img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -91,9 +93,18 @@
         </header>
         <div class="grid-container">
             <div id="random-featured-area"></div>
-            <div class="today-card">
-                <div class="card-header-title">Play These Mods</div>
-                <div id="today-list"></div>
+            <div>
+                <div class="today-card">
+                    <div class="card-header-title">Play These Mods</div>
+                    <div id="today-list"></div>
+                </div>
+
+                <div class="ad-container">
+                    <span class="ad-label">Advertisement</span>
+                    <div style="background: var(--search-bg); border-radius: 8px; min-height: 100px; display: flex; align-items: center; justify-content: center; color: var(--ios-gray); font-size: 0.8rem;">
+                        Google Ads
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -133,16 +144,15 @@
         }
 
         async function getModDetails(app) {
-            if (!app.codename) return { version: "", desc: "Brawl Stars Mod" };
+            if (!app.codename) return { version: "", desc: "" };
             try {
-                // パスを元の「../」に戻しました
                 const res = await fetch(`../resources/${app.codename}/version.json?${Date.now()}`);
-                if(!res.ok) return { version: "", desc: "Brawl Stars Mod" };
+                if(!res.ok) return { version: "", desc: "" };
                 const data = await res.json();
-                const desc = (data.meta && data.meta[isJa ? 'ja' : 'en']) ? data.meta[isJa ? 'ja' : 'en'].desc : (data.description || "Latest version available");
-                return { version: "v" + data.version, desc: desc };
+                const desc = (data.meta && data.meta[isJa ? 'ja' : 'en']) ? data.meta[isJa ? 'ja' : 'en'].desc : (data.description || "");
+                return { version: data.version ? "v" + data.version : "", desc: desc };
             } catch (e) {
-                return { version: "", desc: "Brawl Stars Mod" };
+                return { version: "", desc: "" };
             }
         }
 
@@ -150,7 +160,6 @@
             document.getElementById('display-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
             const ts = Date.now();
             try {
-                // パスを元の「../」に戻しました
                 const fetchJson = (url) => fetch(url + `?${ts}`).then(r => r.ok ? r.json() : []);
                 const [apps, oapps, iapps, prod] = await Promise.all([
                     fetchJson('../apps.json'), fetchJson('../oapps.json'),
@@ -190,7 +199,7 @@
                 row.className = 'mod-row';
                 const icon = `../resources/${app.codename}/icon.png`;
                 row.innerHTML = `
-                    <img src="${icon}" class="mod-icon">
+                    <img src="${icon}" class="mod-icon" onerror="this.style.opacity='0'">
                     <div class="mod-info">
                         <div class="mod-name">${app.name} <span class="version-label">${details.version}</span></div>
                         <div class="mod-sub">${details.desc}</div>
@@ -218,7 +227,7 @@
 
                 item.innerHTML = `
                     <div style="display: flex; align-items: center; width: 100%;">
-                        <img src="${icon}" class="mod-icon">
+                        <img src="${icon}" class="mod-icon" onerror="this.style.opacity='0'">
                         <div class="mod-info">
                             <div class="mod-name">${app.name} <span class="version-label">${details.version}</span></div>
                             <div class="mod-sub">${details.desc}</div>
