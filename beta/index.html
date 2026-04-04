@@ -13,7 +13,7 @@
             --search-bg: rgba(142, 142, 147, 0.12);
             --text-color: #000000;
             --line: rgba(0,0,0,0.1);
-            --tab-bg: rgba(255, 255, 255, 0.85);
+            --tab-bg: rgba(255, 255, 255, 0.85); /* 透明度を上げて本物らしく */
         }
         @media (prefers-color-scheme: dark) {
             :root {
@@ -31,57 +31,83 @@
             background-color: var(--ios-bg);
             color: var(--text-color);
             margin: 0;
-            padding: 0 16px 80px 16px;
+            padding: 0 16px 70px 16px; /* タブバーが細くなった分調整 */
             -webkit-tap-highlight-color: transparent;
-            overflow-x: hidden; /* 横揺れ防止 */
         }
 
         .hidden { display: none !important; }
 
+        /* --- Header & Grid --- */
         header { padding: 20px 0 10px 0; }
         .date-str { color: var(--ios-gray); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
-        h1 { font-size: 2.1rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
-
-        .search-wrapper { position: relative; margin: 15px 0 25px 0; }
-        .search-wrapper input { width: 100%; box-sizing: border-box; padding: 10px 10px 10px 35px; border-radius: 12px; border: none; background: var(--search-bg); font-size: 17px; color: var(--text-color); outline: none; }
-        .search-icon-svg { position: absolute; left: 10px; top: 12px; width: 18px; height: 18px; fill: var(--ios-gray); }
+        h1 { font-size: 1.8rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
 
         .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        @media (min-width: 768px) { .grid-container { grid-template-columns: 1fr 1fr; } }
+        @media (orientation: landscape) or (min-width: 768px) {
+            .grid-container { grid-template-columns: 1fr 1fr; column-gap: 25px; }
+        }
 
-        .random-featured-card { display: block; width: 100%; aspect-ratio: 21 / 9; background-size: cover; background-position: center; border-radius: 14px; position: relative; text-decoration: none; color: #fff; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
-        .random-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 15px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
+        /* --- Featured Card (Mobile 21:9) --- */
+        .random-featured-card {
+            display: block; width: 100%; aspect-ratio: 21 / 9;
+            background-size: cover; background-position: center;
+            border-radius: 14px; position: relative; text-decoration: none;
+            color: #fff; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .random-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0; padding: 15px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
         .random-tag { font-size: 0.7rem; font-weight: 700; opacity: 0.9; text-transform: uppercase; }
         .random-title { font-size: 1.4rem; font-weight: 800; margin-top: 2px; }
 
-        .today-card { background: var(--card-bg); border-radius: 14px; padding: 16px; border: 1px solid var(--line); margin-bottom: 20px; }
-        .card-header-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 15px; }
-
-        /* --- Mod Row --- */
-        .mod-row { display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 0.5px solid var(--line); width: 100%; box-sizing: border-box; }
+        /* --- Card & Row --- */
+        .today-card {
+            background: var(--card-bg); border-radius: 14px; padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line);
+        }
+        .card-header-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; }
+        .mod-row { display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 1px solid var(--line); }
         .mod-row:last-child { border-bottom: none; }
-        .mod-icon { width: 60px; height: 60px; border-radius: 13px; object-fit: cover; flex-shrink: 0; background-color: var(--search-bg); }
-        .mod-info { flex: 1; min-width: 0; padding: 0 12px; overflow: hidden; } /* min-width: 0 が重要 */
-        .mod-name { font-size: 1rem; font-weight: 700; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: baseline; gap: 6px; }
-        .version-label { color: var(--ios-gray); font-weight: 400; font-size: 0.85rem; }
-        .mod-sub { font-size: 0.85rem; color: var(--ios-gray); margin-top: 2px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+        .mod-icon { width: 52px; height: 52px; border-radius: 11px; object-fit: cover; flex-shrink: 0; }
+        .mod-info { flex: 1; min-width: 0; padding: 0 10px; }
+        .mod-name { font-size: 0.9rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mod-sub { font-size: 0.75rem; color: var(--ios-gray); margin-top: 1px; line-height: 1.2; }
 
-        .get-btn { background: #f0f0f7; color: var(--ios-blue); font-weight: 800; padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; min-width: 50px; text-align: center; flex-shrink: 0; }
+        /* --- GET Button --- */
+        .get-btn {
+            background: #f0f0f7; color: var(--ios-blue); font-weight: 800;
+            padding: 5px 14px; border-radius: 15px; font-size: 0.78rem;
+            min-width: 60px; text-align: center; flex-shrink: 0;
+        }
         @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
 
-        /* --- Ad Section --- */
-        .ad-container { margin-top: 10px; text-align: center; overflow: hidden; }
-        .ad-label { font-size: 0.65rem; color: var(--ios-gray); text-transform: uppercase; margin-bottom: 5px; display: block; letter-spacing: 1px; }
-
+        /* --- Search View Grid --- */
         #search-results { display: grid; grid-template-columns: 1fr; gap: 30px; }
-        .search-result-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; width: 100%; }
-        .ss-container { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 0.5px solid var(--line); aspect-ratio: 16 / 9; background: var(--search-bg); }
-        .ss-img { width: 100%; height: 100%; object-fit: cover; }
+        @media (orientation: landscape) or (min-width: 768px) { #search-results { grid-template-columns: 1fr 1fr; } }
+        .search-result-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+        .ss-container { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line); aspect-ratio: 16 / 9; background: var(--search-bg); }
+        .ss-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .search-wrapper { position: relative; margin: 15px 0 25px 0; }
+        .search-wrapper input { width: 100%; box-sizing: border-box; padding: 8px 10px 8px 35px; border-radius: 10px; border: none; background: var(--search-bg); font-size: 16px; color: var(--text-color); outline: none; }
+        .search-icon-svg { position: absolute; left: 10px; top: 9px; width: 16px; height: 16px; fill: var(--ios-gray); }
 
-        .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; padding-bottom: env(safe-area-inset-bottom); background: var(--tab-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-top: 0.5px solid var(--line); display: flex; z-index: 1000; }
-        .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--ios-gray); text-decoration: none; font-size: 10px; width: 50%; }
+        /* --- SLIM TAB BAR (3/4 Size) --- */
+        .tab-bar {
+            position: fixed; bottom: 0; left: 0; right: 0; 
+            height: 48px; /* 以前の50px〜60pxからさらにスリム化 */
+            padding-bottom: env(safe-area-inset-bottom);
+            background: var(--tab-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-top: 0.5px solid var(--line); display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+        }
+        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 9px; width: 50%; padding-top: 4px; }
         .tab-item.active { color: var(--ios-blue); }
-        .tab-icon-svg { width: 22px; height: 22px; margin-bottom: 2px; fill: currentColor; }
+        .tab-item.active svg { fill: var(--ios-blue); }
+        
+        /* SVG Icon Settings */
+        .tab-icon-svg {
+            width: 22px; height: 22px; margin-bottom: 2px; fill: var(--ios-gray); transition: fill 0.2s;
+        }
     </style>
 </head>
 <body>
@@ -91,20 +117,11 @@
             <p class="date-str" id="display-date"></p>
             <h1>Today</h1>
         </header>
-        <div class="grid-container">
+        <div id="page-today-container" class="grid-container">
             <div id="random-featured-area"></div>
-            <div>
-                <div class="today-card">
-                    <div class="card-header-title">Play These Mods</div>
-                    <div id="today-list"></div>
-                </div>
-
-                <div class="ad-container">
-                    <span class="ad-label">Advertisement</span>
-                    <div style="background: var(--search-bg); border-radius: 8px; min-height: 100px; display: flex; align-items: center; justify-content: center; color: var(--ios-gray); font-size: 0.8rem;">
-                        Google Ads
-                    </div>
-                </div>
+            <div class="today-card">
+                <div class="card-header-title">Play These Mods</div>
+                <div id="today-list"></div>
             </div>
         </div>
     </div>
@@ -132,57 +149,54 @@
     <script>
         let allData = [];
         let prodData = [];
-        const isJa = navigator.language.includes('ja');
 
         function showTab(name) {
             document.getElementById('page-today').classList.toggle('hidden', name !== 'today');
             document.getElementById('page-search').classList.toggle('hidden', name !== 'search');
             document.querySelectorAll('.tab-item').forEach((el, i) => {
-                el.classList.toggle('active', (name==='today' && i===0) || (name==='search' && i===1));
+                const isActive = (name==='today' && i===0) || (name==='search' && i===1);
+                el.classList.toggle('active', isActive);
             });
             window.scrollTo(0,0);
         }
 
-        async function getModDetails(app) {
-            if (!app.codename) return { version: "", desc: "" };
-            try {
-                const res = await fetch(`../resources/${app.codename}/version.json?${Date.now()}`);
-                if(!res.ok) return { version: "", desc: "" };
-                const data = await res.json();
-                const desc = (data.meta && data.meta[isJa ? 'ja' : 'en']) ? data.meta[isJa ? 'ja' : 'en'].desc : (data.description || "");
-                return { version: data.version ? "v" + data.version : "", desc: desc };
-            } catch (e) {
-                return { version: "", desc: "" };
-            }
-        }
-
         async function init() {
             document.getElementById('display-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-            const ts = Date.now();
+            const ts = new Date().getTime();
             try {
-                const fetchJson = (url) => fetch(url + `?${ts}`).then(r => r.ok ? r.json() : []);
                 const [apps, oapps, iapps, prod] = await Promise.all([
-                    fetchJson('../apps.json'), fetchJson('../oapps.json'),
-                    fetchJson('../iapps.json'), fetchJson('../prod.json')
+                    fetch(`../apps.json?${ts}`).then(r => r.json()).catch(() => []),
+                    fetch(`../oapps.json?${ts}`).then(r => r.json()).catch(() => []),
+                    fetch(`../iapps.json?${ts}`).then(r => r.json()).catch(() => []),
+                    fetch(`../prod.json?${ts}`).then(r => r.json()).catch(() => [])
                 ]);
-                prodData = prod;
-                allData = [...apps, ...oapps, ...iapps, ...prod];
-                
+                prodData = prod.map(a => ({...a, type:'prod', color:'#ff3b30'}));
+                allData = [
+                    ...apps.map(a => ({...a, type:'offline', color:'#8e8e93'})),
+                    ...oapps.map(a => ({...a, type:'online', color:'#28a745'})),
+                    ...iapps.map(a => ({...a, type:'ipa', color:'#007aff'})),
+                    ...prodData
+                ];
                 renderRandomFeatured();
-                await renderToday();
+                renderToday();
             } catch (e) { console.error(e); }
+        }
+
+        function formatVersion(v) {
+            if (!v) return "";
+            return "v" + v.toString().trim().replace(/^[vV]+/, "");
         }
 
         function renderRandomFeatured() {
             const area = document.getElementById('random-featured-area');
-            const candidates = allData.filter(a => a.codename);
+            const candidates = allData.filter(a => a.ss1 || a.codename);
             if (!candidates.length) return;
             const picked = candidates[Math.floor(Math.random() * candidates.length)];
-            const img = `../resources/${picked.codename}/ss1.png`;
+            const img = picked.ss1 ? `../${picked.ss1}` : `../resources/${picked.codename}/ss1.png`;
             area.innerHTML = `
                 <a href="${picked.link}" class="random-featured-card" style="background-image: url('${img}')">
                     <div class="random-overlay">
-                        <div class="random-tag">Recommended</div>
+                        <div class="random-tag">Today's Mod</div>
                         <div class="random-title">${picked.name}</div>
                     </div>
                 </a>`;
@@ -190,55 +204,49 @@
 
         async function renderToday() {
             const container = document.getElementById('today-list');
-            if(!container) return;
             container.innerHTML = "";
             for (const app of prodData) {
-                const details = await getModDetails(app);
                 const row = document.createElement('a');
                 row.href = app.link;
                 row.className = 'mod-row';
-                const icon = `../resources/${app.codename}/icon.png`;
+                let vTxt = "Play now";
+                if (app.codename) {
+                    try {
+                        const v = await fetch(`../resources/${app.codename}/version.json`).then(r => r.json());
+                        vTxt = `${formatVersion(v.version)}<br>Updated: ${v.lastUpdated}`;
+                    } catch(e) {}
+                }
+                const iconPath = app.icon ? `../${app.icon}` : `../resources/${app.codename}/icon.png`;
                 row.innerHTML = `
-                    <img src="${icon}" class="mod-icon" onerror="this.style.opacity='0'">
-                    <div class="mod-info">
-                        <div class="mod-name">${app.name} <span class="version-label">${details.version}</span></div>
-                        <div class="mod-sub">${details.desc}</div>
-                    </div>
+                    <img src="${iconPath}" class="mod-icon">
+                    <div class="mod-info"><div class="mod-name">${app.name}</div><div class="mod-sub">${vTxt}</div></div>
                     <div class="get-btn">GET</div>`;
                 container.appendChild(row);
             }
         }
 
-        async function runSearch() {
+        function runSearch() {
             const q = document.getElementById('searchInput').value.toLowerCase();
             const res = document.getElementById('search-results');
-            if(!q) { res.innerHTML = ""; return; }
-            
-            const filtered = allData.filter(a => a.name.toLowerCase().includes(q));
             res.innerHTML = "";
-
-            for (const app of filtered) {
-                const details = await getModDetails(app);
+            if(!q) return;
+            allData.filter(a => a.name.toLowerCase().includes(q)).forEach(app => {
                 const item = document.createElement('a');
                 item.href = app.link;
                 item.className = 'search-result-item';
-                const icon = `../resources/${app.codename}/icon.png`;
-                const ss = `../resources/${app.codename}/ss1.png`;
-
-                item.innerHTML = `
-                    <div style="display: flex; align-items: center; width: 100%;">
-                        <img src="${icon}" class="mod-icon" onerror="this.style.opacity='0'">
-                        <div class="mod-info">
-                            <div class="mod-name">${app.name} <span class="version-label">${details.version}</span></div>
-                            <div class="mod-sub">${details.desc}</div>
-                        </div>
-                        <div class="get-btn">GET</div>
-                    </div>
-                    <div class="ss-container">
-                        <img src="${ss}" class="ss-img" onerror="this.parentElement.remove()">
-                    </div>`;
+                const iconUrl = app.icon ? `../${app.icon}` : (app.codename ? `../resources/${app.codename}/icon.png` : null);
+                const ssUrl = app.ss1 ? `../${app.ss1}` : (app.codename ? `../resources/${app.codename}/ss1.png` : null);
+                
+                let html = `<div class="mod-row" style="border:none; padding:0;">`;
+                if(iconUrl) html += `<img src="${iconUrl}" class="mod-icon">`;
+                html += `<div class="mod-info"><div class="mod-name">${app.name}</div><div class="mod-sub"><span style="color:${app.color}; font-weight:bold;">${app.type.toUpperCase()}</span> • Mod</div></div><div class="get-btn">GET</div></div>`;
+                
+                if(ssUrl) {
+                    html += `<div class="ss-container"><img src="${ssUrl}" class="ss-img" onerror="this.parentElement.remove()"></div>`;
+                }
+                item.innerHTML = html;
                 res.appendChild(item);
-            }
+            });
         }
         window.onload = init;
     </script>
