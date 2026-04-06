@@ -88,6 +88,19 @@
         .get-btn { background: #f0f0f7; color: var(--ios-blue); font-weight: 800; padding: 5px 14px; border-radius: 15px; font-size: 0.78rem; width: 100%; box-sizing: border-box; text-align: center; }
         @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
 
+        /* Search Results Card Style */
+        .search-result-item { 
+            display: flex; flex-direction: column; text-decoration: none; color: inherit; 
+            background: var(--card-bg); border-radius: 14px; padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line);
+        }
+        .ss-container { width: 100%; border-radius: 10px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line); aspect-ratio: 16 / 9; background: var(--search-bg); }
+        .ss-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .search-wrapper { position: relative; margin: 15px 0 25px 0; }
+        .search-wrapper input { width: 100%; box-sizing: border-box; padding: 8px 10px 8px 35px; border-radius: 10px; border: none; background: var(--search-bg); font-size: 16px; color: var(--text-color); outline: none; }
+        .search-icon-svg { position: absolute; left: 10px; top: 9px; width: 16px; height: 16px; fill: var(--ios-gray); }
+
         .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 48px; padding-bottom: env(safe-area-inset-bottom); background: var(--tab-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-top: 0.5px solid var(--line); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 9px; width: 33.33%; padding-top: 4px; }
         .tab-item.active { color: var(--ios-blue); }
@@ -145,7 +158,8 @@
             document.getElementById('page-developers').classList.toggle('hidden', name !== 'developers');
             document.querySelectorAll('.tab-item').forEach(el => {
                 el.classList.remove('active');
-                if (el.innerText.toLowerCase().includes(name === 'developers' ? 'devs' : name)) el.classList.add('active');
+                const label = el.innerText.toLowerCase();
+                if (label.includes(name === 'developers' ? 'devs' : name)) el.classList.add('active');
             });
             window.scrollTo(0,0);
         }
@@ -253,7 +267,7 @@
                         </div>
                         ${createActionHtml(info.supported)}
                     </div>
-                    <div class="ss-container"><img src="./resources/${app.codename}/ss1.png" class="ss-img"></div>`;
+                    <div class="ss-container"><img src="./resources/${app.codename}/ss1.png" class="ss-img" onerror="this.parentElement.remove()"></div>`;
                 res.appendChild(item);
             }
         }
