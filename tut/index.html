@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ksign インストールガイド</title>
+    <style>
+        :root {
+            --primary-color: #007AFF;
+            --bg-color: #f2f2f7;
+            --card-bg: #ffffff;
+            --text-color: #1c1c1e;
+            --accent-color: #ff3b30;
+        }
+        body {
+            font-family: -apple-system, "Helvetica Neue", "Hiragino Kaku Gothic ProN", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .step {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .number {
+            background: var(--primary-color);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+        .step-img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid #e5e5e5;
+            margin-top: 10px;
+        }
+        .warning {
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        .link-text {
+            color: var(--primary-color);
+            word-break: break-all;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Ksign インストール方法</h1>
+
+    <div class="step">
+        <div class="step-header"><span class="number">1</span>配布サイトへアクセス</div>
+        <div>
+            <a href="https://khoindvn.io.vn/" class="link-text">https://khoindvn.io.vn/</a> にアクセスし、<strong>Ksign</strong> のアイコンを選択してください。
+        </div>
+        <img src="/tut/ios/resources/ksign_icon.png" class="step-img" alt="Ksignを選択">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">2</span>インストールの実行</div>
+        <div>「INSTALL」ボタンをタップします。</div>
+        <div class="warning">※広告ページが表示された場合は、ブラウザの「戻る」ボタンで元のページに戻ってください。</div>
+        <img src="/tut/ios/resources/install_click.png" class="step-img" alt="インストールをタップ">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">3</span>iTunesでの確認</div>
+        <div>「iTunesで開きますか？」というダイアログが出たら「開く」を押します。その後「インストール」の確認が出れば許可してください。</div>
+        <img src="/tut/ios/resources/itunes_open.png" class="step-img" alt="iTunesで開く">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">4</span>証明書の信頼設定</div>
+        <div>
+            ホーム画面にKsignが追加されたら、設定アプリを開きます。<br>
+            <strong>一般 ＞ VPNとデバイス管理</strong><br>
+            から、対象のプロファイルを選択して「信頼」をタップしてください。
+        </div>
+        <img src="/tut/ios/resources/trust_profile.png" class="step-img" alt="証明書を信頼">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">5</span>デバイスの再起動</div>
+        <div>最後にiPhoneを一度再起動してください。これでKsignが正常に起動できるようになります。</div>
+        <img src="/tut/ios/resources/reboot_device.png" class="step-img" alt="再起動">
+    </div>
+</div>
+
+</body>
+</html>
