@@ -5,5 +5,13 @@
         "link": "https://ktr.brawlmods.com/mods/online/moni",
         "icon": "resources/moni/icon.png",
         "ss1": "resources/moni/ss1.png"
+    },
+    [
+    {
+        "name": "FLBS Brawl",
+        "codename": "flbs",
+        "link": "https://ktr.brawlmods.com/mods?id=flbs",
+        "icon": "resources/flbs/icon.png",
+        "ss1": "resources/flbs/ss1.png"
     }    
 ]
