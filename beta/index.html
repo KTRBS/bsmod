@@ -13,7 +13,7 @@
             --search-bg: rgba(142, 142, 147, 0.12);
             --text-color: #000000;
             --line: rgba(0,0,0,0.1);
-            --tab-bg: rgba(255, 255, 255, 0.85); /* 透明度を上げて本物らしく */
+            --tab-bg: rgba(255, 255, 255, 0.85);
         }
         @media (prefers-color-scheme: dark) {
             :root {
@@ -26,13 +26,17 @@
             }
         }
 
+        /* 画面全体の横揺れ・拡大を防止 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--ios-bg);
             color: var(--text-color);
             margin: 0;
-            padding: 0 16px 70px 16px; /* タブバーが細くなった分調整 */
+            padding: 0 16px 70px 16px;
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden; 
+            width: 100vw;
+            box-sizing: border-box;
         }
 
         .hidden { display: none !important; }
@@ -47,7 +51,7 @@
             .grid-container { grid-template-columns: 1fr 1fr; column-gap: 25px; }
         }
 
-        /* --- Featured Card (Mobile 21:9) --- */
+        /* --- Featured Card --- */
         .random-featured-card {
             display: block; width: 100%; aspect-ratio: 21 / 9;
             background-size: cover; background-position: center;
@@ -67,12 +71,24 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line);
         }
         .card-header-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; }
-        .mod-row { display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 1px solid var(--line); }
+        
+        .mod-row { 
+            display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 1px solid var(--line);
+            width: 100%; box-sizing: border-box; overflow: hidden; 
+        }
         .mod-row:last-child { border-bottom: none; }
-        .mod-icon { width: 52px; height: 52px; border-radius: 11px; object-fit: cover; flex-shrink: 0; }
-        .mod-info { flex: 1; min-width: 0; padding: 0 10px; }
-        .mod-name { font-size: 0.9rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .mod-sub { font-size: 0.75rem; color: var(--ios-gray); margin-top: 1px; line-height: 1.2; }
+        .mod-icon { width: 52px; height: 52px; border-radius: 11px; object-fit: cover; flex-shrink: 0; background-color: transparent; }
+        
+        /* 拡大防止の要（min-width: 0 と overflow: hidden） */
+        .mod-info { flex: 1; min-width: 0; padding: 0 10px; overflow: hidden; }
+        
+        /* 手書きデザインのレイアウト（名前とバージョンを横並び） */
+        .mod-name-container { display: flex; align-items: baseline; gap: 6px; width: 100%; overflow: hidden; }
+        .mod-name { font-size: 1rem; font-weight: 700; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; }
+        .mod-version { font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+        
+        /* 概要（Desc）のレイアウト */
+        .mod-sub { font-size: 0.8rem; color: var(--ios-gray); margin-top: 2px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: normal; }
 
         /* --- GET Button --- */
         .get-btn {
@@ -82,20 +98,20 @@
         }
         @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
 
-        /* --- Search View Grid --- */
+        /* --- Search View --- */
         #search-results { display: grid; grid-template-columns: 1fr; gap: 30px; }
         @media (orientation: landscape) or (min-width: 768px) { #search-results { grid-template-columns: 1fr 1fr; } }
-        .search-result-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
-        .ss-container { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line); aspect-ratio: 16 / 9; background: var(--search-bg); }
+        .search-result-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; width: 100%; box-sizing: border-box; overflow: hidden; }
+        .ss-container { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line); aspect-ratio: 16 / 9; background: var(--search-bg); box-sizing: border-box; }
         .ss-img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .search-wrapper { position: relative; margin: 15px 0 25px 0; }
         .search-wrapper input { width: 100%; box-sizing: border-box; padding: 8px 10px 8px 35px; border-radius: 10px; border: none; background: var(--search-bg); font-size: 16px; color: var(--text-color); outline: none; }
         .search-icon-svg { position: absolute; left: 10px; top: 9px; width: 16px; height: 16px; fill: var(--ios-gray); }
 
-        /* --- SLIM TAB BAR (3/4 Size) --- */
+        /* --- Tab Bar --- */
         .tab-bar {
             position: fixed; bottom: 0; left: 0; right: 0; 
-            height: 48px; /* 以前の50px〜60pxからさらにスリム化 */
+            height: 48px;
             padding-bottom: env(safe-area-inset-bottom);
             background: var(--tab-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border-top: 0.5px solid var(--line); display: flex; justify-content: space-around; align-items: center; z-index: 1000;
@@ -103,11 +119,7 @@
         .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 9px; width: 50%; padding-top: 4px; }
         .tab-item.active { color: var(--ios-blue); }
         .tab-item.active svg { fill: var(--ios-blue); }
-        
-        /* SVG Icon Settings */
-        .tab-icon-svg {
-            width: 22px; height: 22px; margin-bottom: 2px; fill: var(--ios-gray); transition: fill 0.2s;
-        }
+        .tab-icon-svg { width: 22px; height: 22px; margin-bottom: 2px; fill: var(--ios-gray); transition: fill 0.2s; }
     </style>
 </head>
 <body>
@@ -187,6 +199,28 @@
             return "v" + v.toString().trim().replace(/^[vV]+/, "");
         }
 
+        // バージョンと説明文を取得する共通関数
+        async function fetchAppDetails(app) {
+            let ver = "";
+            let desc = `<span style="color:${app.color}; font-weight:bold;">${app.type.toUpperCase()}</span> • Mod`;
+
+            if (app.codename) {
+                try {
+                    const v = await fetch(`../resources/${app.codename}/version.json`).then(r => r.json());
+                    ver = formatVersion(v.version);
+                    const isJa = navigator.language.includes('ja');
+                    if (v.meta && v.meta[isJa ? 'ja' : 'en'] && v.meta[isJa ? 'ja' : 'en'].desc) {
+                        desc = v.meta[isJa ? 'ja' : 'en'].desc;
+                    } else if (v.description) {
+                        desc = v.description;
+                    } else {
+                        desc = "Play now";
+                    }
+                } catch(e) {}
+            }
+            return { ver, desc };
+        }
+
         function renderRandomFeatured() {
             const area = document.getElementById('random-featured-area');
             const candidates = allData.filter(a => a.ss1 || a.codename);
@@ -206,47 +240,69 @@
             const container = document.getElementById('today-list');
             container.innerHTML = "";
             for (const app of prodData) {
+                const details = await fetchAppDetails(app);
                 const row = document.createElement('a');
                 row.href = app.link;
                 row.className = 'mod-row';
-                let vTxt = "Play now";
-                if (app.codename) {
-                    try {
-                        const v = await fetch(`../resources/${app.codename}/version.json`).then(r => r.json());
-                        vTxt = `${formatVersion(v.version)}<br>Updated: ${v.lastUpdated}`;
-                    } catch(e) {}
-                }
+                
                 const iconPath = app.icon ? `../${app.icon}` : `../resources/${app.codename}/icon.png`;
+                
                 row.innerHTML = `
-                    <img src="${iconPath}" class="mod-icon">
-                    <div class="mod-info"><div class="mod-name">${app.name}</div><div class="mod-sub">${vTxt}</div></div>
+                    <img src="${iconPath}" class="mod-icon" onerror="this.style.opacity='0'">
+                    <div class="mod-info">
+                        <div class="mod-name-container">
+                            <div class="mod-name">${app.name}</div>
+                            <div class="mod-version">${details.ver}</div>
+                        </div>
+                        <div class="mod-sub">${details.desc}</div>
+                    </div>
                     <div class="get-btn">GET</div>`;
                 container.appendChild(row);
             }
         }
 
-        function runSearch() {
+        async function runSearch() {
             const q = document.getElementById('searchInput').value.toLowerCase();
             const res = document.getElementById('search-results');
             res.innerHTML = "";
             if(!q) return;
-            allData.filter(a => a.name.toLowerCase().includes(q)).forEach(app => {
+            
+            const filtered = allData.filter(a => a.name.toLowerCase().includes(q));
+            
+            for (const app of filtered) {
+                const details = await fetchAppDetails(app);
+                
                 const item = document.createElement('a');
                 item.href = app.link;
                 item.className = 'search-result-item';
+                
                 const iconUrl = app.icon ? `../${app.icon}` : (app.codename ? `../resources/${app.codename}/icon.png` : null);
                 const ssUrl = app.ss1 ? `../${app.ss1}` : (app.codename ? `../resources/${app.codename}/ss1.png` : null);
                 
-                let html = `<div class="mod-row" style="border:none; padding:0;">`;
-                if(iconUrl) html += `<img src="${iconUrl}" class="mod-icon">`;
-                html += `<div class="mod-info"><div class="mod-name">${app.name}</div><div class="mod-sub"><span style="color:${app.color}; font-weight:bold;">${app.type.toUpperCase()}</span> • Mod</div></div><div class="get-btn">GET</div></div>`;
+                // アイコンがない場合は透明のスペースを作る
+                const imgTag = iconUrl ? `<img src="${iconUrl}" class="mod-icon" onerror="this.style.opacity='0'">` : `<div class="mod-icon" style="background:transparent;"></div>`;
                 
+                let html = `
+                    <div class="mod-row" style="border:none; padding:0;">
+                        ${imgTag}
+                        <div class="mod-info">
+                            <div class="mod-name-container">
+                                <div class="mod-name">${app.name}</div>
+                                <div class="mod-version">${details.ver}</div>
+                            </div>
+                            <div class="mod-sub">${details.desc}</div>
+                        </div>
+                        <div class="get-btn">GET</div>
+                    </div>`;
+                
+                // スクリーンショットの挿入（存在する場合のみ）
                 if(ssUrl) {
                     html += `<div class="ss-container"><img src="${ssUrl}" class="ss-img" onerror="this.parentElement.remove()"></div>`;
                 }
+                
                 item.innerHTML = html;
                 res.appendChild(item);
-            });
+            }
         }
         window.onload = init;
     </script>
