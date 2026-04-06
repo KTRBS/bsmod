@@ -7,7 +7,7 @@
     <title>Ksign導入方法</title>
     <meta name="description" content="5分でわかるKsignの導入方法">
     <meta property="og:title" content="Ksign導入方法">
-    <meta property="og:description" content="5分でわかるKsignの導入方法">
+    <meta property="og:description" content="5分でわかるKsign de 導入方法">
     <meta property="og:image" content="/tut/ios/resources/ksign_icon.png">
     <meta property="og:type" content="article">
 
@@ -100,16 +100,21 @@
             font-family: monospace;
             font-weight: bold;
         }
+        .btn-download {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 10px 0;
+        }
         .warning {
             color: var(--accent-color);
             font-weight: bold;
             font-size: 0.9rem;
             margin-top: 8px;
-        }
-        .link-text {
-            color: var(--primary-color);
-            word-break: break-all;
-            text-decoration: none;
         }
     </style>
 </head>
@@ -128,7 +133,7 @@
     <div class="step">
         <div class="step-header"><span class="number">1</span>配布サイトへアクセス</div>
         <div>
-            <a href="https://khoindvn.io.vn/" class="link-text">https://khoindvn.io.vn/</a> にアクセスし、<strong>Ksign</strong> のアイコンを選択してください。
+            <a href="https://khoindvn.io.vn/" style="color:var(--primary-color); text-decoration:none;">https://khoindvn.io.vn/</a> にアクセスし、<strong>Ksign</strong> のアイコンを選択してください。
         </div>
         <img src="/tut/ios/resources/ksign_icon.png" class="step-img" alt="Ksignを選択">
     </div>
@@ -164,13 +169,16 @@
 
     <div class="step">
         <div class="step-header"><span class="number">1</span>ファイルを準備</div>
-        <div>https://www.mediafire.com/file/gqk504p8a1f5zlj/XL+AXIATA,+PT+TBK+Cert.zip/file から署名ファイルをダウンロードし、「ファイル」アプリで解凍します。</div>
+        <div>
+            下のボタンから署名ファイルをダウンロードし、「ファイル」アプリで解凍します。<br>
+            <a href="https://www.mediafire.com/file/gqk504p8a1f5zlj/XL+AXIATA,+PT+TBK+Cert.zip/file" class="btn-download">署名ファイルをダウンロード</a>
+        </div>
         <img src="/tut/ios/resources/sign_download.png" class="step-img" alt="解凍">
     </div>
 
     <div class="step">
         <div class="step-header"><span class="number">2</span>Ksignで取り込み</div>
-        <div>Ksignを開き、右上の「+」から「import file」を選択。解凍したファイルを選びます。</div>
+        <div>Ksignを開き、右上の「+」から「import file」を選択。解凍したフォルダ内のファイルを選びます。</div>
         <img src="/tut/ios/resources/sign_import.png" class="step-img" alt="インポート">
     </div>
 
