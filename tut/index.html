@@ -20,7 +20,7 @@
             --accent-color: #ff3b30;
         }
         body {
-            font-family: -apple-system, "Helvetica Neue", sans-serif;
+            font-family: -apple-system, "Helvetica Neue", "Hiragino Kaku Gothic ProN", sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.5;
@@ -71,6 +71,7 @@
             align-items: center;
             margin-bottom: 12px;
             font-weight: bold;
+            font-size: 1.1rem;
         }
         .number {
             background: var(--primary-color);
@@ -83,9 +84,11 @@
             justify-content: center;
             margin-right: 10px;
             flex-shrink: 0;
+            font-size: 0.9rem;
         }
         .step-img {
             width: 100%;
+            height: auto;
             border-radius: 8px;
             border: 1px solid #e5e5e5;
             margin-top: 10px;
@@ -97,7 +100,17 @@
             font-family: monospace;
             font-weight: bold;
         }
-        .warning { color: var(--accent-color); font-weight: bold; font-size: 0.9rem; margin-top: 8px; }
+        .warning {
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        .link-text {
+            color: var(--primary-color);
+            word-break: break-all;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -107,53 +120,70 @@
 </div>
 
 <div class="container">
-    <h1>Ksign導入方法</h1>
+    <h1>Ksign 導入方法</h1>
     <p style="text-align: center; color: #666;">5分でわかるKsignの導入方法</p>
 
     <h2>1. Ksign本体のインストール</h2>
-    
+
     <div class="step">
-        <div class="step-header"><span class="number">1</span>サイトへアクセス</div>
-        <div><a href="https://khoindvn.io.vn/">https://khoindvn.io.vn/</a> でKsignを選択</div>
-        <img src="/tut/ios/resources/ksign_select.png" class="step-img">
+        <div class="step-header"><span class="number">1</span>配布サイトへアクセス</div>
+        <div>
+            <a href="https://khoindvn.io.vn/" class="link-text">https://khoindvn.io.vn/</a> にアクセスし、<strong>Ksign</strong> のアイコンを選択してください。
+        </div>
+        <img src="/tut/ios/resources/ksign_icon.png" class="step-img" alt="Ksignを選択">
     </div>
 
     <div class="step">
-        <div class="step-header"><span class="number">2</span>インストール</div>
-        <div>「INSTALL」を押し、広告が出たら「戻る」。iTunesの確認が出たら「開く」をタップ。</div>
-        <img src="/tut/ios/resources/ksign_install.png" class="step-img">
+        <div class="step-header"><span class="number">2</span>インストールの実行</div>
+        <div>「INSTALL」ボタンをタップします。</div>
+        <div class="warning">※広告ページが表示された場合は、ブラウザの「戻る」ボタンで元のページに戻ってください。</div>
+        <img src="/tut/ios/resources/install_click.png" class="step-img" alt="インストールをタップ">
     </div>
 
     <div class="step">
-        <div class="step-header"><span class="number">3</span>信頼と再起動</div>
-        <div>設定 ＞ 一般 ＞ VPNとデバイス管理 で信頼し、端末を再起動します。</div>
-        <img src="/tut/ios/resources/ksign_trust.png" class="step-img">
+        <div class="step-header"><span class="number">3</span>iTunesでの確認</div>
+        <div>「iTunesで開きますか？」というダイアログが出たら「開く」を押します。</div>
+        <img src="/tut/ios/resources/itunes_open.png" class="step-img" alt="iTunesで開く">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">4</span>証明書の信頼設定</div>
+        <div>
+            設定アプリの <strong>一般 ＞ VPNとデバイス管理</strong> から、対象を「信頼」してください。
+        </div>
+        <img src="/tut/ios/resources/trust_profile.png" class="step-img" alt="証明書を信頼">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">5</span>デバイスの再起動</div>
+        <div>最後にiPhoneを一度再起動してください。</div>
+        <img src="/tut/ios/resources/reboot_device.png" class="step-img" alt="再起動">
     </div>
 
     <h2>2. 署名のインポート方法</h2>
 
     <div class="step">
         <div class="step-header"><span class="number">1</span>ファイルを準備</div>
-        <div>Mediafireから<a href="#">署名ファイルをダウンロード</a>し、ファイルアプリで「解凍」します。</div>
-        <img src="/tut/ios/resources/sign_download.png" class="step-img">
+        <div>Mediafireから署名ファイルをダウンロードし、「ファイル」アプリで解凍します。</div>
+        <img src="/tut/ios/resources/sign_download.png" class="step-img" alt="解凍">
     </div>
 
     <div class="step">
         <div class="step-header"><span class="number">2</span>Ksignで取り込み</div>
-        <div>Ksignを開き、右上の「+」から「Import file」を選択。解凍したファイルを選びます。</div>
-        <img src="/tut/ios/resources/sign_import.png" class="step-img">
+        <div>Ksignを開き、右上の「+」から「import file」を選択。解凍したファイルを選びます。</div>
+        <img src="/tut/ios/resources/sign_import.png" class="step-img" alt="インポート">
     </div>
 
     <div class="step">
         <div class="step-header"><span class="number">3</span>証明書の登録</div>
-        <div>インポートされた <span class="code-text">.p12</span> ファイルを押し、「Import certificate」を選択。</div>
-        <img src="/tut/ios/resources/sign_p12.png" class="step-img">
+        <div>インポートが終わったら <span class="code-text">.p12</span> ファイルを押し、「import certificate」を選択。</div>
+        <img src="/tut/ios/resources/sign_p12.png" class="step-img" alt="証明書登録">
     </div>
 
     <div class="step">
         <div class="step-header"><span class="number">4</span>パスワード入力</div>
-        <div>パスワード入力欄に <span class="code-text">Applep12.com</span> と入力すれば完了です。</div>
-        <img src="/tut/ios/resources/sign_password.png" class="step-img">
+        <div>入力欄に <span class="code-text">Applep12.com</span> と入力すれば完了です。</div>
+        <img src="/tut/ios/resources/sign_password.png" class="step-img" alt="パスワード入力">
     </div>
 </div>
 
