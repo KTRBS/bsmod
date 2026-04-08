@@ -27,6 +27,7 @@
             line-height: 1.5;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* 青色バナー */
@@ -37,6 +38,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .top-banner a {
             color: white;
@@ -59,6 +61,7 @@
             color: var(--primary-color);
             border-bottom: 2px solid var(--primary-color);
             padding-bottom: 10px;
+            font-size: 1.3rem;
         }
         .step {
             background: var(--card-bg);
@@ -105,12 +108,17 @@
             display: inline-block;
             background: var(--success-color);
             color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: bold;
             margin: 10px 0;
             text-align: center;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .btn-download:active {
+            transform: scale(0.98);
+            opacity: 0.9;
         }
         .warning {
             color: var(--accent-color);
@@ -119,32 +127,55 @@
             margin-top: 8px;
         }
 
-        /* 次のページへのリンク */
-        .next-page {
-            margin-top: 50px;
-            margin-bottom: 50px;
+        /* スマートな次ページボタン */
+        .next-page-container {
+            margin: 60px 0 80px 0;
             text-align: center;
         }
-        .next-link {
-            display: block;
-            background: #fff;
-            border: 2px solid var(--primary-color);
-            padding: 20px;
-            border-radius: 15px;
+        .next-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            padding: 20px 25px;
+            border-radius: 20px;
             text-decoration: none;
-            color: var(--primary-color);
-            font-weight: bold;
-            transition: 0.3s;
+            color: var(--text-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
         }
-        .next-link:hover {
-            background: var(--primary-color);
-            color: white;
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
         }
-        .next-label {
+        .next-btn-text {
+            text-align: left;
+        }
+        .next-btn-text span {
             display: block;
             font-size: 0.8rem;
-            color: #666;
-            margin-bottom: 5px;
+            color: #8e8e93;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .next-btn-text strong {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+        .arrow-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -156,12 +187,12 @@
 
 <div class="container">
     <h1>Ksign 導入方法</h1>
-    <p style="text-align: center; color: #666;">5分でわかるKsignの導入方法</p>
+    <p style="text-align: center; color: #666; margin-top: -15px;">5分でわかるKsignの導入方法</p>
 
     <h2>1. Ksign本体のインストール</h2>
     <div class="step">
         <div class="step-header"><span class="number">1</span>配布サイトへアクセス</div>
-        <div><a href="https://khoindvn.io.vn/" style="color:var(--primary-color); text-decoration:none;">https://khoindvn.io.vn/</a> にアクセスし、<strong>Ksign</strong> のアイコンを選択してください。</div>
+        <div><a href="https://khoindvn.io.vn/" style="color:var(--primary-color); text-decoration:none;">https://khoindvn.io.vn/</a> にアクセスし、<strong>Ksign</strong> のアイコンを選択。</div>
         <img src="/tut/ios/resources/ksign_icon.png" class="step-img">
     </div>
     <div class="step">
@@ -196,7 +227,7 @@
     </div>
     <div class="step">
         <div class="step-header"><span class="number">2</span>Ksignで取り込み</div>
-        <div>Ksignを開き、右上の「+」から「import file」を選択。解凍したファイルを選びます。</div>
+        <div>Ksignを開き、右上の「+」から「import file」を選択。解凍したフォルダ内のファイルを選びます。</div>
         <img src="/tut/ios/resources/sign_import.png" class="step-img">
     </div>
     <div class="step">
@@ -215,7 +246,7 @@
         <div class="step-header"><span class="number">1</span>DNSのダウンロード</div>
         <div>
             下のボタンからDNS構成プロファイルをダウンロードします。<br>
-            <a href="#" class="btn-download">DNSをダウンロード</a>
+            <a href="https://ktr.brawlmods.com/tut/ios/resources/signed_khoindvn_fullchain%20new.mobileconfig" class="btn-download">DNSをダウンロード</a>
         </div>
         <img src="/tut/ios/resources/dns_download.png" class="step-img">
     </div>
@@ -230,10 +261,13 @@
         <img src="/tut/ios/resources/dns_install.png" class="step-img">
     </div>
 
-    <div class="next-page">
-        <span class="next-label">次のページ</span>
-        <a href="../tut/tale" class="next-link">
-            Tale+の購入方法と<br>Taleの導入方法
+    <div class="next-page-container">
+        <a href="./tale/" class="next-btn">
+            <div class="next-btn-text">
+                <span>NEXT STEP</span>
+                <strong>Tale+の購入方法とTaleの導入方法</strong>
+            </div>
+            <div class="arrow-icon">→</div>
         </a>
     </div>
 </div>
