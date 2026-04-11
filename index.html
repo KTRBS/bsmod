@@ -6,393 +6,106 @@
     <title>App Store - Mods</title>
     <style>
         :root {
-            --ios-blue: #007aff;
-            --ios-gray: #8e8e93;
-            --ios-bg: #ffffff;
-            --card-bg: #ffffff;
-            --search-bg: rgba(142, 142, 147, 0.12);
-            --text-color: #000000;
-            --line: rgba(0,0,0,0.1);
-            --tab-bg: rgba(255, 255, 255, 0.85);
+            --ios-blue: #007aff; --ios-gray: #8e8e93; --ios-bg: #ffffff;
+            --card-bg: #ffffff; --search-bg: rgba(142, 142, 147, 0.12);
+            --text-color: #000000; --line: rgba(0,0,0,0.1); --tab-bg: rgba(255, 255, 255, 0.85);
         }
         @media (prefers-color-scheme: dark) {
             :root {
-                --ios-bg: #000000;
-                --card-bg: #1c1c1e;
-                --search-bg: rgba(255, 255, 255, 0.12);
-                --text-color: #ffffff;
-                --line: rgba(255,255,255,0.15);
-                --tab-bg: rgba(20, 20, 20, 0.85);
+                --ios-bg: #000000; --card-bg: #1c1c1e; --search-bg: rgba(255, 255, 255, 0.12);
+                --text-color: #ffffff; --line: rgba(255,255,255,0.15); --tab-bg: rgba(20, 20, 20, 0.85);
             }
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--ios-bg);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0 16px 70px 16px;
-            -webkit-tap-highlight-color: transparent;
-            overflow-x: hidden; 
-            width: 100vw;
-            box-sizing: border-box;
-        }
-
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--ios-bg); color: var(--text-color); margin: 0; padding: 0 16px 70px 16px; overflow-x: hidden; box-sizing: border-box; }
         .hidden { display: none !important; }
-
-        /* --- Header & Grid --- */
         header { padding: 20px 0 10px 0; }
-        .date-str { color: var(--ios-gray); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
-        h1 { font-size: 1.8rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
-
+        h1 { font-size: 1.8rem; margin: 0; font-weight: 800; }
         .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        @media (orientation: landscape) or (min-width: 768px) {
-            .grid-container { grid-template-columns: 1fr 1fr; column-gap: 25px; }
-        }
-
-        /* --- Featured Card --- */
-        .random-featured-card {
-            display: block; width: 100%; aspect-ratio: 21 / 9;
-            background-size: cover; background-position: center;
-            border-radius: 14px; position: relative; text-decoration: none;
-            color: #fff; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-        .random-overlay {
-            position: absolute; bottom: 0; left: 0; right: 0; padding: 15px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-        }
-        .random-tag { font-size: 0.7rem; font-weight: 700; opacity: 0.9; text-transform: uppercase; }
-        .random-title { font-size: 1.4rem; font-weight: 800; margin-top: 2px; }
-
-        /* --- Card & Row --- */
-        .today-card {
-            background: var(--card-bg); border-radius: 14px; padding: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line);
-        }
-        .card-header-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; }
-        
-        .mod-row { 
-            display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 1px solid var(--line);
-            width: 100%; box-sizing: border-box; overflow: hidden; 
-        }
-        .mod-row:last-child { border-bottom: none; }
-        .mod-icon { width: 52px; height: 52px; border-radius: 11px; object-fit: cover; flex-shrink: 0; background-color: transparent; }
-        
-        .mod-info { flex: 1; min-width: 0; padding: 0 10px; overflow: hidden; }
-        
-        .mod-name-container { display: flex; align-items: baseline; gap: 6px; width: 100%; overflow: hidden; }
-        .mod-name { font-size: 1rem; font-weight: 700; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; }
-        .mod-version { font-size: 0.7rem; font-weight: 600; color: var(--ios-gray); flex-shrink: 0; }
-        
-        .mod-sub { font-size: 0.8rem; color: var(--ios-gray); margin-top: 2px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: normal; }
-
-        /* --- Action Container (Support Status + GET Button) --- */
-        .action-container {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            flex-shrink: 0; min-width: 75px;
-        }
-        .support-status {
-            font-size: 0.5rem; font-weight: 800; text-transform: uppercase;
-            letter-spacing: 0.5px; margin-bottom: 4px; text-align: center;
-        }
-        @media (min-width: 768px) {
-            .support-status { display: none !important; }
-        }
-
-        .get-btn {
-            background: #f0f0f7; color: var(--ios-blue); font-weight: 800;
-            padding: 5px 14px; border-radius: 15px; font-size: 0.78rem;
-            width: 100%; box-sizing: border-box; text-align: center;
-        }
-        @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
-
-        /* --- Search View --- */
-        #search-results { display: grid; grid-template-columns: 1fr; gap: 30px; }
-        @media (orientation: landscape) or (min-width: 768px) { #search-results { grid-template-columns: 1fr 1fr; } }
-        .search-result-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; width: 100%; box-sizing: border-box; overflow: hidden; }
-        .ss-container { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line); aspect-ratio: 16 / 9; background: var(--search-bg); box-sizing: border-box; }
-        .ss-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .today-card { background: var(--card-bg); border-radius: 14px; padding: 16px; border: 1px solid var(--line); }
+        .mod-row { display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 1px solid var(--line); }
+        .mod-icon { width: 52px; height: 52px; border-radius: 11px; object-fit: cover; }
+        .mod-info { flex: 1; padding: 0 10px; min-width: 0; }
+        .mod-name { font-size: 1rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mod-sub { font-size: 0.8rem; color: var(--ios-gray); margin-top: 2px; -webkit-line-clamp: 2; -webkit-box-orient: vertical; display: -webkit-box; overflow: hidden; }
         .search-wrapper { position: relative; margin: 15px 0 25px 0; }
-        .search-wrapper input { width: 100%; box-sizing: border-box; padding: 8px 10px 8px 35px; border-radius: 10px; border: none; background: var(--search-bg); font-size: 16px; color: var(--text-color); outline: none; }
-        .search-icon-svg { position: absolute; left: 10px; top: 9px; width: 16px; height: 16px; fill: var(--ios-gray); }
-
-        /* --- Tab Bar --- */
-        .tab-bar {
-            position: fixed; bottom: 0; left: 0; right: 0; 
-            height: 48px;
-            padding-bottom: env(safe-area-inset-bottom);
-            background: var(--tab-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border-top: 0.5px solid var(--line); display: flex; justify-content: space-around; align-items: center; z-index: 1000;
-        }
-        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 9px; width: 33.33%; padding-top: 4px; }
+        .search-wrapper input { width: 100%; padding: 10px 10px 10px 35px; border-radius: 10px; border: none; background: var(--search-bg); color: var(--text-color); box-sizing: border-box; }
+        .ss-container { margin-top: 12px; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9; }
+        .ss-img { width: 100%; height: 100%; object-fit: cover; }
+        .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 48px; background: var(--tab-bg); backdrop-filter: blur(25px); border-top: 0.5px solid var(--line); display: flex; justify-content: space-around; z-index: 1000; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 9px; padding-top: 4px; }
         .tab-item.active { color: var(--ios-blue); }
-        .tab-item.active svg { fill: var(--ios-blue); }
-        .tab-icon-svg { width: 22px; height: 22px; margin-bottom: 2px; fill: var(--ios-gray); transition: fill 0.2s; }
-        
-        /* デベロッパーアイコン用 */
-        .dev-icon-placeholder { display: flex; align-items: center; justify-content: center; background: var(--search-bg); border-radius: 50%; }
     </style>
 </head>
 <body>
 
-    <div id="page-today">
-        <header>
-            <p class="date-str" id="display-date"></p>
-            <h1>Today</h1>
-        </header>
-        <div id="page-today-container" class="grid-container">
-            <div id="random-featured-area"></div>
-            <div class="today-card">
-                <div class="card-header-title">Play These Mods</div>
-                <div id="today-list"></div>
-            </div>
-        </div>
-    </div>
-
+    <div id="page-today"><header><h1>Today</h1></header><div id="today-list" class="today-card"></div></div>
     <div id="page-search" class="hidden">
         <header><h1>Search</h1></header>
-        <div class="search-wrapper">
-            <svg class="search-icon-svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            <input type="text" id="searchInput" placeholder="Apps, Mods, and more" oninput="runSearch()">
-        </div>
+        <div class="search-wrapper"><input type="text" id="searchInput" placeholder="Search..." oninput="runSearch()"></div>
         <div id="search-results"></div>
     </div>
 
-    <div id="page-developers" class="hidden">
-        <header><h1>Developers</h1></header>
-        <div class="today-card" style="margin-top: 10px;">
-            <div id="developers-list"></div>
-        </div>
-    </div>
-
-    <nav class="tab-bar" id="bottom-tab-bar">
-        <a href="javascript:void(0)" class="tab-item active" onclick="showTab('today')">
-            <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-            Today
-        </a>
-        <a href="javascript:void(0)" class="tab-item" onclick="showTab('search')">
-            <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            Search
-        </a>
-        <a href="javascript:void(0)" class="tab-item" id="tab-devs" onclick="showTab('developers')">
-            <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-            Devs
-        </a>
+    <nav class="tab-bar">
+        <a href="javascript:void(0)" class="tab-item active" onclick="showTab('today')">Today</a>
+        <a href="javascript:void(0)" class="tab-item" onclick="showTab('search')">Search</a>
     </nav>
 
     <script>
-        const SHOW_DEVS = true; 
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-        let allData = [];
-        let prodData = [];
+        let allData = [], isLoaded = false;
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
         function showTab(name) {
             document.getElementById('page-today').classList.toggle('hidden', name !== 'today');
             document.getElementById('page-search').classList.toggle('hidden', name !== 'search');
-            document.getElementById('page-developers').classList.toggle('hidden', name !== 'developers');
-            
-            document.querySelectorAll('.tab-item').forEach((el) => {
-                el.classList.remove('active');
-                if (el.getAttribute('onclick').includes(`'${name}'`)) {
-                    el.classList.add('active');
-                }
-            });
             window.scrollTo(0,0);
         }
 
         async function init() {
-            if (!SHOW_DEVS) {
-                document.getElementById('tab-devs').style.display = 'none';
-                document.querySelectorAll('.tab-item').forEach(el => el.style.width = '50%');
-            }
-
-            document.getElementById('display-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-            const ts = new Date().getTime();
             try {
                 const [apps, oapps, iapps, prod] = await Promise.all([
-                    fetch(`./apps.json?${ts}`).then(r => r.json()).catch(() => []),
-                    fetch(`./oapps.json?${ts}`).then(r => r.json()).catch(() => []),
-                    fetch(`./iapps.json?${ts}`).then(r => r.json()).catch(() => []),
-                    fetch(`./prod.json?${ts}`).then(r => r.json()).catch(() => [])
+                    fetch('./apps.json').then(r=>r.json()).catch(()=>[]),
+                    fetch('./oapps.json').then(r=>r.json()).catch(()=>[]),
+                    fetch('./iapps.json').then(r=>r.json()).catch(()=>[]),
+                    fetch('./prod.json').then(r=>r.json()).catch(()=>[])
                 ]);
-                prodData = prod.map(a => ({...a, type:'prod', color:'#ff3b30'}));
-                allData = [
-                    ...apps.map(a => ({...a, type:'offline', color:'#8e8e93'})),
-                    ...oapps.map(a => ({...a, type:'online', color:'#28a745'})),
-                    ...iapps.map(a => ({...a, type:'ipa', color:'#007aff'})),
-                    ...prodData
-                ];
-                renderRandomFeatured();
-                renderToday();
-                if (SHOW_DEVS) renderDevelopers();
-            } catch (e) { console.error(e); }
-        }
+                allData = [...apps, ...oapps, ...iapps, ...prod];
+                isLoaded = true;
 
-        function formatVersion(v) {
-            if (!v) return "";
-            return "v" + v.toString().trim().replace(/^[vV]+/, "");
-        }
-
-        async function fetchAppDetails(app) {
-            let ver = "";
-            let desc = "Play now";
-            let supported = true;
-
-            if (app.codename) {
-                try {
-                    const v = await fetch(`./resources/${app.codename}/version.json`).then(r => r.json());
-                    ver = formatVersion(v.version);
-                    
-                    // サポート判定ロジック
-                    if (isIOS) {
-                        supported = (app.type === 'ipa' || v.iossupport === 'available');
-                    } else {
-                        supported = (app.type !== 'ipa' && v.androidsupport !== 'unavailable');
-                    }
-
-                    const isJa = navigator.language.includes('ja');
-                    desc = (v.meta && v.meta[isJa ? 'ja' : 'en']?.desc) || v.description || "Play now";
-                } catch(e) {}
-            }
-            return { ver, desc, supported };
-        }
-
-        function createActionHtml(isSupported) {
-            const supportColor = isSupported ? "var(--ios-gray)" : "#ff3b30";
-            const supportText = isSupported ? "SUPPORTED" : "UNSUPPORTED";
-            return `
-                <div class="action-container">
-                    <div class="support-status" style="color: ${supportColor};">${supportText}</div>
-                    <div class="get-btn">GET</div>
-                </div>`;
-        }
-
-        function renderRandomFeatured() {
-            const area = document.getElementById('random-featured-area');
-            const candidates = allData.filter(a => a.ss1 || a.codename);
-            if (!candidates.length) return;
-            const picked = candidates[Math.floor(Math.random() * candidates.length)];
-            const img = picked.ss1 ? `./${picked.ss1}` : `./resources/${picked.codename}/ss1.png`;
-            area.innerHTML = `
-                <a href="${picked.link}" class="random-featured-card" style="background-image: url('${img}')">
-                    <div class="random-overlay">
-                        <div class="random-tag">Today's Mod</div>
-                        <div class="random-title">${picked.name}</div>
-                    </div>
-                </a>`;
-        }
-
-        async function renderToday() {
-            const container = document.getElementById('today-list');
-            container.innerHTML = "";
-            for (const app of prodData) {
-                const details = await fetchAppDetails(app);
-                const row = document.createElement('a');
-                row.href = app.link;
-                row.className = 'mod-row';
-                const iconPath = app.icon ? `./${app.icon}` : `./resources/${app.codename}/icon.png`;
-                
-                row.innerHTML = `
-                    <img src="${iconPath}" class="mod-icon" onerror="this.style.opacity='0'">
-                    <div class="mod-info">
-                        <div class="mod-name-container">
-                            <div class="mod-name">${app.name}</div>
-                            <div class="mod-version">${details.ver}</div>
-                        </div>
-                        <div class="mod-sub">${details.desc}</div>
-                    </div>
-                    ${createActionHtml(details.supported)}`;
-                container.appendChild(row);
-            }
+                // URLパラメータ処理
+                const params = new URLSearchParams(window.location.search);
+                const id = params.get('id');
+                if (id) {
+                    document.getElementById('searchInput').value = id;
+                    runSearch();
+                    showTab('search');
+                }
+            } catch(e) { console.error(e); }
         }
 
         async function runSearch() {
+            if (!isLoaded) { setTimeout(runSearch, 100); return; }
             const q = document.getElementById('searchInput').value.toLowerCase();
             const res = document.getElementById('search-results');
             res.innerHTML = "";
-            if(!q) return;
             const filtered = allData.filter(a => a.name.toLowerCase().includes(q));
+            
             for (const app of filtered) {
-                const details = await fetchAppDetails(app);
-                const item = document.createElement('a');
-                item.href = app.link;
-                item.className = 'search-result-item';
-                const iconUrl = app.icon ? `./${app.icon}` : (app.codename ? `./resources/${app.codename}/icon.png` : null);
-                const ssUrl = app.ss1 ? `./${app.ss1}` : (app.codename ? `./resources/${app.codename}/ss1.png` : null);
-                const imgTag = iconUrl ? `<img src="${iconUrl}" class="mod-icon" onerror="this.style.opacity='0'">` : `<div class="mod-icon" style="background:transparent;"></div>`;
-                let html = `
-                    <div class="mod-row" style="border:none; padding:0;">
-                        ${imgTag}
+                const item = document.createElement('div');
+                item.className = 'today-card';
+                item.innerHTML = `
+                    <div class="mod-row">
+                        <img src="./resources/${app.codename}/icon.png" class="mod-icon">
                         <div class="mod-info">
-                            <div class="mod-name-container">
-                                <div class="mod-name">${app.name}</div>
-                                <div class="mod-version">${details.ver}</div>
-                            </div>
-                            <div class="mod-sub">${details.desc}</div>
+                            <div class="mod-name">${app.name}</div>
                         </div>
-                        ${createActionHtml(details.supported)}
-                    </div>`;
-                if(ssUrl) html += `<div class="ss-container"><img src="${ssUrl}" class="ss-img" onerror="this.parentElement.remove()"></div>`;
-                item.innerHTML = html;
+                    </div>
+                    <div class="ss-container"><img src="./resources/${app.codename}/ss1.png" class="ss-img"></div>
+                `;
                 res.appendChild(item);
             }
         }
 
-        async function renderDevelopers() {
-            const devMap = {};
-            // 各Modのversion.json内のauthors配列を走査して集計
-            for (const app of allData) {
-                if (!app.codename) continue;
-                try {
-                    const v = await fetch(`./resources/${app.codename}/version.json`).then(r => r.json());
-                    if (v.authors && Array.isArray(v.authors)) {
-                        v.authors.forEach(auth => {
-                            if (!devMap[auth.id]) devMap[auth.id] = { name: auth.name, count: 0, id: auth.id };
-                            devMap[auth.id].count++;
-                        });
-                    }
-                } catch(e) {}
-            }
-
-            const list = document.getElementById('developers-list');
-            list.innerHTML = "";
-            Object.values(devMap).sort((a,b) => b.count - a.count).forEach(dev => {
-                const row = document.createElement('a');
-                row.href = `/dev/?id=${dev.id}`;
-                row.className = 'mod-row';
-                row.innerHTML = `
-                    <div class="mod-icon dev-icon-placeholder">
-                        <svg width="24" height="24" fill="var(--ios-gray)" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                    </div>
-                    <div class="mod-info">
-                        <div class="mod-name-container">
-                            <div class="mod-name">${dev.name} <span style="font-weight:normal; color:var(--ios-gray);">(${dev.count})</span></div>
-                        </div>
-                        <div class="mod-sub">View all mods by ${dev.name}</div>
-                    </div>
-                    <div style="color: var(--ios-gray); padding-right: 5px;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9.29 15.88L13.17 12 9.29 8.12c-.39-.39-.39-1.02 0-1.41.39-.39 1.02-.39 1.41 0l4.59 4.59c.39.39.39 1.02 0 1.41l-4.59 4.59c-.39.39-1.02.39-1.41 0-.38-.39-.39-1.03 0-1.42z"/></svg>
-                    </div>`;
-                list.appendChild(row);
-            });
-        }
-
         window.onload = init;
     </script>
-    <script>
-// メインページ側に追加するコード
-window.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
-    if (id) {
-        const input = document.getElementById('searchInput');
-        input.value = id;
-        runSearch(); // 自動検索実行
-        showTab('search');
-    }
-});
-</script>
-
 </body>
 </html>
