@@ -380,5 +380,19 @@
 
         window.onload = init;
     </script>
+    <script>
+// メインページ側に追加するコード
+window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    if (id) {
+        const input = document.getElementById('searchInput');
+        input.value = id;
+        runSearch(); // 自動検索実行
+        showTab('search');
+    }
+});
+</script>
+
 </body>
 </html>
