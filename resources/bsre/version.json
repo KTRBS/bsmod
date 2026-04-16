@@ -1,0 +1,25 @@
+{
+    "name": "BSRE",
+    "version": "66.263 [RE V6]",
+    "lastUpdated": "2026-04-04",
+    "iossupport": "available",
+    "androidsupport": "available",
+    "iosDownloadUrl": "https://www.mediafire.com/file/qwzhif3vbimmh8t/Switch2-66_2.ipa/file",
+    "androidDownloadUrl": "https://www.mediafire.com/file/vhtyuh2q2saukb6/BSRE.apk/file",
+    "authors": [
+        { "name": "modem ", "id": "modem" }
+    ],
+      "meta": {
+    "ja": {
+      "title": "BSRE",
+      "desc": "一番高くて避けが高性能なやつ。購入は概要欄から。"
+    },
+    "en": {
+      "title": "bsre",
+      "desc": "buy from my link in mod description"
+    }
+  },
+  "ogImage": "https://ktr.brawlmods.com/resources/bsre/icon.png",
+    "telegram": "https://t.me/bsre1",
+    "discord": "https://discord.gg/regeared"
+}
