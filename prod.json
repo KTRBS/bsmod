@@ -12,5 +12,12 @@
         "link": "https://ktr.brawlmods.com/mods?id=rythm",
         "icon": "resources/rythm/icon.png",
         "ss1": "resources/rythm/ss1.png"
+    },
+    {
+        "name": "Switch2",
+        "codename": "switch",
+        "link": "https://ktr.brawlmods.com/mods?id=switch",
+        "icon": "resources/switch/icon.png",
+        "ss1": "resources/switch/header.png"
     }    
 ]
