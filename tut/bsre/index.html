@@ -1,1 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>BSRE 購入・導入方法</title>
+    <meta name="description" content="BSREの購入から導入までの手順を完全解説">
+    <meta property="og:title" content="BSRE 導入ガイド">
+    <meta property="og:description" content="BSREの購入から導入までの手順を完全解説">
+    <meta property="og:image" content="/resources/bsre/icon.png">
+    <meta property="og:type" content="article">
+
+    <style>
+        :root {
+            --primary-color: #007AFF;
+            --bg-color: #f2f2f7;
+            --card-bg: #ffffff;
+            --text-color: #1c1c1e;
+        }
+        body {
+            font-family: -apple-system, "Helvetica Neue", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+        .top-banner { background-color: var(--primary-color); padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .top-banner a { color: white; text-decoration: none; font-weight: bold; font-size: 1.1rem; }
+        .container { max-width: 500px; margin: 20px auto; padding: 0 20px; }
+        h1, h2 { text-align: center; }
+        h2 { margin-top: 40px; color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; font-size: 1.3rem; }
+        .step { background: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .step-header { display: flex; align-items: center; margin-bottom: 12px; font-weight: bold; font-size: 1.1rem; }
+        .number { background: var(--primary-color); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; flex-shrink: 0; font-size: 0.9rem; }
+        .step-img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #e5e5e5; margin-top: 10px; }
+        .btn-link { display: inline-block; background: var(--primary-color); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+<div class="top-banner">
+    <a href="https://ktr.brawlmods.com/mods/?id=bsre">BSREをインストール</a>
+</div>
+
+<div class="container">
+    <h1>BSRE 導入ガイド</h1>
+    <p style="text-align: center; color: #666; margin-top: -15px;">購入からアクティベートまでの完全手順</p>
+
+    <h2>1. BSRE の購入方法</h2>
+    <div class="step">
+        <div class="step-header"><span class="number">1</span>ボットを開く</div>
+        <div>
+            <a href="https://t.me/bsre_bot_link" class="btn-link">BSRE Botを開く</a><br>
+            リンクからボットを開始してください。
+        </div>
+        <img src="/tut/bsre/bot_start.png" class="step-img">
+    </div>
+    
+    <div class="step">
+        <div class="step-header"><span class="number">2</span>購入メニュー</div>
+        <div>メニューから<strong>「Purchase」</strong>を選択し、支払いを行います。</div>
+        <img src="/tut/bsre/bot_purchase.png" class="step-img">
+    </div>
+
+    <h2>2. BSRE のインストール</h2>
+    <div class="step">
+        <div class="step-header"><span class="number">1</span>ダウンロード</div>
+        <div>
+            <a href="#" class="btn-link">BSREをダウンロード</a><br>
+            ZIPファイルを解凍してください。
+        </div>
+        <img src="/tut/bsre/download_unzip.png" class="step-img">
+    </div>
+    <div class="step">
+        <div class="step-header"><span class="number">2</span>署名手順</div>
+        <div>Ksign等を使用して署名・インストールを行います。</div>
+        <img src="/tut/bsre/ksign_sign.png" class="step-img">
+    </div>
+
+    <h2>3. アクティベート手順</h2>
+    <div class="step">
+        <div class="step-header"><span class="number">1</span>キーのコピー</div>
+        <div>起動後のメニューからアクティベーションキーをコピーします。</div>
+        <img src="/tut/bsre/get_key.png" class="step-img">
+    </div>
+    <div class="step">
+        <div class="step-header"><span class="number">2</span>認証完了</div>
+        <div>BotのActivationメニューにキーを貼り付けて完了です。</div>
+        <img src="/tut/bsre/activation.png" class="step-img">
+    </div>
+</div>
+
+<div style="margin: 60px 0 40px 0; text-align: center; padding: 0 20px;">
+    <button id="shareButton" style="background-color: #007AFF; color: white; border: none; padding: 16px 0; border-radius: 16px; font-size: 1rem; font-weight: 600; width: 100%; max-width: 320px; cursor: pointer;">
+        このサイトを友達に教える
+    </button>
+</div>
+
+<script>
+    document.getElementById('shareButton').addEventListener('click', async () => {
+        const shareData = { title: 'BSRE 導入ガイド', text: 'BSREの導入手順がわかるサイトだよ', url: 'https://ktr.brawlmods.com/tut/bsre/' };
+        if (navigator.share) await navigator.share(shareData);
+        else { navigator.clipboard.writeText(shareData.url); alert('URLをコピーしました！'); }
+    });
+</script>
+
+</body>
+</html>
 
