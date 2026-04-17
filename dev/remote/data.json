@@ -1,0 +1,6 @@
+{
+  "displayName": "remote",
+  "apps": [
+    { "id": "remote", "mode": "prod", "name": "BSRE", "subtitle": "bsre bralw hackersh" }
+  ]
+}
