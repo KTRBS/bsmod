@@ -145,12 +145,21 @@
                 const vRes = await fetch(`${resDir}/version.json?${ts}`);
                 const vData = await vRes.json();
                 
-                // ... (既存のデータセット処理) ...
+                // --- 以下、既存のUI反映ロジック ---
                 document.getElementById('ui-main-title').textContent = vData.name;
                 document.getElementById('js-sticky-name').textContent = vData.name;
                 document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-main-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-hero').style.backgroundImage = `url('${resDir}/header.png')`;
+                document.getElementById('js-version').textContent = 'v' + vData.version;
+                
+                // ss-containerの反映 (復元)
+                const ssContainer = document.getElementById('js-ss-container');
+                [1,2,3].forEach(n => {
+                    const img = document.createElement('img');
+                    img.src = `${resDir}/ss${n}.png`;
+                    ssContainer.appendChild(img);
+                });
                 
                 // info読み込み (言語_OS.html)
                 const infoRes = await fetch(`${resDir}/info_${lang}_${device}.html?${ts}`);
