@@ -1,1 +1,6 @@
-
+{
+  "displayName": "rldv1”,
+  "apps": [
+    { "id": "modem", "mode": "prod", "name": "Switch2", "subtitle": "leaked lmao" }
+  ]
+}
