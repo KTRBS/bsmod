@@ -29,6 +29,12 @@
             padding: 0;
             -webkit-tap-highlight-color: transparent;
         }
+        /* リンクのアンダーライン用共通設定 */
+        .link-underline {
+            text-decoration: underline;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
 
         .container {
             max-width: 500px;
@@ -102,7 +108,9 @@
         <div class="step-header"><span class="number">1</span>ボットを開始</div>
         <div>
             <a href="https://t.me/talepaybot?start=_tgr_wPQXq74wOWVl" class="btn-link">Tale Botを開く</a><br>
-            リンクを開き、一番下の<strong>「start」</strong>をタップします。
+            リンクを開き、一番下の<strong>「start」</strong>をタップします。<br>
+            <small>リンクが無効と表示される場合は<a href="https://apps.apple.com/us/app/telegram-messenger/id686449807" class="link-underline">Telegram</a>をインストールしてください。</small><br>
+            <small><a href="https://discord.gg/m7AJPfbQg6" class="link-underline">サポートが必要ですか？</a></small>
         </div>
         <img src="/tut/ios/resources/bot_start.png" class="step-img">
     </div>
@@ -144,7 +152,10 @@
     </div>
     <div class="step">
         <div class="step-header"><span class="number">2</span>Ksignでインポート</div>
-        <div>Ksignの<strong>「Library」</strong>タブ→右上の<strong>「import」</strong>から解凍したファイルを選びます。</div>
+        <div>
+            Ksignの<strong>「Library」</strong>タブ→右上の<strong>「import」</strong>から解凍したファイルを選びます。<br>
+            <a href="https://ktr.brawlmods.com/tut/" class="link-underline">Ksignがありませんか？</a>
+        </div>
         <img src="/tut/ios/resources/ksign_library.png" class="step-img">
     </div>
     <div class="step">
@@ -200,62 +211,6 @@
         <img src="/tut/ios/resources/bot_final_activation.png" class="step-img">
     </div>
 </div>
-    <div style="margin: 60px 0 40px 0; text-align: center; padding: 0 20px;">
-        <p style="color: #8e8e93; font-size: 0.85rem; margin-bottom: 12px; letter-spacing: 0.5px;">SHARE WITH FRIENDS</p>
-        <button id="shareButton" style="
-            background-color: #007AFF;
-            color: white;
-            border: none;
-            padding: 16px 0;
-            border-radius: 16px;
-            font-size: 1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            cursor: pointer;
-            width: 100%;
-            max-width: 320px;
-            transition: opacity 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0,122,255,0.2);
-        ">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;">
-                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                <polyline points="16 6 12 2 8 6"></polyline>
-                <line x1="12" y1="2" x2="12" y2="15"></line>
-            </svg>
-            このサイトを友達に教える
-        </button>
-    </div>
-
-    <script>
-        document.getElementById('shareButton').addEventListener('click', async () => {
-            const shareTitle = 'Tale stars 導入ガイド';
-            const shareText = '日本語でTale starsの導入方法が書いてある広告がないサイト見つけたよ';
-            const shareUrl = 'https://ktr.brawlmods.com/tut/tale';
-
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: shareTitle,
-                        text: shareText,
-                        url: shareUrl
-                    });
-                } catch (err) {
-                    console.log('共有がキャンセルされました');
-                }
-            } else {
-                const fullText = `${shareText}: ${shareUrl}`;
-                try {
-                    await navigator.clipboard.writeText(fullText);
-                    alert('メッセージとリンクをコピーしました！\nLINEなどに貼り付けて送ってあげてください。');
-                } catch (err) {
-                    alert('コピーに失敗しました。URLを直接送ってください。');
-                }
-            }
-        });
-    </script>
 
 </body>
 </html>
