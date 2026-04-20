@@ -1,0 +1,15 @@
+{
+    "name": "Batus Brawl",
+    "version": "28.4.0",
+    "lastUpdated": "2026-03-13",
+    "iossupport": "unavailable",
+    "androidsupport": "available",
+    "iosDownloadUrl": "",
+    "androidDownloadUrl": "https://github.com/BatuKvi123/BBAPK/releases/download/latest/app.apk”,
+    "authors": [
+        { "name": "Batu", "id": "batussz" }
+    ],
+  "ogImage": "https://ktr.brawlmods.com/resources/batus/icon.png",
+    "telegram": “https://t.me/batusbrawl”,
+    "discord": ""
+}
