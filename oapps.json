@@ -5,5 +5,12 @@
         "link": "https://ktr.brawlmods.com/mods?id=flbs",
         "icon": "resources/flbs/icon.png",
         "ss1": "resources/flbs/ss1.png"
-    }    
+    },
+   {
+        "name": "Batus Brawl",
+        "codename": "Batus",
+        "link": "https://ktr.brawlmods.com/mods?id=batus",
+        "icon": "resources/batus/icon.png",
+        "ss1": "resources/batus/ss1.png"
+    }
 ]
