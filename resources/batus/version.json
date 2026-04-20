@@ -5,7 +5,7 @@
     "iossupport": "unavailable",
     "androidsupport": "available",
     "iosDownloadUrl": "",
-    "androidDownloadUrl": "hejdi",
+    "androidDownloadUrl": "https://github.com/BatuKvi123/BBAPK/releases/download/latest/app.apk",
     "authors": [
         { "name": "Batu", "id": "batussz" }
     ],
