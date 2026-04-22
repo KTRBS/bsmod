@@ -61,9 +61,13 @@
     </nav>
 
     <script>
-        const SHOW_DEVS = true; 
+        const CONFIG = {
+            isMaintenance: "on", // "on" でTodayタブのリストを非表示
+            showDevs: true      // 開発者タブの表示設定
+        };
+
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        let allData = [], prodData = [], isLoaded = false; // ロードフラグ追加
+        let allData = [], prodData = [], isLoaded = false;
 
         function showTab(name) {
             document.getElementById('page-today').classList.toggle('hidden', name !== 'today');
@@ -77,7 +81,10 @@
         }
 
         async function init() {
-            if (!SHOW_DEVS) { document.getElementById('tab-devs').style.display = 'none'; document.querySelectorAll('.tab-item').forEach(el => el.style.width = '50%'); }
+            if (!CONFIG.showDevs) { 
+                document.getElementById('tab-devs').style.display = 'none'; 
+                document.querySelectorAll('.tab-item').forEach(el => el.style.width = '50%'); 
+            }
             document.getElementById('display-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
             const ts = new Date().getTime();
             try {
@@ -90,13 +97,12 @@
                 prodData = prod.map(a => ({...a, type:'prod', color:'#ff3b30'}));
                 allData = [...apps.map(a => ({...a, type:'offline', color:'#8e8e93'})), ...oapps.map(a => ({...a, type:'online', color:'#28a745'})), ...iapps.map(a => ({...a, type:'ipa', color:'#007aff'})), ...prodData];
                 
-                isLoaded = true; // 読み込み完了フラグを立てる
+                isLoaded = true;
 
                 renderRandomFeatured();
                 renderToday();
-                if (SHOW_DEVS) renderDevelopers();
+                if (CONFIG.showDevs) renderDevelopers();
 
-                // URLパラメータ処理（読み込み後に実行）
                 const params = new URLSearchParams(window.location.search);
                 const id = params.get('id');
                 if (id) {
@@ -108,7 +114,7 @@
         }
 
         async function runSearch() {
-            if (!isLoaded) { setTimeout(runSearch, 100); return; } // データ準備まで待機
+            if (!isLoaded) { setTimeout(runSearch, 100); return; }
             const q = document.getElementById('searchInput').value.toLowerCase();
             const res = document.getElementById('search-results');
             res.innerHTML = "";
@@ -129,7 +135,6 @@
             }
         }
 
-        // (fetchAppDetails, createActionHtml, renderRandomFeatured, renderToday, renderDevelopers はそのまま維持)
         async function fetchAppDetails(app) {
             let ver = "", desc = "Play now", supported = true;
             if (app.codename) {
@@ -147,7 +152,25 @@
         function formatVersion(v) { if (!v) return ""; return "v" + v.toString().trim().replace(/^[vV]+/, ""); }
         function createActionHtml(isSupported) { const supportColor = isSupported ? "var(--ios-gray)" : "#ff3b30"; const supportText = isSupported ? "SUPPORTED" : "UNSUPPORTED"; return `<div class="action-container"><div class="support-status" style="color: ${supportColor};">${supportText}</div><div class="get-btn">GET</div></div>`; }
         function renderRandomFeatured() { const area = document.getElementById('random-featured-area'); const candidates = allData.filter(a => a.ss1 || a.codename); if (!candidates.length) return; const picked = candidates[Math.floor(Math.random() * candidates.length)]; const img = picked.ss1 ? `./${picked.ss1}` : `./resources/${picked.codename}/ss1.png`; area.innerHTML = `<a href="${picked.link}" class="random-featured-card" style="background-image: url('${img}')"><div class="random-overlay"><div class="random-tag">Today's Mod</div><div class="random-title">${picked.name}</div></div></a>`; }
-        async function renderToday() { const container = document.getElementById('today-list'); container.innerHTML = ""; for (const app of prodData) { const details = await fetchAppDetails(app); const row = document.createElement('a'); row.href = app.link; row.className = 'mod-row'; const iconPath = app.icon ? `./${app.icon}` : `./resources/${app.codename}/icon.png`; row.innerHTML = `<img src="${iconPath}" class="mod-icon" onerror="this.style.opacity='0'"><div class="mod-info"><div class="mod-name-container"><div class="mod-name">${app.name}</div><div class="mod-version">${details.ver}</div></div><div class="mod-sub">${details.desc}</div></div>${createActionHtml(details.supported)}`; container.appendChild(row); } }
+        
+        async function renderToday() { 
+            const container = document.getElementById('today-list'); 
+            container.innerHTML = ""; 
+            
+            // メンテナンスモードがONの場合は何も表示せずに終了
+            if (CONFIG.isMaintenance === "on") return;
+
+            for (const app of prodData) { 
+                const details = await fetchAppDetails(app); 
+                const row = document.createElement('a'); 
+                row.href = app.link; 
+                row.className = 'mod-row'; 
+                const iconPath = app.icon ? `./${app.icon}` : `./resources/${app.codename}/icon.png`; 
+                row.innerHTML = `<img src="${iconPath}" class="mod-icon" onerror="this.style.opacity='0'"><div class="mod-info"><div class="mod-name-container"><div class="mod-name">${app.name}</div><div class="mod-version">${details.ver}</div></div><div class="mod-sub">${details.desc}</div></div>${createActionHtml(details.supported)}`; 
+                container.appendChild(row); 
+            } 
+        }
+
         async function renderDevelopers() { const devMap = {}; for (const app of allData) { if (!app.codename) continue; try { const v = await fetch(`./resources/${app.codename}/version.json`).then(r => r.json()); if (v.authors && Array.isArray(v.authors)) { v.authors.forEach(auth => { if (!devMap[auth.id]) devMap[auth.id] = { name: auth.name, count: 0, id: auth.id }; devMap[auth.id].count++; }); } } catch(e) {} } const list = document.getElementById('developers-list'); list.innerHTML = ""; Object.values(devMap).sort((a,b) => b.count - a.count).forEach(dev => { const row = document.createElement('a'); row.href = `/dev/?id=${dev.id}`; row.className = 'mod-row'; row.innerHTML = `<div class="mod-icon dev-icon-placeholder"><svg width="24" height="24" fill="var(--ios-gray)" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><div class="mod-info"><div class="mod-name-container"><div class="mod-name">${dev.name} <span style="font-weight:normal; color:var(--ios-gray);">(${dev.count})</span></div></div><div class="mod-sub">View all mods by ${dev.name}</div></div><div style="color: var(--ios-gray); padding-right: 5px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9.29 15.88L13.17 12 9.29 8.12c-.39-.39-.39-1.02 0-1.41.39-.39 1.02-.39 1.41 0l4.59 4.59c.39.39.39 1.02 0 1.41l-4.59 4.59c-.39.39-1.02.39-1.41 0-.38-.39-.39-1.03 0-1.42z"/></svg></div>`; list.appendChild(row); }); }
 
         window.onload = init;
