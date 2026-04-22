@@ -62,8 +62,8 @@
 
     <script>
         const CONFIG = {
-            isMaintenance: "on", // "on" でTodayタブのリストを非表示
-            showDevs: true      // 開発者タブの表示設定
+            isMaintenance: "on", // "on" のときprod.jsonのデータを非表示
+            showDevs: true       // 開発者タブの表示設定
         };
 
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -94,8 +94,20 @@
                     fetch(`./iapps.json?${ts}`).then(r => r.json()).catch(() => []),
                     fetch(`./prod.json?${ts}`).then(r => r.json()).catch(() => [])
                 ]);
-                prodData = prod.map(a => ({...a, type:'prod', color:'#ff3b30'}));
-                allData = [...apps.map(a => ({...a, type:'offline', color:'#8e8e93'})), ...oapps.map(a => ({...a, type:'online', color:'#28a745'})), ...iapps.map(a => ({...a, type:'ipa', color:'#007aff'})), ...prodData];
+
+                // メンテナンスモードがONならprodDataを空にする
+                if (CONFIG.isMaintenance === "on") {
+                    prodData = [];
+                } else {
+                    prodData = prod.map(a => ({...a, type:'prod', color:'#ff3b30'}));
+                }
+
+                allData = [
+                    ...apps.map(a => ({...a, type:'offline', color:'#8e8e93'})), 
+                    ...oapps.map(a => ({...a, type:'online', color:'#28a745'})), 
+                    ...iapps.map(a => ({...a, type:'ipa', color:'#007aff'})), 
+                    ...prodData
+                ];
                 
                 isLoaded = true;
 
@@ -119,6 +131,7 @@
             const res = document.getElementById('search-results');
             res.innerHTML = "";
             if(!q) return;
+
             const filtered = allData.filter(a => a.name.toLowerCase().includes(q));
             for (const app of filtered) {
                 const details = await fetchAppDetails(app);
@@ -157,8 +170,8 @@
             const container = document.getElementById('today-list'); 
             container.innerHTML = ""; 
             
-            // メンテナンスモードがONの場合は何も表示せずに終了
-            if (CONFIG.isMaintenance === "on") return;
+            // メンテナンスモードがON、またはprodDataが空の場合は何も表示しない
+            if (CONFIG.isMaintenance === "on" || prodData.length === 0) return;
 
             for (const app of prodData) { 
                 const details = await fetchAppDetails(app); 
