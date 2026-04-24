@@ -46,18 +46,17 @@
 
         .hero { position: relative; height: 240px; background: center/cover no-repeat; display: flex; align-items: flex-end; }
         .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--grad-color) 100%); }
-        .mod-name-hero { position: relative; z-index: 10; font-size: 2.2rem; font-weight: 700; margin: 0 0 20px 20px; letter-spacing: -1px; color: var(--text-color); }
+        .mod-name-hero { position: relative; z-index: 10; font-size: 2.2rem; font-weight: 700; margin: 0 0 20px 20px; letter-spacing: -1px; color: var(--text-color); transition: opacity 0.3s; }
         
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         .info-header { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; }
         .icon-box img { width: 92px; height: 92px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); object-fit: cover; }
         
-        /* バージョン選択メニュー */
         .version-wrapper { display: flex; align-items: center; gap: 6px; position: relative; }
         .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
-        .old-ver-toggle { background: none; border: none; color: var(--btn-blue); font-size: 1rem; cursor: pointer; padding: 4px; display: flex; align-items: center; transition: transform 0.2s; }
+        .old-ver-toggle { background: none; border: none; color: var(--btn-blue); font-size: 1.2rem; cursor: pointer; padding: 4px; display: flex; align-items: center; transition: transform 0.2s; }
         .old-ver-toggle.active { transform: rotate(180deg); }
-        .old-ver-menu { position: absolute; top: 100%; left: 0; background: var(--menu-bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: none; z-index: 120; min-width: 140px; margin-top: 8px; overflow: hidden; }
+        .old-ver-menu { position: absolute; top: 100%; left: 0; background: var(--menu-bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: none; z-index: 120; min-width: 150px; margin-top: 8px; overflow: hidden; }
         .old-ver-menu.show { display: block; }
         .old-ver-item { display: block; padding: 12px 16px; text-decoration: none; color: var(--text-color); font-size: 0.95rem; border-bottom: 0.5px solid var(--line); font-weight: 500; cursor: pointer; }
         .old-ver-item:last-child { border-bottom: none; }
@@ -174,13 +173,17 @@
                 const vRes = await fetch(`${resDir}/version.json?${ts}`);
                 const vData = await vRes.json();
                 
+                // 初期の名前を保持
+                const originalName = vData.name;
+                const latestVersion = vData.version;
+
                 // 基本情報の設定
-                document.getElementById('ui-main-title').textContent = vData.name;
-                document.getElementById('js-sticky-name').textContent = vData.name;
+                document.getElementById('ui-main-title').textContent = originalName;
+                document.getElementById('js-sticky-name').textContent = originalName;
                 document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-main-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-hero').style.backgroundImage = `url('${resDir}/header.png')`;
-                document.getElementById('js-version').textContent = 'v' + vData.version;
+                document.getElementById('js-version').textContent = 'v' + latestVersion;
                 document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
                 document.getElementById('ui-author-label').textContent = t.dev;
                 document.getElementById('ui-howto-title').textContent = t.howto;
@@ -215,7 +218,40 @@
                     statusEl.className = 'status-badge-inline ' + (isComp ? 'status-available' : 'status-outdated');
                 }
 
-                // --- 旧バージョン選択 & リンク書き換え ---
+                // --- バージョン更新関数 ---
+                function updateToVersion(verName, newUrl) {
+                    const mainBtn = document.getElementById('main-dl-btn');
+                    const iosPcBtn = document.getElementById('btn-ios-pc');
+                    const androidPcBtn = document.getElementById('btn-android-pc');
+                    const versionText = document.getElementById('js-version');
+                    const heroTitle = document.getElementById('ui-main-title');
+                    const stickyTitle = document.getElementById('js-sticky-name');
+
+                    // テキスト類の更新
+                    const fullVer = verName.startsWith('v') ? verName : 'v' + verName;
+                    versionText.textContent = fullVer;
+                    heroTitle.textContent = originalName + " " + fullVer;
+                    stickyTitle.textContent = originalName + " " + fullVer;
+
+                    // ダウンロードボタンの更新
+                    if(mainBtn) {
+                        mainBtn.href = newUrl;
+                        mainBtn.textContent = `${t.download} ${fullVer} (${device === "ios" ? 'iOS' : 'Android'})`;
+                    }
+                    if(device === "pc" || device === "ios") { if(iosPcBtn) iosPcBtn.href = newUrl; }
+                    if(device === "pc" || device === "android") { if(androidPcBtn) androidPcBtn.href = newUrl; }
+
+                    stickyBtn.href = newUrl;
+                    
+                    // フィードバックアニメーション
+                    const targetBtn = mainBtn || (device === "ios" ? iosPcBtn : androidPcBtn);
+                    if(targetBtn) {
+                        targetBtn.style.backgroundColor = "#34c759";
+                        setTimeout(() => { targetBtn.style.backgroundColor = ""; }, 500);
+                    }
+                }
+
+                // --- 旧バージョン選択メニューの実装 ---
                 const oldVerData = (device === "ios") ? vData.iosoldver : vData.androidoldver;
                 if (oldVerData && Object.keys(oldVerData).length > 0) {
                     const versionWrapper = document.querySelector('.version-wrapper');
@@ -229,18 +265,24 @@
                     const menu = document.createElement('div');
                     menu.className = 'old-ver-menu';
                     
-                    // 「最新版」に戻す選択肢も追加
+                    // 最新版に戻す
                     const latestItem = document.createElement('div');
                     latestItem.className = 'old-ver-item';
-                    latestItem.textContent = "Latest (v" + vData.version + ")";
-                    latestItem.onclick = () => updateLinks(vData.version, (device === "ios" ? vData.iosDownloadUrl : vData.androidDownloadUrl), true);
+                    latestItem.textContent = "Latest (v" + latestVersion + ")";
+                    latestItem.onclick = () => {
+                        updateToVersion(latestVersion, (device === "ios" ? vData.iosDownloadUrl : vData.androidDownloadUrl));
+                        menu.classList.remove('show');
+                    };
                     menu.appendChild(latestItem);
 
                     for (const [ver, url] of Object.entries(oldVerData)) {
                         const item = document.createElement('div');
                         item.className = 'old-ver-item';
                         item.textContent = ver;
-                        item.onclick = () => updateLinks(ver, url, false);
+                        item.onclick = () => {
+                            updateToVersion(ver, url);
+                            menu.classList.remove('show');
+                        };
                         menu.appendChild(item);
                     }
                     versionWrapper.appendChild(menu);
@@ -254,31 +296,6 @@
                         menu.classList.remove('show');
                         toggleBtn.classList.remove('active');
                     });
-                }
-
-                function updateLinks(verName, newUrl, isLatest) {
-                    const mainBtn = document.getElementById('main-dl-btn');
-                    const iosPcBtn = document.getElementById('btn-ios-pc');
-                    const androidPcBtn = document.getElementById('btn-android-pc');
-                    
-                    // モバイル用メインボタンの更新
-                    if(mainBtn) {
-                        mainBtn.href = newUrl;
-                        mainBtn.textContent = `${t.download} ${verName} (${device === "ios" ? 'iOS' : 'Android'})`;
-                    }
-                    // PC用ボタンの更新 (現在のデバイス判定に基づき対象を更新)
-                    if(device === "pc" || device === "ios") { if(iosPcBtn) iosPcBtn.href = newUrl; }
-                    if(device === "pc" || device === "android") { if(androidPcBtn) androidPcBtn.href = newUrl; }
-
-                    // スティッキーボタン更新
-                    stickyBtn.href = newUrl;
-                    
-                    // 視覚的フィードバック（一瞬光らせる）
-                    const targetBtn = mainBtn || (device === "ios" ? iosPcBtn : androidPcBtn);
-                    if(targetBtn) {
-                        targetBtn.style.backgroundColor = "#34c759";
-                        setTimeout(() => { targetBtn.style.backgroundColor = ""; }, 500);
-                    }
                 }
 
                 // --- その他読み込み ---
