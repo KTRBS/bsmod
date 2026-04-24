@@ -70,6 +70,12 @@
         .ss-container img { flex: 0 0 85%; max-width: 380px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; scroll-snap-align: center; border: 0.5px solid var(--line); }
 
         .author-link { color: var(--btn-blue) !important; text-decoration: none; font-weight: 600; font-size: 0.85rem; }
+
+        /* SNSリンク用スタイル */
+        .contact-btn { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: var(--card-bg); border-radius: 12px; text-decoration: none; margin-bottom: 10px; font-weight: 600; }
+        .contact-btn.discord { color: var(--discord) !important; }
+        .contact-btn.telegram { color: var(--btn-blue) !important; }
+        .contact-btn .arrow { color: var(--secondary-text); font-weight: normal; }
     </style>
 </head>
 <body>
@@ -111,7 +117,8 @@
         
         <h2 style="font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px;">Information</h2>
         <div id="js-info-content" style="line-height: 1.6; color: var(--secondary-text);">Loading...</div>
-        <div id="js-contact-area" style="margin-top:20px;"></div>
+        
+        <div id="js-contact-area" style="margin-top:25px;"></div>
     </div>
 
     <script>
@@ -146,7 +153,7 @@
                 const originalName = vData.name;
                 const latestVer = vData.version;
 
-                // UI基本情報セット
+                // UIセット
                 document.getElementById('ui-main-title').textContent = originalName;
                 document.getElementById('js-sticky-name').textContent = originalName;
                 document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
@@ -165,39 +172,40 @@
                     document.getElementById('ui-main-title').textContent = originalName + " " + fullVer;
                     document.getElementById('js-sticky-name').textContent = originalName + " " + fullVer;
 
-                    if (url) {
+                    if (url && url !== "") {
                         dlArea.innerHTML = `<a class="download-btn" href="${url}" target="_blank">${t.download} ${fullVer} (${platName})</a>`;
                         stickyBtn.href = url;
                         stickyBtn.style.display = "block";
+                    } else {
+                        dlArea.innerHTML = `<div class="download-btn" style="background:#8e8e93; opacity:0.6;">Unavailable (${platName})</div>`;
+                        stickyBtn.style.display = "none";
                     }
                 }
 
-                // --- 初期バージョンの決定 ---
-                // デバイスに応じたデフォルト
-                let currentPlat = (device === "ios") ? "iOS" : "Android";
-                let currentUrl = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
-                let currentVer = latestVer;
+                // --- 初期の表示（OS判定） ---
+                let initialPlat = (device === "ios") ? "iOS" : "Android";
+                let initialUrl = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
+                let initialVer = latestVer;
 
-                // URLパラメータ ?v= があるかチェック (iOS, Android両方のリストから探す)
+                // iOS版がないがAndroid版はある場合などのフォールバック
+                if (!initialUrl || initialUrl === "") {
+                    if (vData.androidDownloadUrl) { initialPlat = "Android"; initialUrl = vData.androidDownloadUrl; }
+                    else if (vData.iosDownloadUrl) { initialPlat = "iOS"; initialUrl = vData.iosDownloadUrl; }
+                }
+
+                // URLパラメータ v= があれば上書き
                 if (targetVer) {
-                    const cleanTarget = targetVer.replace(/^v/, '');
-                    const iosOld = vData.iosoldver || {};
-                    const andOld = vData.androidoldver || {};
-
-                    if (iosOld[targetVer] || iosOld[cleanTarget]) {
-                        currentVer = targetVer;
-                        currentUrl = iosOld[targetVer] || iosOld[cleanTarget];
-                        currentPlat = "iOS";
-                    } else if (andOld[targetVer] || andOld[cleanTarget]) {
-                        currentVer = targetVer;
-                        currentUrl = andOld[targetVer] || andOld[cleanTarget];
-                        currentPlat = "Android";
-                    }
+                    const cleanT = targetVer.replace(/^v/, '');
+                    const iosO = vData.iosoldver || {};
+                    const andO = vData.androidoldver || {};
+                    if (iosO[targetVer] || iosO[cleanT]) { initialVer = targetVer; initialUrl = iosO[targetVer] || iosO[cleanT]; initialPlat = "iOS"; }
+                    else if (andO[targetVer] || andO[cleanT]) { initialVer = targetVer; initialUrl = andO[targetVer] || andO[cleanT]; initialPlat = "Android"; }
                 }
-                updateToVersion(currentVer, currentUrl, currentPlat);
+                updateToVersion(initialVer, initialUrl, initialPlat);
 
                 // --- スクショ表示 ---
                 const ssContainer = document.getElementById('js-ss-container');
+                ssContainer.innerHTML = "";
                 [1,2,3].forEach(n => {
                     const img = document.createElement('img');
                     img.src = `${resDir}/ss${n}.png`;
@@ -216,12 +224,14 @@
                 menu.className = 'old-ver-menu';
                 
                 const createSection = (title, items, plat) => {
-                    if (items && Object.keys(items).length > 0) {
+                    // 値が空でない有効なアイテムだけを抽出
+                    const validItems = items ? Object.entries(items).filter(([v, u]) => u && u.trim() !== "") : [];
+                    if (validItems.length > 0) {
                         const label = document.createElement('div');
                         label.className = 'menu-label';
                         label.textContent = title;
                         menu.appendChild(label);
-                        for (const [v, u] of Object.entries(items)) {
+                        for (const [v, u] of validItems) {
                             const item = document.createElement('div');
                             item.className = 'old-ver-item';
                             item.textContent = v;
@@ -231,31 +241,48 @@
                     }
                 };
 
-                // PCなら全表示、スマホなら各OS優先（ただし全OS分メニューには出す）
-                createSection("iOS (Latest)", { [vData.version]: vData.iosDownloadUrl }, "iOS");
+                const iosLatest = vData.iosDownloadUrl ? { [vData.version]: vData.iosDownloadUrl } : null;
+                const androidLatest = vData.androidDownloadUrl ? { [vData.version]: vData.androidDownloadUrl } : null;
+
+                createSection("iOS (Latest)", iosLatest, "iOS");
                 createSection("iOS (Older)", vData.iosoldver, "iOS");
-                createSection("Android (Latest)", { [vData.version]: vData.androidDownloadUrl }, "Android");
+                createSection("Android (Latest)", androidLatest, "Android");
                 createSection("Android (Older)", vData.androidoldver, "Android");
 
                 versionWrapper.appendChild(menu);
                 toggleBtn.onclick = (e) => { e.stopPropagation(); menu.classList.toggle('show'); toggleBtn.classList.toggle('active'); };
                 window.onclick = () => { menu.classList.remove('show'); toggleBtn.classList.remove('active'); };
 
-                // 著者表示
+                // --- 著者表示 ---
+                const authList = document.getElementById('js-author-list');
                 vData.authors.forEach(a => {
                     const link = document.createElement('a');
                     link.href = `../dev/?id=${a.id}`;
                     link.className = 'author-link';
                     link.textContent = a.name + " ";
-                    document.getElementById('js-author-list').appendChild(link);
+                    authList.appendChild(link);
                 });
 
-                // 外部HTML(info)読み込み
+                // --- SNSリンク表示 ---
+                const contactArea = document.getElementById('js-contact-area');
+                if (vData.discord) {
+                    contactArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="contact-btn discord"><span>Discord Server</span><span class="arrow">›</span></a>`;
+                }
+                if (vData.telegram) {
+                    contactArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="contact-btn telegram"><span>Telegram Channel</span><span class="arrow">›</span></a>`;
+                }
+
+                // --- info.html読み込み ---
                 const infoRes = await fetch(`${resDir}/info_${lang}_${device}.html`);
                 if (infoRes.ok) document.getElementById('js-info-content').innerHTML = await infoRes.text();
+                else {
+                    const fallback = await fetch(`${resDir}/info_en_pc.html`);
+                    if(fallback.ok) document.getElementById('js-info-content').innerHTML = await fallback.text();
+                }
 
             } catch (e) { console.error(e); }
 
+            // スクロール演出
             window.onscroll = () => {
                 const scrollY = window.scrollY;
                 document.getElementById('ui-main-title').style.opacity = Math.max(1 - (scrollY / 150), 0);
