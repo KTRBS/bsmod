@@ -21,6 +21,8 @@
     ],
     "meta": {
         "ja": { "title": "NBS Offline 詳細", "desc": "最新の Mod をここからダウンロード！" },
-        "en": { "title": "NBS Offline Details", "desc": "nbs offlinr hackersh" }
-    }
+        "en": { "title": "NBS Offline Details", "desc": "nbs offlinr hackersh" }   
+    },
+    "telegram": "https://t.me/nbsoffline",
+    "discord": "https://discord.gg/wdeRubnHcm"
 }
