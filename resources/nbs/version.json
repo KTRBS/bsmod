@@ -2,25 +2,25 @@
     "name": "NBS Offline",
     "version": "Beta6",
     "lastUpdated": "2026-01-18",
-    "iossupport": "unavailable",
+    "iossupport": "available",
     "androidsupport": "available",
     "iosDownloadUrl": "https://brawlmods.com/nbsoffline/v59/ios",
     "androidDownloadUrl": "https://t.me/nbsoffline/529",
+    "iosoldver": {
+        "v1.9": "https://example.com/ios19",
+        "v2.0": "https://example.com/ios20"
+    },
+    "androidoldver": {
+        "v44b3": "https://t.me/OfflineBS/30"
+        "v59b4a": "https://t.me/OfflineBS/28",
+        "v64b4": "https://t.me/OfflineBS/29"
+    },
     "authors": [
         { "name": "Natesworks", "id": "nate" },
         { "name": "Bananae", "id": "banae" }
     ],
     "meta": {
-     "ja": {
-      "title": "NBS Offline 詳細",
-      "desc": "最新の Mod をここからダウンロード！"
-    },
-     "en": {
-      "title": "NBS Offline Details",
-      "desc": "nbs offlinr hackersh"
+        "ja": { "title": "NBS Offline 詳細", "desc": "最新の Mod をここからダウンロード！" },
+        "en": { "title": "NBS Offline Details", "desc": "nbs offlinr hackersh" }
     }
-  },
-  "ogImage": "https://your-domain.com/resources/nbs/ogp.png",
-    "telegram": "https://t.me/nbsoffline",
-    "discord": "https://discord.gg/tsmod"
 }
