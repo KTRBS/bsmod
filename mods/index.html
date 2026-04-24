@@ -143,7 +143,9 @@
     <script>
         const isJa = navigator.language.includes('ja');
         const lang = isJa ? 'ja' : 'en';
-        const codename = new URLSearchParams(window.location.search).get('id');
+        const params = new URLSearchParams(window.location.search);
+        const codename = params.get('id');
+        const targetVer = params.get('v'); // URLの v= パラメータを取得
 
         const uiText = {
             ja: { available: "利用可能", unsupported: "非対応", updated: "最終更新: ", howto: "導入方法", download: "ダウンロード", get: "入手", ios: "iOS", android: "Android", dev: "開発者", dlSuffix: " をダウンロード" },
@@ -173,11 +175,10 @@
                 const vRes = await fetch(`${resDir}/version.json?${ts}`);
                 const vData = await vRes.json();
                 
-                // 初期の名前を保持
                 const originalName = vData.name;
                 const latestVersion = vData.version;
 
-                // 基本情報の設定
+                // 基本設定
                 document.getElementById('ui-main-title').textContent = originalName;
                 document.getElementById('js-sticky-name').textContent = originalName;
                 document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
@@ -193,7 +194,7 @@
                 const isIosAvail = vData.iossupport === "available";
                 const isAndroidAvail = vData.androidsupport === "available";
 
-                // --- ダウンロードエリア生成 ---
+                // 初期ボタン生成
                 if (device === "pc") {
                     dlArea.className = "dl-section-pc";
                     dlArea.innerHTML = `
@@ -204,7 +205,6 @@
                 } else {
                     const isComp = (device === "ios") ? isIosAvail : isAndroidAvail;
                     const url = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
-                    
                     const btn = document.createElement('a');
                     btn.id = "main-dl-btn";
                     btn.className = "download-btn" + (isComp ? "" : " unsupported");
@@ -218,7 +218,7 @@
                     statusEl.className = 'status-badge-inline ' + (isComp ? 'status-available' : 'status-outdated');
                 }
 
-                // --- バージョン更新関数 ---
+                // バージョン更新ロジック
                 function updateToVersion(verName, newUrl) {
                     const mainBtn = document.getElementById('main-dl-btn');
                     const iosPcBtn = document.getElementById('btn-ios-pc');
@@ -227,78 +227,59 @@
                     const heroTitle = document.getElementById('ui-main-title');
                     const stickyTitle = document.getElementById('js-sticky-name');
 
-                    // テキスト類の更新
                     const fullVer = verName.startsWith('v') ? verName : 'v' + verName;
                     versionText.textContent = fullVer;
                     heroTitle.textContent = originalName + " " + fullVer;
                     stickyTitle.textContent = originalName + " " + fullVer;
 
-                    // ダウンロードボタンの更新
                     if(mainBtn) {
                         mainBtn.href = newUrl;
                         mainBtn.textContent = `${t.download} ${fullVer} (${device === "ios" ? 'iOS' : 'Android'})`;
                     }
                     if(device === "pc" || device === "ios") { if(iosPcBtn) iosPcBtn.href = newUrl; }
                     if(device === "pc" || device === "android") { if(androidPcBtn) androidPcBtn.href = newUrl; }
-
                     stickyBtn.href = newUrl;
-                    
-                    // フィードバックアニメーション
-                    const targetBtn = mainBtn || (device === "ios" ? iosPcBtn : androidPcBtn);
-                    if(targetBtn) {
-                        targetBtn.style.backgroundColor = "#34c759";
-                        setTimeout(() => { targetBtn.style.backgroundColor = ""; }, 500);
-                    }
                 }
 
-                // --- 旧バージョン選択メニューの実装 ---
+                // 旧バージョンメニュー構築
                 const oldVerData = (device === "ios") ? vData.iosoldver : vData.androidoldver;
                 if (oldVerData && Object.keys(oldVerData).length > 0) {
                     const versionWrapper = document.querySelector('.version-wrapper');
-                    const statusBadge = document.getElementById('js-status');
-
                     const toggleBtn = document.createElement('button');
                     toggleBtn.className = 'old-ver-toggle';
                     toggleBtn.innerHTML = '▽';
-                    versionWrapper.insertBefore(toggleBtn, statusBadge);
+                    versionWrapper.insertBefore(toggleBtn, document.getElementById('js-status'));
 
                     const menu = document.createElement('div');
                     menu.className = 'old-ver-menu';
                     
-                    // 最新版に戻す
                     const latestItem = document.createElement('div');
                     latestItem.className = 'old-ver-item';
                     latestItem.textContent = "Latest (v" + latestVersion + ")";
-                    latestItem.onclick = () => {
-                        updateToVersion(latestVersion, (device === "ios" ? vData.iosDownloadUrl : vData.androidDownloadUrl));
-                        menu.classList.remove('show');
-                    };
+                    latestItem.onclick = () => { updateToVersion(latestVersion, (device === "ios" ? vData.iosDownloadUrl : vData.androidDownloadUrl)); menu.classList.remove('show'); };
                     menu.appendChild(latestItem);
 
                     for (const [ver, url] of Object.entries(oldVerData)) {
                         const item = document.createElement('div');
                         item.className = 'old-ver-item';
                         item.textContent = ver;
-                        item.onclick = () => {
-                            updateToVersion(ver, url);
-                            menu.classList.remove('show');
-                        };
+                        item.onclick = () => { updateToVersion(ver, url); menu.classList.remove('show'); };
                         menu.appendChild(item);
+                        
+                        // パラメータ v= と一致する場合、自動セット
+                        const cleanVer = ver.replace(/^v/, '');
+                        const cleanTarget = targetVer.replace(/^v/, '');
+                        if(targetVer && cleanVer === cleanTarget) {
+                            updateToVersion(ver, url);
+                        }
                     }
                     versionWrapper.appendChild(menu);
 
-                    toggleBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        menu.classList.toggle('show');
-                        toggleBtn.classList.toggle('active');
-                    };
-                    window.addEventListener('click', () => {
-                        menu.classList.remove('show');
-                        toggleBtn.classList.remove('active');
-                    });
+                    toggleBtn.onclick = (e) => { e.stopPropagation(); menu.classList.toggle('show'); toggleBtn.classList.toggle('active'); };
+                    window.addEventListener('click', () => { menu.classList.remove('show'); toggleBtn.classList.remove('active'); });
                 }
 
-                // --- その他読み込み ---
+                // その他パーツ
                 vData.authors.forEach((a, i) => {
                     const link = document.createElement('a');
                     link.href = `../dev/?id=${a.id}`;
@@ -322,7 +303,6 @@
 
             } catch (e) { console.error(e); }
 
-            // スクロール演出
             const stickyHeader = document.getElementById('js-sticky-header');
             const mainTitle = document.getElementById('ui-main-title');
             window.addEventListener('scroll', () => {
