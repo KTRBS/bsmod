@@ -17,15 +17,19 @@
             --grad-color: rgba(255,255,255,1); --header-bg: rgba(255,255,255,0.85);
             --btn-blue: #007aff; --line: rgba(0,0,0,0.1); --card-bg: #f2f2f7;
             --discord: #5865F2; --status-green: #28a745; --status-gray: #8e8e93;
+            --menu-bg: #ffffff;
         }
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-color: #000000; --text-color: #ffffff; --secondary-text: #8e8e93;
                 --grad-color: rgba(0,0,0,1); --header-bg: rgba(20,20,20,0.85);
                 --line: rgba(255,255,255,0.15); --card-bg: #1c1c1e;
+                --menu-bg: #2c2c2e;
             }
         }
         body { font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; -webkit-tap-highlight-color: transparent; line-height: 1.4; }
+        
+        /* 既存のボタン・ヘッダー類 */
         .top-btn { position: absolute; top: 20px; z-index: 50; width: 32px; height: 32px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); backdrop-filter: blur(5px); }
         .top-back-btn { left: 20px; text-decoration: none; }
         .top-share-btn { right: 20px; cursor: pointer; transition: opacity 0.3s; }
@@ -39,28 +43,45 @@
         .sticky-info span { font-weight: 700; font-size: 0.95rem; color: var(--text-color); }
         .sticky-dl-btn { background: #f0f0f7; color: var(--btn-blue) !important; text-decoration: none; padding: 5px 16px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; }
         @media (prefers-color-scheme: dark) { .sticky-dl-btn { background: #3a3a3c; } }
+
         .hero { position: relative; height: 240px; background: center/cover no-repeat; display: flex; align-items: flex-end; }
         .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--grad-color) 100%); }
         .mod-name-hero { position: relative; z-index: 10; font-size: 2.2rem; font-weight: 700; margin: 0 0 20px 20px; letter-spacing: -1px; color: var(--text-color); }
+        
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         .info-header { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; }
         .icon-box img { width: 92px; height: 92px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); object-fit: cover; }
-        .version-wrapper { display: flex; align-items: center; gap: 8px; }
+        
+        /* バージョン選択関連 */
+        .version-wrapper { display: flex; align-items: center; gap: 6px; position: relative; }
         .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
+        .old-ver-toggle { background: none; border: none; color: var(--btn-blue); font-size: 1rem; cursor: pointer; padding: 4px; display: flex; align-items: center; transition: transform 0.2s; }
+        .old-ver-toggle.active { transform: rotate(180deg); }
+        .old-ver-menu { position: absolute; top: 100%; left: 0; background: var(--menu-bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: none; z-index: 120; min-width: 140px; margin-top: 8px; overflow: hidden; }
+        .old-ver-menu.show { display: block; }
+        .old-ver-item { display: block; padding: 12px 16px; text-decoration: none; color: var(--text-color); font-size: 0.95rem; border-bottom: 0.5px solid var(--line); font-weight: 500; }
+        .old-ver-item:last-child { border-bottom: none; }
+        .old-ver-item:active { background: rgba(0,122,255,0.15); }
+
         .status-badge-inline { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; color: white !important; }
         .status-available { background-color: var(--status-green) !important; }
         .status-outdated { background-color: var(--status-gray) !important; }
+
         .author-section { margin-top: 6px; display: flex; align-items: center; gap: 6px; }
         .author-label { color: var(--secondary-text); font-size: 0.85rem; font-weight: 500; }
         .author-list { display: flex; flex-wrap: wrap; gap: 4px; }
         .author-link { color: var(--btn-blue) !important; text-decoration: none; font-weight: 600; font-size: 0.85rem; }
+
         #js-dl-area { margin-bottom: 30px; }
-        .download-btn { display: block; background-color: var(--btn-blue); color: white !important; text-decoration: none; text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; }
+        .download-btn { display: block; background-color: var(--btn-blue); color: white !important; text-decoration: none; text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; transition: opacity 0.2s; }
+        .download-btn:active { opacity: 0.7; }
         .download-btn.unsupported { background-color: var(--status-gray) !important; cursor: not-allowed; opacity: 0.8; }
         .dl-section-pc { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
         .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 0 -20px 30px -20px; padding: 0 20px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
         .ss-container::-webkit-scrollbar { display: none; }
         .ss-container img { flex: 0 0 85%; max-width: 380px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; scroll-snap-align: center; border: 0.5px solid var(--line); }
+
         .section-title { font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px; }
         .content-body { line-height: 1.6; color: var(--secondary-text); font-size: 1rem; }
         .dev-contact-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
@@ -111,7 +132,9 @@
                 <p style="font-size: 0.8rem; margin: 6px 0 0; color: var(--secondary-text);" id="ui-updated">Last Updated: --</p>
             </div>
         </div>
+
         <div id="js-dl-area"></div>
+
         <div class="ss-container" id="js-ss-container"></div>
         <h2 class="section-title" id="ui-howto-title">How to Install</h2>
         <div class="content-body" id="js-info-content">Loading...</div>
@@ -151,6 +174,7 @@
                 const vRes = await fetch(`${resDir}/version.json?${ts}`);
                 const vData = await vRes.json();
                 
+                // --- メタ情報設定 ---
                 const metaTitle = (vData.meta && vData.meta[lang]) ? vData.meta[lang].title : (vData.name + t.dlSuffix);
                 const metaDesc = (vData.meta && vData.meta[lang]) ? vData.meta[lang].desc : `最新のmodをktr.brawlmods.comからインストール`;
                 const ogpImg = vData.ogImage || `${window.location.origin}/resources/${codename}/header.png`;
@@ -161,6 +185,7 @@
                 document.getElementById('og-desc').setAttribute('content', metaDesc);
                 document.getElementById('og-img').setAttribute('content', ogpImg);
 
+                // --- UIテキスト流し込み ---
                 document.getElementById('ui-main-title').textContent = vData.name;
                 document.getElementById('js-sticky-name').textContent = vData.name;
                 document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
@@ -171,32 +196,81 @@
                 document.getElementById('ui-author-label').textContent = t.dev;
                 document.getElementById('ui-howto-title').textContent = t.howto;
 
+                // --- 旧バージョンボタンの実装 ---
+                const oldVerData = (device === "ios") ? vData.iosoldver : vData.androidoldver;
+                if (oldVerData && Object.keys(oldVerData).length > 0) {
+                    const versionWrapper = document.querySelector('.version-wrapper');
+                    const statusBadge = document.getElementById('js-status');
+
+                    // ▽ボタン
+                    const toggleBtn = document.createElement('button');
+                    toggleBtn.className = 'old-ver-toggle';
+                    toggleBtn.innerHTML = '▽';
+                    versionWrapper.insertBefore(toggleBtn, statusBadge);
+
+                    // メニュー
+                    const menu = document.createElement('div');
+                    menu.className = 'old-ver-menu';
+                    for (const [ver, url] of Object.entries(oldVerData)) {
+                        const item = document.createElement('a');
+                        item.className = 'old-ver-item';
+                        item.href = url;
+                        item.target = "_blank";
+                        item.textContent = ver;
+                        menu.appendChild(item);
+                    }
+                    versionWrapper.appendChild(menu);
+
+                    toggleBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        menu.classList.toggle('show');
+                        toggleBtn.classList.toggle('active');
+                    };
+                    window.addEventListener('click', () => {
+                        menu.classList.remove('show');
+                        toggleBtn.classList.remove('active');
+                    });
+                }
+
                 const stickyBtn = document.getElementById('js-sticky-dl-btn');
                 stickyBtn.textContent = t.get;
 
-                const isComp = (device === "ios" ? vData.iossupport === "available" : (device === "android" ? vData.androidsupport === "available" : true));
-                const statusEl = document.getElementById('js-status');
-                statusEl.textContent = isComp ? t.available : t.unsupported;
-                statusEl.className = 'status-badge-inline ' + (isComp ? 'status-available' : 'status-outdated');
-
+                // --- ダウンロードエリア構築 ---
+                const isIosAvail = vData.iossupport === "available";
+                const isAndroidAvail = vData.androidsupport === "available";
                 const dlArea = document.getElementById('js-dl-area');
+
                 if (device === "pc") {
                     dlArea.className = "dl-section-pc";
                     dlArea.innerHTML = `
-                        <a href="${vData.iosDownloadUrl}" class="download-btn ${vData.iossupport==='available'?'':'unsupported'}" target="_blank" style="font-size:0.9rem">${vData.iossupport==='available'?t.ios:t.unsupported}</a>
-                        <a href="${vData.androidDownloadUrl}" class="download-btn ${vData.androidsupport==='available'?'':'unsupported'}" target="_blank" style="font-size:0.9rem">${vData.androidsupport==='available'?t.android:t.unsupported}</a>
+                        <a href="${vData.iosDownloadUrl}" class="download-btn ${isIosAvail?'':'unsupported'}" target="_blank" style="font-size:0.9rem">${isIosAvail?t.ios:t.unsupported}</a>
+                        <a href="${vData.androidDownloadUrl}" class="download-btn ${isAndroidAvail?'':'unsupported'}" target="_blank" style="font-size:0.9rem">${isAndroidAvail?t.android:t.unsupported}</a>
                     `;
                     stickyBtn.href = vData.iosDownloadUrl || vData.androidDownloadUrl;
                 } else {
+                    const isComp = (device === "ios") ? isIosAvail : isAndroidAvail;
                     const url = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
+                    
                     const btn = document.createElement('a');
                     btn.className = "download-btn" + (isComp ? "" : " unsupported");
-                    btn.textContent = isComp ? `${t.download} (${device.toUpperCase()})` : t.unsupported;
-                    if (isComp) { btn.href = url; btn.target = "_blank"; stickyBtn.href = url; }
-                    else { stickyBtn.style.display = "none"; }
+                    btn.textContent = isComp ? `${t.download} (${device === "ios" ? 'iOS' : 'Android'})` : t.unsupported;
+                    
+                    if (isComp) {
+                        btn.href = url;
+                        btn.target = "_blank";
+                        stickyBtn.href = url;
+                    } else {
+                        stickyBtn.style.display = "none";
+                    }
                     dlArea.appendChild(btn);
+
+                    // ステータスバッジの更新
+                    const statusEl = document.getElementById('js-status');
+                    statusEl.textContent = isComp ? t.available : t.unsupported;
+                    statusEl.className = 'status-badge-inline ' + (isComp ? 'status-available' : 'status-outdated');
                 }
 
+                // --- その他情報の生成 ---
                 const authArea = document.getElementById('js-author-list');
                 vData.authors.forEach((a, i) => {
                     const link = document.createElement('a');
@@ -217,12 +291,12 @@
                 if (vData.discord) contactArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="contact-btn discord"><span>Discord Server</span></a>`;
                 if (vData.telegram) contactArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="contact-btn"><span>Telegram Channel</span></a>`;
 
-                // OSとデバイスに応じたinfoファイルの読み込み
                 const infoRes = await fetch(`${resDir}/info_${lang}_${device}.html?${ts}`);
                 if (infoRes.ok) document.getElementById('js-info-content').innerHTML = await infoRes.text();
 
             } catch (e) { console.error(e); }
 
+            // --- スクロール演出 ---
             const stickyHeader = document.getElementById('js-sticky-header');
             const mainTitle = document.getElementById('ui-main-title');
             window.addEventListener('scroll', () => {
@@ -230,8 +304,6 @@
                 const end = 150;
                 mainTitle.style.opacity = Math.max(1 - (scrollY / end), 0);
                 mainTitle.style.transform = `translateY(${scrollY * -0.4}px)`;
-                
-                // 共有ボタンのフェードアウト処理
                 shareBtn.style.opacity = scrollY > 50 ? 0 : 1;
                 
                 if (scrollY > end) stickyHeader.classList.add('active');
