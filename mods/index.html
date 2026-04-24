@@ -6,10 +6,6 @@
     
     <title id="js-meta-title">Brawl stars mods / ブロスタ mod</title>
     <meta id="meta-desc" name="description" content="最新のmodをktr.brawlmods.comからインストール">
-    <meta id="og-title" property="og:title" content="Brawl stars mods / ブロスタ mod">
-    <meta id="og-desc" property="og:description" content="最新のmodをktr.brawlmods.comからインストール">
-    <meta id="og-img" property="og:image" content="">
-    <meta property="og:type" content="website">
 
     <style>
         :root {
@@ -17,7 +13,7 @@
             --grad-color: rgba(255,255,255,1); --header-bg: rgba(255,255,255,0.85);
             --btn-blue: #007aff; --line: rgba(0,0,0,0.1); --card-bg: #f2f2f7;
             --discord: #5865F2; --status-green: #28a745; --status-gray: #8e8e93;
-            --menu-bg: #ffffff;
+            --status-red: #ff3b30; --menu-bg: #ffffff;
         }
         @media (prefers-color-scheme: dark) {
             :root {
@@ -31,8 +27,6 @@
         
         .top-btn { position: absolute; top: 20px; z-index: 50; width: 32px; height: 32px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); backdrop-filter: blur(5px); }
         .top-back-btn { left: 20px; text-decoration: none; }
-        .top-share-btn { right: 20px; cursor: pointer; transition: opacity 0.3s; }
-        @media (prefers-color-scheme: dark) { .top-btn { background: rgba(40,40,40,0.8); } }
         .back-icon { width: 10px; height: 10px; border-left: 2.5px solid var(--btn-blue); border-bottom: 2.5px solid var(--btn-blue); transform: rotate(45deg); margin-left: 4px; }
         
         .sticky-header { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; transform: translateY(-100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s; opacity: 0; border-bottom: 0.5px solid var(--line); }
@@ -56,8 +50,10 @@
         .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
         .old-ver-toggle { background: none; border: none; color: var(--btn-blue); font-size: 1.2rem; cursor: pointer; padding: 4px; display: flex; align-items: center; transition: transform 0.2s; }
         .old-ver-toggle.active { transform: rotate(180deg); }
-        .old-ver-menu { position: absolute; top: 100%; left: 0; background: var(--menu-bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: none; z-index: 120; min-width: 150px; margin-top: 8px; overflow: hidden; }
+        
+        .old-ver-menu { position: absolute; top: 100%; left: 0; background: var(--menu-bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: none; z-index: 120; min-width: 180px; margin-top: 8px; overflow-y: auto; max-height: 300px; }
         .old-ver-menu.show { display: block; }
+        .menu-label { padding: 8px 16px; font-size: 0.75rem; font-weight: 800; color: var(--secondary-text); background: var(--card-bg); text-transform: uppercase; letter-spacing: 0.5px; }
         .old-ver-item { display: block; padding: 12px 16px; text-decoration: none; color: var(--text-color); font-size: 0.95rem; border-bottom: 0.5px solid var(--line); font-weight: 500; cursor: pointer; }
         .old-ver-item:last-child { border-bottom: none; }
         .old-ver-item:hover { background: rgba(0,122,255,0.1); }
@@ -66,44 +62,27 @@
         .status-available { background-color: var(--status-green) !important; }
         .status-outdated { background-color: var(--status-gray) !important; }
 
-        .author-section { margin-top: 6px; display: flex; align-items: center; gap: 6px; }
-        .author-label { color: var(--secondary-text); font-size: 0.85rem; font-weight: 500; }
-        .author-list { display: flex; flex-wrap: wrap; gap: 4px; }
-        .author-link { color: var(--btn-blue) !important; text-decoration: none; font-weight: 600; font-size: 0.85rem; }
-
-        #js-dl-area { margin-bottom: 30px; }
+        #js-dl-area { margin-bottom: 10px; }
         .download-btn { display: block; background-color: var(--btn-blue); color: white !important; text-decoration: none; text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; transition: background-color 0.2s; }
-        .download-btn:active { opacity: 0.7; }
-        .download-btn.unsupported { background-color: var(--status-gray) !important; cursor: not-allowed; opacity: 0.8; }
+        .download-btn.unsupported { background-color: var(--status-gray) !important; cursor: not-allowed; opacity: 0.8; pointer-events: none; }
         .dl-section-pc { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        
+        .error-msg { color: var(--status-red); font-size: 0.85rem; font-weight: 600; text-align: center; margin-top: 10px; display: none; }
 
-        .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 0 -20px 30px -20px; padding: 0 20px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+        .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 20px -20px 30px -20px; padding: 0 20px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
         .ss-container::-webkit-scrollbar { display: none; }
         .ss-container img { flex: 0 0 85%; max-width: 380px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; scroll-snap-align: center; border: 0.5px solid var(--line); }
 
-        .section-title { font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px; }
-        .content-body { line-height: 1.6; color: var(--secondary-text); font-size: 1rem; }
-        .dev-contact-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
-        .contact-btn { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: var(--card-bg); border-radius: 12px; text-decoration: none; color: var(--btn-blue) !important; }
-        .contact-btn span { font-weight: 600; }
-        .contact-btn::after { content: '›'; font-size: 1.2rem; color: var(--secondary-text); }
-        .contact-btn.discord { color: var(--discord) !important; }
+        .author-section { margin-top: 6px; display: flex; align-items: center; gap: 6px; }
+        .author-link { color: var(--btn-blue) !important; text-decoration: none; font-weight: 600; font-size: 0.85rem; }
     </style>
 </head>
 <body>
 
-    <a href="javascript:history.back()" class="top-btn top-back-btn">
-        <div class="back-icon"></div>
-    </a>
-    <div id="js-share-btn" class="top-btn top-share-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v15"/></svg>
-    </div>
+    <a href="javascript:history.back()" class="top-btn top-back-btn"><div class="back-icon"></div></a>
 
     <div id="js-sticky-header" class="sticky-header">
         <div class="sticky-left">
-            <a href="javascript:history.back()" style="text-decoration:none; display:flex; align-items:center; margin-right:5px;">
-                <div class="back-icon" style="width:8px; height:8px; border-width:2px;"></div>
-            </a>
             <div class="sticky-info">
                 <img id="js-sticky-icon" src="" alt="Icon">
                 <span id="js-sticky-name">---</span>
@@ -125,7 +104,6 @@
                     <div id="js-status" class="status-badge-inline">----</div>
                 </div>
                 <div class="author-section">
-                    <div class="author-label" id="ui-author-label">Developer</div>
                     <div id="js-author-list" class="author-list"></div>
                 </div>
                 <p style="font-size: 0.8rem; margin: 6px 0 0; color: var(--secondary-text);" id="ui-updated">Last Updated: --</p>
@@ -133,11 +111,13 @@
         </div>
 
         <div id="js-dl-area"></div>
+        <div id="js-error-msg" class="error-msg">⚠️ This version is unsupported on your device!</div>
 
         <div class="ss-container" id="js-ss-container"></div>
-        <h2 class="section-title" id="ui-howto-title">How to Install</h2>
-        <div class="content-body" id="js-info-content">Loading...</div>
-        <div class="dev-contact-section" id="js-contact-area"></div>
+        
+        <h2 style="font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px;">Information</h2>
+        <div id="js-info-content" style="line-height: 1.6; color: var(--secondary-text);">Loading...</div>
+        <div id="js-contact-area" style="margin-top:20px;"></div>
     </div>
 
     <script>
@@ -145,11 +125,11 @@
         const lang = isJa ? 'ja' : 'en';
         const params = new URLSearchParams(window.location.search);
         const codename = params.get('id');
-        const targetVer = params.get('v'); // URLの v= パラメータを取得
+        const targetVer = params.get('v');
 
         const uiText = {
-            ja: { available: "利用可能", unsupported: "非対応", updated: "最終更新: ", howto: "導入方法", download: "ダウンロード", get: "入手", ios: "iOS", android: "Android", dev: "開発者", dlSuffix: " をダウンロード" },
-            en: { available: "Available", unsupported: "Unsupported", updated: "Last Updated: ", howto: "How to Install", download: "DOWNLOAD", get: "GET", ios: "iOS", android: "Android", dev: "Developer", dlSuffix: " Download" }
+            ja: { available: "利用可能", unsupported: "非対応", updated: "最終更新: ", download: "ダウンロード" },
+            en: { available: "Available", unsupported: "Unsupported", updated: "Last Updated: ", download: "DOWNLOAD" }
         };
 
         function getOS() {
@@ -161,158 +141,146 @@
 
         async function initPage() {
             if(!codename) return;
-            const ts = new Date().getTime();
-            const t = uiText[lang];
             const device = getOS();
             const resDir = `../resources/${codename}`;
-            const shareBtn = document.getElementById('js-share-btn');
+            const t = uiText[lang];
             
-            shareBtn.addEventListener('click', () => {
-                if (navigator.share) navigator.share({ title: document.title, url: window.location.href });
-            });
-
             try {
-                const vRes = await fetch(`${resDir}/version.json?${ts}`);
+                const vRes = await fetch(`${resDir}/version.json?${new Date().getTime()}`);
                 const vData = await vRes.json();
                 
                 const originalName = vData.name;
-                const latestVersion = vData.version;
+                const latestVer = vData.version;
 
-                // 基本設定
+                // UI基本情報
                 document.getElementById('ui-main-title').textContent = originalName;
                 document.getElementById('js-sticky-name').textContent = originalName;
                 document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-main-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-hero').style.backgroundImage = `url('${resDir}/header.png')`;
-                document.getElementById('js-version').textContent = 'v' + latestVersion;
                 document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
-                document.getElementById('ui-author-label').textContent = t.dev;
-                document.getElementById('ui-howto-title').textContent = t.howto;
 
                 const dlArea = document.getElementById('js-dl-area');
                 const stickyBtn = document.getElementById('js-sticky-dl-btn');
-                const isIosAvail = vData.iossupport === "available";
-                const isAndroidAvail = vData.androidsupport === "available";
+                const errorMsg = document.getElementById('js-error-msg');
+                const statusEl = document.getElementById('js-status');
 
-                // 初期ボタン生成
-                if (device === "pc") {
-                    dlArea.className = "dl-section-pc";
-                    dlArea.innerHTML = `
-                        <a id="btn-ios-pc" href="${vData.iosDownloadUrl}" class="download-btn ${isIosAvail?'':'unsupported'}" target="_blank" style="font-size:0.9rem">${isIosAvail?t.ios:t.unsupported}</a>
-                        <a id="btn-android-pc" href="${vData.androidDownloadUrl}" class="download-btn ${isAndroidAvail?'':'unsupported'}" target="_blank" style="font-size:0.9rem">${isAndroidAvail?t.android:t.unsupported}</a>
-                    `;
-                    stickyBtn.href = vData.iosDownloadUrl || vData.androidDownloadUrl;
-                } else {
-                    const isComp = (device === "ios") ? isIosAvail : isAndroidAvail;
-                    const url = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
-                    const btn = document.createElement('a');
-                    btn.id = "main-dl-btn";
-                    btn.className = "download-btn" + (isComp ? "" : " unsupported");
-                    btn.textContent = isComp ? `${t.download} (${device === "ios" ? 'iOS' : 'Android'})` : t.unsupported;
-                    if (isComp) { btn.href = url; btn.target = "_blank"; stickyBtn.href = url; }
-                    else { stickyBtn.style.display = "none"; }
-                    dlArea.appendChild(btn);
-
-                    const statusEl = document.getElementById('js-status');
-                    statusEl.textContent = isComp ? t.available : t.unsupported;
-                    statusEl.className = 'status-badge-inline ' + (isComp ? 'status-available' : 'status-outdated');
-                }
-
-                // バージョン更新ロジック
-                function updateToVersion(verName, newUrl) {
-                    const mainBtn = document.getElementById('main-dl-btn');
-                    const iosPcBtn = document.getElementById('btn-ios-pc');
-                    const androidPcBtn = document.getElementById('btn-android-pc');
-                    const versionText = document.getElementById('js-version');
-                    const heroTitle = document.getElementById('ui-main-title');
-                    const stickyTitle = document.getElementById('js-sticky-name');
-
+                // --- ボタン更新関数 ---
+                function updateUI(verName, url, isSupported, platName) {
                     const fullVer = verName.startsWith('v') ? verName : 'v' + verName;
-                    versionText.textContent = fullVer;
-                    heroTitle.textContent = originalName + " " + fullVer;
-                    stickyTitle.textContent = originalName + " " + fullVer;
+                    document.getElementById('js-version').textContent = fullVer;
+                    document.getElementById('ui-main-title').textContent = originalName + " " + fullVer;
+                    document.getElementById('js-sticky-name').textContent = originalName + " " + fullVer;
 
-                    if(mainBtn) {
-                        mainBtn.href = newUrl;
-                        mainBtn.textContent = `${t.download} ${fullVer} (${device === "ios" ? 'iOS' : 'Android'})`;
+                    if (isSupported && url) {
+                        dlArea.innerHTML = `<a class="download-btn" href="${url}" target="_blank">${t.download} ${fullVer} (${platName})</a>`;
+                        stickyBtn.href = url;
+                        stickyBtn.style.display = "block";
+                        errorMsg.style.display = "none";
+                        statusEl.textContent = t.available;
+                        statusEl.className = 'status-badge-inline status-available';
+                    } else {
+                        dlArea.innerHTML = `<div class="download-btn unsupported">${t.unsupported}</div>`;
+                        stickyBtn.style.display = "none";
+                        errorMsg.style.display = "block";
+                        statusEl.textContent = t.unsupported;
+                        statusEl.className = 'status-badge-inline status-outdated';
                     }
-                    if(device === "pc" || device === "ios") { if(iosPcBtn) iosPcBtn.href = newUrl; }
-                    if(device === "pc" || device === "android") { if(androidPcBtn) androidPcBtn.href = newUrl; }
-                    stickyBtn.href = newUrl;
                 }
 
-                // 旧バージョンメニュー構築
-                const oldVerData = (device === "ios") ? vData.iosoldver : vData.androidoldver;
-                if (oldVerData && Object.keys(oldVerData).length > 0) {
-                    const versionWrapper = document.querySelector('.version-wrapper');
-                    const toggleBtn = document.createElement('button');
-                    toggleBtn.className = 'old-ver-toggle';
-                    toggleBtn.innerHTML = '▽';
-                    versionWrapper.insertBefore(toggleBtn, document.getElementById('js-status'));
+                // --- 初期化 ---
+                const defaultPlat = (device === "ios") ? "iOS" : "Android";
+                const latestUrl = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
+                const isLatestSupported = (device === "ios" ? vData.iossupport : vData.androidsupport) === "available";
+                
+                // URLパラメータ ?v= のチェック
+                let currentVer = latestVer;
+                let currentUrl = latestUrl;
+                let currentSupport = isLatestSupported;
+                let currentPlat = defaultPlat;
 
-                    const menu = document.createElement('div');
-                    menu.className = 'old-ver-menu';
-                    
-                    const latestItem = document.createElement('div');
-                    latestItem.className = 'old-ver-item';
-                    latestItem.textContent = "Latest (v" + latestVersion + ")";
-                    latestItem.onclick = () => { updateToVersion(latestVersion, (device === "ios" ? vData.iosDownloadUrl : vData.androidDownloadUrl)); menu.classList.remove('show'); };
-                    menu.appendChild(latestItem);
-
-                    for (const [ver, url] of Object.entries(oldVerData)) {
-                        const item = document.createElement('div');
-                        item.className = 'old-ver-item';
-                        item.textContent = ver;
-                        item.onclick = () => { updateToVersion(ver, url); menu.classList.remove('show'); };
-                        menu.appendChild(item);
-                        
-                        // パラメータ v= と一致する場合、自動セット
-                        const cleanVer = ver.replace(/^v/, '');
-                        const cleanTarget = targetVer.replace(/^v/, '');
-                        if(targetVer && cleanVer === cleanTarget) {
-                            updateToVersion(ver, url);
-                        }
+                if (targetVer) {
+                    const cleanTarget = targetVer.replace(/^v/, '');
+                    const oldList = (device === "ios") ? (vData.iosoldver || {}) : (vData.androidoldver || {});
+                    if (oldList[targetVer] || oldList[cleanTarget]) {
+                        currentVer = targetVer;
+                        currentUrl = oldList[targetVer] || oldList[cleanTarget];
+                        currentSupport = true;
+                    } else if (cleanTarget !== latestVer.replace(/^v/, '')) {
+                        currentVer = targetVer;
+                        currentSupport = false;
                     }
-                    versionWrapper.appendChild(menu);
-
-                    toggleBtn.onclick = (e) => { e.stopPropagation(); menu.classList.toggle('show'); toggleBtn.classList.toggle('active'); };
-                    window.addEventListener('click', () => { menu.classList.remove('show'); toggleBtn.classList.remove('active'); });
                 }
+                updateUI(currentVer, currentUrl, currentSupport, currentPlat);
 
-                // その他パーツ
-                vData.authors.forEach((a, i) => {
-                    const link = document.createElement('a');
-                    link.href = `../dev/?id=${a.id}`;
-                    link.className = 'author-link';
-                    link.textContent = a.name + (i < vData.authors.length - 1 ? ', ' : '');
-                    document.getElementById('js-author-list').appendChild(link);
-                });
-
+                // --- スクショ生成 ---
+                const ssContainer = document.getElementById('js-ss-container');
                 [1,2,3].forEach(n => {
                     const img = document.createElement('img');
                     img.src = `${resDir}/ss${n}.png`;
-                    document.getElementById('js-ss-container').appendChild(img);
+                    img.onerror = () => img.style.display = "none";
+                    ssContainer.appendChild(img);
                 });
 
-                const contactArea = document.getElementById('js-contact-area');
-                if (vData.discord) contactArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="contact-btn discord"><span>Discord Server</span></a>`;
-                if (vData.telegram) contactArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="contact-btn"><span>Telegram Channel</span></a>`;
+                // --- バージョンメニュー (PC/スマホ両対応) ---
+                const versionWrapper = document.querySelector('.version-wrapper');
+                const toggleBtn = document.createElement('button');
+                toggleBtn.className = 'old-ver-toggle';
+                toggleBtn.innerHTML = '▽';
+                versionWrapper.insertBefore(toggleBtn, statusEl);
 
-                const infoRes = await fetch(`${resDir}/info_${lang}_${device}.html?${ts}`);
+                const menu = document.createElement('div');
+                menu.className = 'old-ver-menu';
+                
+                const createSection = (title, items, plat) => {
+                    if (items && Object.keys(items).length > 0) {
+                        const label = document.createElement('div');
+                        label.className = 'menu-label';
+                        label.textContent = title;
+                        menu.appendChild(label);
+                        for (const [v, u] of Object.entries(items)) {
+                            const item = document.createElement('div');
+                            item.className = 'old-ver-item';
+                            item.textContent = v;
+                            item.onclick = () => { updateUI(v, u, true, plat); menu.classList.remove('show'); };
+                            menu.appendChild(item);
+                        }
+                    }
+                };
+
+                // PCなら両方、スマホならそのOSのみ
+                if (device === "pc" || device === "ios") {
+                    createSection("iOS (Latest)", { [vData.version]: vData.iosDownloadUrl }, "iOS");
+                    createSection("iOS (Older)", vData.iosoldver, "iOS");
+                }
+                if (device === "pc" || device === "android") {
+                    createSection("Android (Latest)", { [vData.version]: vData.androidDownloadUrl }, "Android");
+                    createSection("Android (Older)", vData.androidoldver, "Android");
+                }
+                versionWrapper.appendChild(menu);
+                toggleBtn.onclick = (e) => { e.stopPropagation(); menu.classList.toggle('show'); };
+                window.onclick = () => menu.classList.remove('show');
+
+                // その他パーツ
+                vData.authors.forEach(a => {
+                    const link = document.createElement('a');
+                    link.href = `../dev/?id=${a.id}`;
+                    link.className = 'author-link';
+                    link.textContent = a.name + " ";
+                    document.getElementById('js-author-list').appendChild(link);
+                });
+
+                const infoRes = await fetch(`${resDir}/info_${lang}_${device}.html`);
                 if (infoRes.ok) document.getElementById('js-info-content').innerHTML = await infoRes.text();
 
             } catch (e) { console.error(e); }
 
-            const stickyHeader = document.getElementById('js-sticky-header');
-            const mainTitle = document.getElementById('ui-main-title');
-            window.addEventListener('scroll', () => {
+            window.onscroll = () => {
                 const scrollY = window.scrollY;
-                mainTitle.style.opacity = Math.max(1 - (scrollY / 150), 0);
-                mainTitle.style.transform = `translateY(${scrollY * -0.4}px)`;
-                shareBtn.style.opacity = scrollY > 50 ? 0 : 1;
-                if (scrollY > 150) stickyHeader.classList.add('active');
-                else stickyHeader.classList.remove('active');
-            }, { passive: true });
+                document.getElementById('ui-main-title').style.opacity = Math.max(1 - (scrollY / 150), 0);
+                if (scrollY > 150) document.getElementById('js-sticky-header').classList.add('active');
+                else document.getElementById('js-sticky-header').classList.remove('active');
+            };
         }
         window.onload = initPage;
     </script>
