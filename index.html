@@ -16,8 +16,6 @@
         .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
         @media (orientation: landscape) or (min-width: 768px) { .grid-container { grid-template-columns: 1fr 1fr; column-gap: 25px; } }
         .random-featured-card { display: block; width: 100%; aspect-ratio: 21 / 9; background-size: cover; background-position: center; border-radius: 14px; position: relative; text-decoration: none; color: #fff; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
-        /* 非対応時のカードスタイル */
-        .random-featured-card.disabled { opacity: 0.6; filter: grayscale(0.5); cursor: not-allowed; }
         .random-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 15px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
         .random-tag { font-size: 0.7rem; font-weight: 700; opacity: 0.9; text-transform: uppercase; }
         .random-title { font-size: 1.4rem; font-weight: 800; margin-top: 2px; }
@@ -25,8 +23,6 @@
         .card-header-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; }
         .mod-row { display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 1px solid var(--line); width: 100%; box-sizing: border-box; overflow: hidden; }
         .mod-row:last-child { border-bottom: none; }
-        /* 非対応時の行スタイル */
-        .mod-row.disabled { opacity: 0.5; cursor: not-allowed; }
         .mod-icon { width: 52px; height: 52px; border-radius: 11px; object-fit: cover; flex-shrink: 0; background-color: transparent; }
         .mod-info { flex: 1; min-width: 0; padding: 0 10px; overflow: hidden; }
         .mod-name-container { display: flex; align-items: baseline; gap: 6px; width: 100%; overflow: hidden; }
@@ -37,12 +33,7 @@
         .support-status { font-size: 0.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; text-align: center; }
         @media (min-width: 768px) { .support-status { display: none !important; } }
         .get-btn { background: #f0f0f7; color: var(--ios-blue); font-weight: 800; padding: 5px 14px; border-radius: 15px; font-size: 0.78rem; width: 100%; box-sizing: border-box; text-align: center; }
-        /* グレーアウトボタン */
-        .get-btn.disabled { background: #e5e5ea !important; color: #8e8e93 !important; }
-        @media (prefers-color-scheme: dark) { 
-            .get-btn { background: #3a3a3c; } 
-            .get-btn.disabled { background: #2c2c2e !important; }
-        }
+        @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
         #search-results { display: grid; grid-template-columns: 1fr; gap: 30px; }
         @media (orientation: landscape) or (min-width: 768px) { #search-results { grid-template-columns: 1fr 1fr; } }
         .search-result-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; width: 100%; box-sizing: border-box; overflow: hidden; }
@@ -71,8 +62,8 @@
 
     <script>
         const CONFIG = {
-            isMaintenance: "off",
-            showDevs: true
+            isMaintenance: "off", // "on" のときprod.jsonのデータを非表示
+            showDevs: true       // 開発者タブの表示設定
         };
 
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -104,6 +95,7 @@
                     fetch(`./prod.json?${ts}`).then(r => r.json()).catch(() => [])
                 ]);
 
+                // メンテナンスモードがONならprodDataを空にする
                 if (CONFIG.isMaintenance === "on") {
                     prodData = [];
                 } else {
@@ -119,8 +111,8 @@
                 
                 isLoaded = true;
 
-                await renderRandomFeatured();
-                await renderToday();
+                renderRandomFeatured();
+                renderToday();
                 if (CONFIG.showDevs) renderDevelopers();
 
                 const params = new URLSearchParams(window.location.search);
@@ -144,23 +136,13 @@
             for (const app of filtered) {
                 const details = await fetchAppDetails(app);
                 const item = document.createElement('a');
-                
-                if (details.supported) {
-                    item.href = app.link;
-                } else {
-                    item.href = "javascript:void(0)";
-                    item.className = 'search-result-item disabled';
-                }
-                
-                item.className = details.supported ? 'search-result-item' : 'search-result-item disabled';
-                
+                item.href = app.link;
+                item.className = 'search-result-item';
                 const iconUrl = app.icon ? `./${app.icon}` : (app.codename ? `./resources/${app.codename}/icon.png` : null);
                 const ssUrl = app.ss1 ? `./${app.ss1}` : (app.codename ? `./resources/${app.codename}/ss1.png` : null);
                 const imgTag = iconUrl ? `<img src="${iconUrl}" class="mod-icon" onerror="this.style.opacity='0'">` : `<div class="mod-icon" style="background:transparent;"></div>`;
-                
                 let html = `<div class="mod-row" style="border:none; padding:0;">${imgTag}<div class="mod-info"><div class="mod-name-container"><div class="mod-name">${app.name}</div><div class="mod-version">${details.ver}</div></div><div class="mod-sub">${details.desc}</div></div>${createActionHtml(details.supported)}</div>`;
                 if(ssUrl) html += `<div class="ss-container"><img src="${ssUrl}" class="ss-img" onerror="this.parentElement.remove()"></div>`;
-                
                 item.innerHTML = html;
                 res.appendChild(item);
             }
@@ -172,66 +154,30 @@
                 try {
                     const v = await fetch(`./resources/${app.codename}/version.json`).then(r => r.json());
                     ver = formatVersion(v.version);
-                    
-                    if (isIOS) {
-                        // iOSの場合: IPAタイプであるかiossupportがavailableである、かつlinkが空でないこと
-                        supported = (app.type === 'ipa' || v.iossupport === 'available') && (app.link && app.link.trim() !== "");
-                    } else {
-                        // Androidの場合: IPAタイプでないこと
-                        supported = (app.type !== 'ipa' && v.androidsupport !== 'unavailable');
-                    }
-                    
+                    if (isIOS) supported = (app.type === 'ipa' || v.iossupport === 'available');
+                    else supported = (app.type !== 'ipa' && v.androidsupport !== 'unavailable');
                     const isJa = navigator.language.includes('ja');
                     desc = (v.meta && v.meta[isJa ? 'ja' : 'en']?.desc) || v.description || "Play now";
-                } catch(e) { supported = false; }
-            } else {
-                // codenameがない簡易データの場合
-                if (isIOS && (!app.link || app.type !== 'ipa')) supported = false;
+                } catch(e) {}
             }
             return { ver, desc, supported };
         }
-
         function formatVersion(v) { if (!v) return ""; return "v" + v.toString().trim().replace(/^[vV]+/, ""); }
-
-        function createActionHtml(isSupported) { 
-            const supportColor = isSupported ? "var(--ios-gray)" : "#ff3b30"; 
-            const supportText = isSupported ? "SUPPORTED" : "UNSUPPORTED"; 
-            const btnClass = isSupported ? "get-btn" : "get-btn disabled";
-            const btnLabel = isSupported ? "GET" : "N/A";
-            return `<div class="action-container"><div class="support-status" style="color: ${supportColor};">${supportText}</div><div class="${btnClass}">${btnLabel}</div></div>`; 
-        }
-
-        async function renderRandomFeatured() { 
-            const area = document.getElementById('random-featured-area'); 
-            const candidates = allData.filter(a => a.ss1 || a.codename); 
-            if (!candidates.length) return; 
-            const picked = candidates[Math.floor(Math.random() * candidates.length)]; 
-            const details = await fetchAppDetails(picked);
-            const img = picked.ss1 ? `./${picked.ss1}` : `./resources/${picked.codename}/ss1.png`; 
-            
-            const linkAttr = details.supported ? `href="${picked.link}"` : `href="javascript:void(0)" class="random-featured-card disabled"`;
-            const classAttr = details.supported ? `class="random-featured-card"` : `class="random-featured-card disabled"`;
-
-            area.innerHTML = `<a ${linkAttr} ${classAttr} style="background-image: url('${img}')"><div class="random-overlay"><div class="random-tag">Today's Mod ${details.supported ? '' : '(Not for your OS)'}</div><div class="random-title">${picked.name}</div></div></a>`; 
-        }
+        function createActionHtml(isSupported) { const supportColor = isSupported ? "var(--ios-gray)" : "#ff3b30"; const supportText = isSupported ? "SUPPORTED" : "UNSUPPORTED"; return `<div class="action-container"><div class="support-status" style="color: ${supportColor};">${supportText}</div><div class="get-btn">GET</div></div>`; }
+        function renderRandomFeatured() { const area = document.getElementById('random-featured-area'); const candidates = allData.filter(a => a.ss1 || a.codename); if (!candidates.length) return; const picked = candidates[Math.floor(Math.random() * candidates.length)]; const img = picked.ss1 ? `./${picked.ss1}` : `./resources/${picked.codename}/ss1.png`; area.innerHTML = `<a href="${picked.link}" class="random-featured-card" style="background-image: url('${img}')"><div class="random-overlay"><div class="random-tag">Today's Mod</div><div class="random-title">${picked.name}</div></div></a>`; }
         
         async function renderToday() { 
             const container = document.getElementById('today-list'); 
             container.innerHTML = ""; 
+            
+            // メンテナンスモードがON、またはprodDataが空の場合は何も表示しない
             if (CONFIG.isMaintenance === "on" || prodData.length === 0) return;
 
             for (const app of prodData) { 
                 const details = await fetchAppDetails(app); 
                 const row = document.createElement('a'); 
-                
-                if (details.supported) {
-                    row.href = app.link;
-                    row.className = 'mod-row'; 
-                } else {
-                    row.href = "javascript:void(0)";
-                    row.className = 'mod-row disabled'; 
-                }
-                
+                row.href = app.link; 
+                row.className = 'mod-row'; 
                 const iconPath = app.icon ? `./${app.icon}` : `./resources/${app.codename}/icon.png`; 
                 row.innerHTML = `<img src="${iconPath}" class="mod-icon" onerror="this.style.opacity='0'"><div class="mod-info"><div class="mod-name-container"><div class="mod-name">${app.name}</div><div class="mod-version">${details.ver}</div></div><div class="mod-sub">${details.desc}</div></div>${createActionHtml(details.supported)}`; 
                 container.appendChild(row); 
