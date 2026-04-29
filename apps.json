@@ -551,21 +551,12 @@
         "name": "Community brawl V9.apk",
         "link": "https://t.me/PrivateBSDownload/86"
     },
-    {
-        "name": "Cool Brawl_v2.0.0.apk",
-        "link": "https://t.me/PrivateBSDownload/1222"
-    },
-    {
-        "name": "Cool Brawl_v2.0.1.apk",
-        "link": "https://t.me/PrivateBSDownload/1228"
-    },
-    {
-        "name": "Cool Brawl_v2.1.0.apk",
-        "link": "https://t.me/PrivateBSDownload/1232"
-    },
-    {
-        "name": "CoolBrawl_v1.0.apk",
-        "link": "https://t.me/PrivateBSDownload/889"
+   {
+        "name": "Cool Brawl",
+        "codename": "cool",
+        "link": "https://ktr.brawlmods.com/mods?id=cool",
+        "icon": "resources/cool/icon.png",
+        "ss1": "resources/cool/ss1.png"
     },
     {
         "name": "Cosmic (Netuke) V1.apk",
