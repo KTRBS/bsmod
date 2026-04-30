@@ -16,31 +16,35 @@
         .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
         @media (orientation: landscape) or (min-width: 768px) { .grid-container { grid-template-columns: 1fr 1fr; column-gap: 25px; } }
 
-        /* バナーカード */
-        .ad-banner-card { display: block; width: 100%; aspect-ratio: 2.1 / 1; border-radius: 20px; position: relative; text-decoration: none; color: #fff; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15); margin-bottom: 10px; }
+        /* バナーカード (Ad-style) */
+        .ad-banner-card { display: block; width: 100%; aspect-ratio: 2.1 / 1; border-radius: 20px; position: relative; text-decoration: none; color: #fff; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15); margin: 10px 0 20px 0; }
         .ad-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; filter: brightness(0.7) saturate(1.2); z-index: 1; }
         .ad-content { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; background: rgba(0,0,0,0.2); }
-        .ad-icon { width: 70px; height: 70px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin-bottom: 15px; object-fit: cover; }
+        .ad-icon { width: 64px; height: 64px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin-bottom: 12px; object-fit: cover; }
         .ad-text-box { width: 100%; display: flex; align-items: flex-end; justify-content: space-between; margin-top: auto; }
         .ad-info { flex: 1; min-width: 0; padding-right: 10px; }
-        .ad-title { font-size: 1rem; font-weight: 800; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 4px rgba(0,0,0,0.5); }
-        .ad-desc { font-size: 0.75rem; opacity: 0.9; margin: 2px 0 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-shadow: 0 1px 2px rgba(0,0,0,0.5); line-height: 1.2; }
+        .ad-title { font-size: 0.95rem; font-weight: 800; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 4px rgba(0,0,0,0.5); }
+        .ad-desc { font-size: 0.7rem; opacity: 0.9; margin: 2px 0 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-shadow: 0 1px 2px rgba(0,0,0,0.5); line-height: 1.2; }
         .ad-get-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .ad-get-btn { background: rgba(255, 255, 255, 0.9); color: #000; font-weight: 800; padding: 6px 20px; border-radius: 20px; font-size: 0.8rem; }
-        .ad-iap { font-size: 0.55rem; opacity: 0.8; text-transform: uppercase; }
+        .ad-get-btn { background: rgba(255, 255, 255, 0.9); color: #000; font-weight: 800; padding: 5px 18px; border-radius: 20px; font-size: 0.75rem; }
+        .ad-iap { font-size: 0.5rem; opacity: 0.8; text-transform: uppercase; }
 
         /* リストスタイル */
         .today-card { background: var(--card-bg); border-radius: 14px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line); margin-bottom: 20px; }
         .card-header-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; }
         .mod-row { display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 1px solid var(--line); width: 100%; box-sizing: border-box; overflow: hidden; }
         .mod-row:last-child { border-bottom: none; }
-        .mod-icon { width: 52px; height: 52px; border-radius: 11px; object-fit: cover; flex-shrink: 0; }
+        .mod-icon { width: 52px; height: 52px; border-radius: 11px; object-fit: cover; flex-shrink: 0; background-color: transparent; }
         .mod-info { flex: 1; min-width: 0; padding: 0 10px; overflow: hidden; }
-        .mod-name-container { display: flex; align-items: baseline; gap: 6px; overflow: hidden; max-width: 100%; }
-        .mod-name { font-size: 1rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; }
+        .mod-name-container { display: flex; align-items: baseline; gap: 6px; overflow: hidden; flex-wrap: wrap; }
+        .mod-name { font-size: 1rem; font-weight: 700; line-height: 1.2; word-break: break-word; }
         .mod-version { font-size: 0.7rem; font-weight: 600; color: var(--ios-gray); flex-shrink: 0; }
         .mod-sub { font-size: 0.8rem; color: var(--ios-gray); margin-top: 2px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .get-btn { background: #f0f0f7; color: var(--ios-blue); font-weight: 800; padding: 5px 14px; border-radius: 15px; font-size: 0.78rem; min-width: 65px; text-align: center; flex-shrink: 0; }
+        
+        .action-container { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; min-width: 75px; }
+        .support-status { font-size: 0.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; text-align: center; }
+        @media (min-width: 768px) { .support-status { display: none; } }
+        .get-btn { background: #f0f0f7; color: var(--ios-blue); font-weight: 800; padding: 5px 14px; border-radius: 15px; font-size: 0.78rem; width: 100%; box-sizing: border-box; text-align: center; }
         @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
 
         /* 検索バー */
@@ -67,16 +71,16 @@
     <div id="page-today">
         <header><p class="date-str" id="display-date"></p><h1>Today</h1></header>
         <div id="page-today-container" class="grid-container">
+            <div class="today-card">
+                <div class="card-header-title">Play These Mods</div>
+                <div id="today-list"></div>
+            </div>
+
             <div id="ad-banner-area"></div>
-            <div>
-                <div class="today-card">
-                    <div class="card-header-title">Play These Mods</div>
-                    <div id="today-list"></div>
-                </div>
-                <div class="today-card" id="offline-mods-card">
-                    <div class="card-header-title">Offline Mods</div>
-                    <div id="offline-list"></div>
-                </div>
+
+            <div class="today-card" id="offline-mods-card">
+                <div class="card-header-title">Offline Mods</div>
+                <div id="offline-list"></div>
             </div>
         </div>
     </div>
@@ -92,9 +96,7 @@
 
     <div id="page-developers" class="hidden">
         <header><h1>Developers</h1></header>
-        <div class="today-card" style="margin-top:10px;">
-            <div id="developers-list"></div>
-        </div>
+        <div class="today-card" style="margin-top:10px;"><div id="developers-list"></div></div>
     </div>
     
     <nav class="tab-bar">
@@ -104,7 +106,7 @@
         <a href="javascript:void(0)" class="tab-item" onclick="showTab('search')">
             <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>Search
         </a>
-        <a href="javascript:void(0)" class="tab-item" id="tab-devs" onclick="showTab('developers')">
+        <a href="javascript:void(0)" class="tab-item" onclick="showTab('developers')">
             <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Devs
         </a>
     </nav>
@@ -125,6 +127,27 @@
             window.scrollTo(0,0);
         }
 
+        function createActionHtml(isSupported) {
+            const supportColor = isSupported ? "var(--ios-gray)" : "#ff3b30";
+            const supportText = isSupported ? "SUPPORTED" : "UNSUPPORTED";
+            return `<div class="action-container"><div class="support-status" style="color: ${supportColor};">${supportText}</div><div class="get-btn">GET</div></div>`;
+        }
+
+        async function fetchAppDetails(app) {
+            let ver = "", desc = "Play now", supported = true;
+            if (app.codename) {
+                try {
+                    const v = await fetch(`./resources/${app.codename}/version.json`).then(r => r.json());
+                    ver = "v" + v.version;
+                    if (isIOS) supported = (app.type === 'ipa' || v.iossupport === 'available');
+                    else supported = (app.type !== 'ipa' && v.androidsupport !== 'unavailable');
+                    const isJa = navigator.language.includes('ja');
+                    desc = (v.meta && v.meta[isJa ? 'ja' : 'en']?.desc) || v.description || "Play now";
+                } catch(e) {}
+            }
+            return { ver, desc, supported };
+        }
+
         async function init() {
             document.getElementById('display-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
             const ts = new Date().getTime();
@@ -135,47 +158,25 @@
                     fetch(`./iapps.json?${ts}`).then(r => r.json()).catch(() => []),
                     fetch(`./prod.json?${ts}`).then(r => r.json()).catch(() => [])
                 ]);
-
                 prodData = CONFIG.isMaintenance === "on" ? [] : prod.map(a => ({...a, type:'prod'}));
                 offlineData = apps.map(a => ({...a, type:'offline'}));
-                
-                // 全データ統合（検索用）
-                allData = [
-                    ...offlineData, 
-                    ...oapps.map(a => ({...a, type:'online'})), 
-                    ...iapps.map(a => ({...a, type:'ipa'})), 
-                    ...prodData
-                ];
-                
+                allData = [...offlineData, ...oapps.map(a => ({...a, type:'online'})), ...iapps.map(a => ({...a, type:'ipa'})), ...prodData];
                 isLoaded = true;
-                renderAdBanner();
                 renderToday();
+                renderAdBanner();
                 renderOfflineMods();
                 if (CONFIG.showDevs) renderDevelopers();
             } catch (e) { console.error(e); }
         }
 
-        async function fetchAppDetails(app) {
-            let ver = "", desc = "Play now", supported = true;
-            if (app.codename) {
-                try {
-                    const v = await fetch(`./resources/${app.codename}/version.json`).then(r => r.json());
-                    ver = "v" + v.version;
-                    const isJa = navigator.language.includes('ja');
-                    desc = (v.meta && v.meta[isJa ? 'ja' : 'en']?.desc) || v.description || "Play now";
-                } catch(e) {}
-            }
-            return { ver, desc, supported };
-        }
-
         async function renderAdBanner() {
             const area = document.getElementById('ad-banner-area');
-            const candidates = allData.filter(a => a.codename);
+            const candidates = allData.filter(a => a.codename && a.ss1);
             if (!candidates.length) return;
             const picked = candidates[Math.floor(Math.random() * candidates.length)];
             const details = await fetchAppDetails(picked);
             const iconPath = picked.icon ? `./${picked.icon}` : `./resources/${picked.codename}/icon.png`;
-            const ssPath = picked.ss1 ? `./${picked.ss1}` : `./resources/${picked.codename}/ss1.png`;
+            const ssPath = `./${picked.ss1}` || `./resources/${picked.codename}/ss1.png`;
 
             area.innerHTML = `
                 <a href="${picked.link}" class="ad-banner-card">
@@ -203,7 +204,7 @@
             for (const app of prodData) {
                 const details = await fetchAppDetails(app);
                 const iconPath = app.icon ? `./${app.icon}` : `./resources/${app.codename}/icon.png`;
-                container.innerHTML += `<a href="${app.link}" class="mod-row"><img src="${iconPath}" class="mod-icon"><div class="mod-info"><div class="mod-name-container"><div class="mod-name">${app.name}</div><div class="mod-version">${details.ver}</div></div><div class="mod-sub">${details.desc}</div></div><div class="get-btn">GET</div></a>`;
+                container.innerHTML += `<a href="${app.link}" class="mod-row"><img src="${iconPath}" class="mod-icon" onerror="this.style.opacity='0'"><div class="mod-info"><div class="mod-name-container"><div class="mod-name">${app.name}</div><div class="mod-version">${details.ver}</div></div><div class="mod-sub">${details.desc}</div></div>${createActionHtml(details.supported)}</a>`;
             }
         }
 
@@ -215,7 +216,7 @@
             for (const app of filtered) {
                 const details = await fetchAppDetails(app);
                 const iconPath = app.icon ? `./${app.icon}` : `./resources/${app.codename}/icon.png`;
-                container.innerHTML += `<a href="${app.link}" class="mod-row"><img src="${iconPath}" class="mod-icon"><div class="mod-info"><div class="mod-name-container"><div class="mod-name">${app.name}</div><div class="mod-version">${details.ver}</div></div><div class="mod-sub">${details.desc}</div></div><div class="get-btn">GET</div></a>`;
+                container.innerHTML += `<a href="${app.link}" class="mod-row"><img src="${iconPath}" class="mod-icon" onerror="this.style.opacity='0'"><div class="mod-info"><div class="mod-name-container"><div class="mod-name">${app.name}</div><div class="mod-version">${details.ver}</div></div><div class="mod-sub">${details.desc}</div></div>${createActionHtml(details.supported)}</a>`;
             }
         }
 
@@ -229,16 +230,18 @@
             const filtered = allData.filter(a => a.name.toLowerCase().includes(q));
             for (const app of filtered) {
                 const details = await fetchAppDetails(app);
-                const iconPath = app.icon ? `./${app.icon}` : `./resources/${app.codename}/icon.png`;
+                const iconPath = app.icon ? `./${app.icon}` : (app.codename ? `./resources/${app.codename}/icon.png` : null);
                 const ssPath = app.ss1 ? `./${app.ss1}` : (app.codename ? `./resources/${app.codename}/ss1.png` : null);
                 
+                let iconImg = iconPath ? `<img src="${iconPath}" class="mod-icon" onerror="this.style.opacity='0'">` : `<div class="mod-icon"></div>`;
+
                 let html = `<div class="search-result-item"><a href="${app.link}" class="mod-row" style="border:none;">
-                    <img src="${iconPath}" class="mod-icon">
+                    ${iconImg}
                     <div class="mod-info">
                         <div class="mod-name-container"><div class="mod-name">${app.name}</div><div class="mod-version">${details.ver}</div></div>
                         <div class="mod-sub">${details.desc}</div>
                     </div>
-                    <div class="get-btn">GET</div>
+                    ${createActionHtml(details.supported)}
                 </a>`;
                 if (ssPath) html += `<div class="ss-container"><img src="${ssPath}" class="ss-img" onerror="this.parentElement.remove()"></div>`;
                 html += `</div>`;
