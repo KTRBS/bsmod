@@ -19,7 +19,7 @@
         .random-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 15px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
         .random-tag { font-size: 0.7rem; font-weight: 700; opacity: 0.9; text-transform: uppercase; }
         .random-title { font-size: 1.4rem; font-weight: 800; margin-top: 2px; }
-        .today-card { background: var(--card-bg); border-radius: 14px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line); }
+        .today-card { background: var(--card-bg); border-radius: 14px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line); margin-bottom: 20px; }
         .card-header-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; }
         .mod-row { display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 1px solid var(--line); width: 100%; box-sizing: border-box; overflow: hidden; }
         .mod-row:last-child { border-bottom: none; }
@@ -51,9 +51,26 @@
     </style>
 </head>
 <body>
-    <div id="page-today"><header><p class="date-str" id="display-date"></p><h1>Today</h1></header><div id="page-today-container" class="grid-container"><div id="random-featured-area"></div><div class="today-card"><div class="card-header-title">Play These Mods</div><div id="today-list"></div></div></div></div>
+    <div id="page-today">
+        <header><p class="date-str" id="display-date"></p><h1>Today</h1></header>
+        <div id="page-today-container" class="grid-container">
+            <div id="random-featured-area"></div>
+            <div>
+                <div class="today-card">
+                    <div class="card-header-title">Play These Mods</div>
+                    <div id="today-list"></div>
+                </div>
+                <div class="today-card" id="offline-mods-card">
+                    <div class="card-header-title">Offline Mods</div>
+                    <div id="offline-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div id="page-search" class="hidden"><header><h1>Search</h1></header><div class="search-wrapper"><svg class="search-icon-svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input type="text" id="searchInput" placeholder="Apps, Mods, and more" oninput="runSearch()"></div><div id="search-results"></div></div>
     <div id="page-developers" class="hidden"><header><h1>Developers</h1></header><div class="today-card" style="margin-top: 10px;"><div id="developers-list"></div></div></div>
+    
     <nav class="tab-bar" id="bottom-tab-bar">
         <a href="javascript:void(0)" class="tab-item active" onclick="showTab('today')"><svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Today</a>
         <a href="javascript:void(0)" class="tab-item" onclick="showTab('search')"><svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>Search</a>
@@ -62,12 +79,12 @@
 
     <script>
         const CONFIG = {
-            isMaintenance: "off", // "on" のときprod.jsonのデータを非表示
-            showDevs: true       // 開発者タブの表示設定
+            isMaintenance: "off",
+            showDevs: true
         };
 
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        let allData = [], prodData = [], isLoaded = false;
+        let allData = [], prodData = [], offlineData = [], isLoaded = false;
 
         function showTab(name) {
             document.getElementById('page-today').classList.toggle('hidden', name !== 'today');
@@ -95,15 +112,17 @@
                     fetch(`./prod.json?${ts}`).then(r => r.json()).catch(() => [])
                 ]);
 
-                // メンテナンスモードがONならprodDataを空にする
                 if (CONFIG.isMaintenance === "on") {
                     prodData = [];
                 } else {
                     prodData = prod.map(a => ({...a, type:'prod', color:'#ff3b30'}));
                 }
 
+                // apps.jsonから読み込まれたデータをOffline用として識別
+                offlineData = apps.map(a => ({...a, type:'offline', color:'#8e8e93'}));
+
                 allData = [
-                    ...apps.map(a => ({...a, type:'offline', color:'#8e8e93'})), 
+                    ...offlineData, 
                     ...oapps.map(a => ({...a, type:'online', color:'#28a745'})), 
                     ...iapps.map(a => ({...a, type:'ipa', color:'#007aff'})), 
                     ...prodData
@@ -113,6 +132,7 @@
 
                 renderRandomFeatured();
                 renderToday();
+                renderOfflineMods();
                 if (CONFIG.showDevs) renderDevelopers();
 
                 const params = new URLSearchParams(window.location.search);
@@ -169,10 +189,7 @@
         async function renderToday() { 
             const container = document.getElementById('today-list'); 
             container.innerHTML = ""; 
-            
-            // メンテナンスモードがON、またはprodDataが空の場合は何も表示しない
             if (CONFIG.isMaintenance === "on" || prodData.length === 0) return;
-
             for (const app of prodData) { 
                 const details = await fetchAppDetails(app); 
                 const row = document.createElement('a'); 
@@ -182,6 +199,30 @@
                 row.innerHTML = `<img src="${iconPath}" class="mod-icon" onerror="this.style.opacity='0'"><div class="mod-info"><div class="mod-name-container"><div class="mod-name">${app.name}</div><div class="mod-version">${details.ver}</div></div><div class="mod-sub">${details.desc}</div></div>${createActionHtml(details.supported)}`; 
                 container.appendChild(row); 
             } 
+        }
+
+        async function renderOfflineMods() {
+            const container = document.getElementById('offline-list');
+            const cardWrapper = document.getElementById('offline-mods-card');
+            container.innerHTML = "";
+            
+            // apps.json由来でcodenameがあるもの（アイコン等が定義されているもの）だけ抽出
+            const filteredOffline = offlineData.filter(a => a.codename);
+            
+            if (filteredOffline.length === 0) {
+                cardWrapper.style.display = 'none';
+                return;
+            }
+
+            for (const app of filteredOffline) {
+                const details = await fetchAppDetails(app);
+                const row = document.createElement('a');
+                row.href = app.link;
+                row.className = 'mod-row';
+                const iconPath = app.icon ? `./${app.icon}` : `./resources/${app.codename}/icon.png`;
+                row.innerHTML = `<img src="${iconPath}" class="mod-icon" onerror="this.style.opacity='0'"><div class="mod-info"><div class="mod-name-container"><div class="mod-name">${app.name}</div><div class="mod-version">${details.ver}</div></div><div class="mod-sub">${details.desc}</div></div>${createActionHtml(details.supported)}`;
+                container.appendChild(row);
+            }
         }
 
         async function renderDevelopers() { const devMap = {}; for (const app of allData) { if (!app.codename) continue; try { const v = await fetch(`./resources/${app.codename}/version.json`).then(r => r.json()); if (v.authors && Array.isArray(v.authors)) { v.authors.forEach(auth => { if (!devMap[auth.id]) devMap[auth.id] = { name: auth.name, count: 0, id: auth.id }; devMap[auth.id].count++; }); } } catch(e) {} } const list = document.getElementById('developers-list'); list.innerHTML = ""; Object.values(devMap).sort((a,b) => b.count - a.count).forEach(dev => { const row = document.createElement('a'); row.href = `/dev/?id=${dev.id}`; row.className = 'mod-row'; row.innerHTML = `<div class="mod-icon dev-icon-placeholder"><svg width="24" height="24" fill="var(--ios-gray)" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><div class="mod-info"><div class="mod-name-container"><div class="mod-name">${dev.name} <span style="font-weight:normal; color:var(--ios-gray);">(${dev.count})</span></div></div><div class="mod-sub">View all mods by ${dev.name}</div></div><div style="color: var(--ios-gray); padding-right: 5px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9.29 15.88L13.17 12 9.29 8.12c-.39-.39-.39-1.02 0-1.41.39-.39 1.02-.39 1.41 0l4.59 4.59c.39.39.39 1.02 0 1.41l-4.59 4.59c-.39.39-1.02.39-1.41 0-.38-.39-.39-1.03 0-1.42z"/></svg></div>`; list.appendChild(row); }); }
