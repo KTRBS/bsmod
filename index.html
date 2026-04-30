@@ -13,11 +13,11 @@
         header { padding: 20px 0 10px 0; }
         .date-str { color: var(--ios-gray); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
         h1 { font-size: 1.8rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
-        .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .grid-container { display: grid; grid-template-columns: 1fr; gap: 15px; } /* 全体のギャップを縮小 */
         @media (orientation: landscape) or (min-width: 768px) { .grid-container { grid-template-columns: 1fr 1fr; column-gap: 25px; } }
 
         /* バナーカード (Ad-style) */
-        .ad-banner-card { display: block; width: 100%; aspect-ratio: 2.1 / 1; border-radius: 20px; position: relative; text-decoration: none; color: #fff; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15); margin: 10px 0 20px 0; }
+        .ad-banner-card { display: block; width: 100%; aspect-ratio: 2.1 / 1; border-radius: 20px; position: relative; text-decoration: none; color: #fff; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15); margin: 0 0 15px 0; } /* マージンを削減 */
         .ad-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; filter: brightness(0.7) saturate(1.2); z-index: 1; }
         .ad-content { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; background: rgba(0,0,0,0.2); }
         .ad-icon { width: 64px; height: 64px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin-bottom: 12px; object-fit: cover; }
@@ -30,7 +30,7 @@
         .ad-iap { font-size: 0.5rem; opacity: 0.8; text-transform: uppercase; }
 
         /* リストスタイル */
-        .today-card { background: var(--card-bg); border-radius: 14px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line); margin-bottom: 20px; }
+        .today-card { background: var(--card-bg); border-radius: 14px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line); margin-bottom: 15px; } /* 下マージンを縮小 */
         .card-header-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; }
         .mod-row { display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 1px solid var(--line); width: 100%; box-sizing: border-box; overflow: hidden; }
         .mod-row:last-child { border-bottom: none; }
@@ -52,19 +52,12 @@
         .search-icon-svg { position: absolute; left: 10px; top: 9px; width: 16px; height: 16px; fill: var(--ios-gray); }
         .search-wrapper input { width: 100%; padding: 8px 10px 8px 35px; border-radius: 10px; border: none; background: var(--search-bg); font-size: 16px; color: var(--text-color); outline: none; box-sizing: border-box; }
         
-        /* 検索結果のSS表示 */
-        .ss-container { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line); aspect-ratio: 16 / 9; background: var(--search-bg); }
-        .ss-img { width: 100%; height: 100%; object-fit: cover; }
-        .search-result-item { display: block; text-decoration: none; color: inherit; margin-bottom: 30px; }
-
         /* タブバー */
         .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 48px; padding-bottom: env(safe-area-inset-bottom); background: var(--tab-bg); backdrop-filter: blur(25px); border-top: 0.5px solid var(--line); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 9px; width: 33.33%; padding-top: 4px; }
         .tab-item.active { color: var(--ios-blue); }
         .tab-icon-svg { width: 22px; height: 22px; fill: var(--ios-gray); margin-bottom: 2px; }
         .active .tab-icon-svg { fill: var(--ios-blue); }
-        
-        .dev-icon-placeholder { display: flex; align-items: center; justify-content: center; background: var(--search-bg); border-radius: 50%; }
     </style>
 </head>
 <body>
