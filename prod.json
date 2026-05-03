@@ -4,13 +4,16 @@
         "codename": "tale",
         "link": "https://ktr.brawlmods.com/mods?id=tale",
         "icon": "resources/tale/icon.png",
-        "ss1": "resources/tale/ss1.png"
+        "ss1": "resources/tale/ss1.png",
+        "ios": "false"
+        
     },
     {
         "name": "Null Rythm",
         "codename": "rythm",
         "link": "https://ktr.brawlmods.com/mods?id=rythm",
         "icon": "resources/rythm/icon.png",
-        "ss1": "resources/rythm/ss1.png"
+        "ss1": "resources/rythm/ss1.png",
+        "ios": "false"
     }
 ]
