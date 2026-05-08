@@ -58,19 +58,26 @@
         .download-btn { display: block; background: var(--btn-blue); color: white !important; text-decoration: none; text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; }
         .download-btn.disabled { background: var(--btn-disabled); pointer-events: none; }
 
-        .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 15px -20px 25px; padding: 0 20px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-        .ss-container::-webkit-scrollbar { display: none; }
+        .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 15px -20px 25px; padding: 0 20px; -webkit-overflow-scrolling: touch; }
         .ss-container img { flex: 0 0 85%; max-width: 380px; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; border: 0.5px solid var(--line); }
 
+        /* リスト表示メソッドの移植 */
         .store-section { margin-top: 15px; border-top: 0.5px solid var(--line); padding-top: 10px; }
-        .section-title { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .section-title { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
 
-        /* 横スクロールUI（前バージョン戻し） */
-        .app-list-scroll { display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; gap: 15px; padding-bottom: 5px; scrollbar-width: none; }
+        .app-list-scroll {
+            display: grid; grid-template-rows: repeat(2, 1fr); grid-auto-flow: column;
+            overflow-x: auto; scroll-snap-type: x mandatory; gap: 0 15px;
+            -webkit-overflow-scrolling: touch;
+        }
         .app-list-scroll::-webkit-scrollbar { display: none; }
-        .app-column { display: flex; flex-direction: column; min-width: 82vw; max-width: 460px; }
-        .app-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 0.5px solid var(--line); text-decoration: none; color: inherit; }
-        .app-row:last-child { border-bottom: none; }
+
+        .app-row {
+            display: flex; align-items: center; width: 82vw; max-width: 460px;
+            padding: 8px 0; border-bottom: 0.5px solid var(--line);
+            scroll-snap-align: start; text-decoration: none; color: inherit;
+        }
+        .app-row:nth-child(2n) { border-bottom: none; }
         .app-row img { width: 56px; height: 56px; border-radius: 12px; margin-right: 12px; object-fit: cover; }
         .app-info { flex: 1; min-width: 0; }
         .app-name { font-size: 0.95rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -113,8 +120,8 @@
         <div id="js-dl-area"></div>
         <div class="ss-container" id="js-ss-container"></div>
         
-        <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 8px;">Information</h2>
-        <div id="js-info-content" class="info-content">Loading...</div>
+        <h2 id="js-info-title" style="font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; display:none;">Information</h2>
+        <div id="js-info-content" class="info-content"></div>
 
         <div id="js-sns-area" style="margin-bottom: 25px;"></div>
 
@@ -163,77 +170,56 @@
             return "pc";
         }
 
-        // 表示の更新（fetchなしで瞬時に切り替え）
         async function updateDisplay() {
             if(!cachedVData) return;
             const t = uiText[currentLang];
             const device = getOS();
             const resDir = `../resources/${codename}`;
-            const vData = cachedVData;
 
-            document.getElementById('ui-updated').textContent = t.updated + vData.lastUpdated;
+            document.getElementById('ui-updated').textContent = t.updated + cachedVData.lastUpdated;
             document.getElementById('js-status').textContent = t.available;
 
-            // ボタン制御
-            const finalUrl = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
+            const finalUrl = (device === "ios") ? cachedVData.iosDownloadUrl : cachedVData.androidDownloadUrl;
             const isDisabled = !finalUrl;
             document.getElementById('js-dl-area').innerHTML = `<a class="download-btn ${isDisabled?'disabled':''}" href="${finalUrl || '#'}" target="_blank">${isDisabled ? t.unsupported : t.download}</a>`;
             
             const stickyDlBtn = document.getElementById('js-sticky-dl-btn');
-            if (isDisabled) {
-                stickyDlBtn.style.display = 'none';
-            } else {
-                stickyDlBtn.style.display = 'block';
-                stickyDlBtn.href = finalUrl;
-                stickyDlBtn.textContent = t.get;
-            }
+            if (isDisabled) { stickyDlBtn.style.display = 'none'; } 
+            else { stickyDlBtn.style.display = 'block'; stickyDlBtn.href = finalUrl; stickyDlBtn.textContent = t.get; }
 
-            // Information読込（これのみ外部HTMLのためfetch）
+            // Informationの読み込み（jsonに情報がある場合のみ）
             const infoPath = `${resDir}/info_${currentLang}_${device}.html`;
             fetch(infoPath).then(r => r.ok ? r.text() : fetch(`${resDir}/info_${currentLang}.html`).then(r2 => r2.text()))
-                .then(html => document.getElementById('js-info-content').innerHTML = html)
-                .catch(() => document.getElementById('js-info-content').innerHTML = "No Information.");
+                .then(html => {
+                    if(html && html.trim().length > 0) {
+                        document.getElementById('js-info-title').style.display = 'block';
+                        document.getElementById('js-info-content').innerHTML = html;
+                    }
+                }).catch(() => {});
 
-            // リスト更新
+            // リスト表示メソッドの移植
             if (cachedAppDetails) {
-                const primaryAuthor = vData.authors[0];
-                const authorApps = [];
-                const otherApps = [];
+                const primaryAuthor = cachedVData.authors[0];
+                const moreList = document.getElementById('js-more-by-list');
+                const sugList = document.getElementById('js-suggested-list');
+                moreList.innerHTML = ''; sugList.innerHTML = '';
 
                 cachedAppDetails.forEach(item => {
                     const isAuthor = item.res.authors?.some(au => au.id === primaryAuthor.id);
-                    const data = { id: item.id, name: item.res.name, desc: item.res.meta?.[currentLang]?.desc || item.res.meta?.en?.desc || "" };
-                    if (isAuthor) authorApps.push(data); else otherApps.push(data);
+                    const desc = item.res.meta?.[currentLang]?.desc || item.res.meta?.en?.desc || "";
+                    const html = `<a href="?id=${item.id}" class="app-row"><img src="../resources/${item.id}/icon.png" loading="lazy"><div class="app-info"><div class="app-name">${item.res.name}</div><div class="app-desc">${desc}</div></div><div class="get-small-btn">${t.get}</div></a>`;
+                    
+                    if (isAuthor) moreList.insertAdjacentHTML('beforeend', html);
+                    else sugList.insertAdjacentHTML('beforeend', html);
                 });
 
-                const renderScrollList = (container, list) => {
-                    let html = '';
-                    for (let i = 0; i < list.length; i += 2) {
-                        html += '<div class="app-column">';
-                        for (let j = 0; j < 2; j++) {
-                            const a = list[i + j];
-                            if (!a) break;
-                            html += `<a href="?id=${a.id}" class="app-row"><img src="../resources/${a.id}/icon.png" loading="lazy"><div class="app-info"><div class="app-name">${a.name}</div><div class="app-desc">${a.desc}</div></div><div class="get-small-btn">${t.get}</div></a>`;
-                        }
-                        html += '</div>';
-                    }
-                    container.innerHTML = html;
-                };
-
-                if (authorApps.length) {
-                    renderScrollList(document.getElementById('js-more-by-list'), authorApps);
-                    document.getElementById('js-more-by-section').style.display = 'block';
-                    document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', primaryAuthor.name);
-                }
-                if (otherApps.length) {
-                    renderScrollList(document.getElementById('js-suggested-list'), otherApps);
-                    document.getElementById('js-suggested-section').style.display = 'block';
-                    document.getElementById('js-suggested-title').textContent = t.suggested;
-                }
+                document.getElementById('js-more-by-section').style.display = moreList.children.length ? 'block' : 'none';
+                document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', primaryAuthor.name);
+                document.getElementById('js-suggested-section').style.display = sugList.children.length ? 'block' : 'none';
+                document.getElementById('js-suggested-title').textContent = t.suggested;
             }
         }
 
-        // 初回データ取得
         async function initPage() {
             if(!codename) return;
             const resDir = `../resources/${codename}`;
@@ -248,19 +234,16 @@
                 document.getElementById('js-version').textContent = cachedVData.version;
                 document.getElementById('js-author-list').innerHTML = cachedVData.authors.map(a => `<a href="../dev/?id=${a.id}" style="color:inherit;text-decoration:none;">${a.name}</a>`).join(', ');
 
-                // SNSボタン描画
                 const snsArea = document.getElementById('js-sns-area');
                 if (cachedVData.discord) snsArea.innerHTML += `<a href="${cachedVData.discord}" target="_blank" class="download-btn" style="background:#5865F2;">Discord</a>`;
                 if (cachedVData.telegram) snsArea.innerHTML += `<a href="${cachedVData.telegram}" target="_blank" class="download-btn" style="background:#0088cc;">Telegram</a>`;
                 
-                // 旧バージョンメニュー
                 const menu = document.getElementById('js-old-ver-menu');
                 if(cachedVData.oldVersions?.length) {
                     cachedVData.oldVersions.forEach(ov => menu.insertAdjacentHTML('beforeend', `<a class="old-ver-item" href="${ov.url}">${ov.version}</a>`));
                     document.getElementById('js-old-ver-toggle').style.display = 'flex';
                 }
 
-                // スクショ
                 const ssc = document.getElementById('js-ss-container');
                 [1,2,3].forEach(n => {
                     const img = document.createElement('img');
@@ -271,7 +254,6 @@
 
                 updateDisplay();
 
-                // おすすめリスト用データをバックグラウンドで取得
                 const [apps, prods] = await Promise.all([
                     fetch(`../apps.json`).then(r => r.json()).catch(() => []),
                     fetch(`../prod.json`).then(r => r.json()).catch(() => [])
