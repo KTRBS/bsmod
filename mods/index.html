@@ -2,10 +2,7 @@
 <html lang="ja">
 <head>
     <script>
-        // --- CONFIG ---
-        const config = {
-            isDebug: true // trueで画面中央に言語切替ボタンを表示
-        };
+        const config = { isDebug: true };
     </script>
 
     <meta charset="UTF-8">
@@ -18,76 +15,73 @@
             --bg-color: #ffffff; --text-color: #000000; --secondary-text: #8e8e93;
             --grad-color: rgba(255,255,255,1); --header-bg: rgba(255,255,255,0.85);
             --btn-blue: #007aff; --line: rgba(0,0,0,0.1); --card-bg: #f2f2f7;
-            --btn-gray: #f0f0f7; --status-green: #28a745;
+            --btn-gray: #f0f0f7; --status-green: #28a745; --menu-bg: #ffffff;
         }
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-color: #000000; --text-color: #ffffff; --secondary-text: #8e8e93;
                 --grad-color: rgba(0,0,0,1); --header-bg: rgba(20,20,20,0.85);
                 --line: rgba(255,255,255,0.15); --card-bg: #1c1c1e;
-                --btn-gray: #2c2c2e;
+                --btn-gray: #2c2c2e; --menu-bg: #2c2c2e;
             }
         }
         body { font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.4; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
         
-        /* Debug Tool */
-        #debug-lang-tool { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 9999; background: rgba(0,0,0,0.7); color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); }
+        #debug-lang-tool { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 9999; background: rgba(0,0,0,0.7); color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; backdrop-filter: blur(5px); }
 
-        /* Header & Sticky */
-        .top-btn { position: absolute; top: 20px; z-index: 50; width: 32px; height: 32px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); backdrop-filter: blur(5px); left: 20px; text-decoration: none; }
+        .top-btn { position: absolute; top: 20px; z-index: 50; width: 32px; height: 32px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; left: 20px; text-decoration: none; }
         .back-icon { width: 10px; height: 10px; border-left: 2.5px solid var(--btn-blue); border-bottom: 2.5px solid var(--btn-blue); transform: rotate(45deg); margin-left: 4px; }
         
-        .sticky-header { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; transform: translateY(-100%); transition: 0.3s; opacity: 0; border-bottom: 0.5px solid var(--line); }
+        .sticky-header { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: var(--header-bg); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; transform: translateY(-100%); transition: 0.3s; opacity: 0; border-bottom: 0.5px solid var(--line); }
         .sticky-header.active { transform: translateY(0); opacity: 1; }
-        .sticky-info { display: flex; align-items: center; gap: 10px; }
-        .sticky-info img { width: 30px; height: 30px; border-radius: 7px; object-fit: cover; }
-        .sticky-info span { font-weight: 700; font-size: 0.95rem; }
-        .sticky-dl-btn { background: var(--btn-gray); color: var(--btn-blue); text-decoration: none; padding: 5px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; }
 
-        /* Hero */
         .hero { position: relative; height: 220px; background: center/cover no-repeat; display: flex; align-items: flex-end; }
         .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to bottom, rgba(0,0,0,0), var(--bg-color)); }
         
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         
-        /* Main App Info */
         .info-header { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; }
-        .icon-box img { width: 92px; height: 92px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); object-fit: cover; }
+        .icon-box img { width: 92px; height: 92px; border-radius: 20px; object-fit: cover; }
+
+        /* 旧バージョンボタン周り */
+        .version-wrapper { display: flex; align-items: center; gap: 6px; position: relative; }
         .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
-        .status-badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; background: var(--status-green); color: white; margin-left: 8px; }
+        .old-ver-toggle { background: none; border: none; color: var(--btn-blue); font-size: 1.2rem; cursor: pointer; padding: 4px; display: flex; align-items: center; }
+        .old-ver-menu { position: absolute; top: 100%; left: 0; background: var(--menu-bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: none; z-index: 120; min-width: 180px; margin-top: 8px; overflow-y: auto; max-height: 250px; }
+        .old-ver-menu.show { display: block; }
+        .old-ver-item { display: block; padding: 12px 16px; text-decoration: none; color: var(--text-color); font-size: 0.95rem; border-bottom: 0.5px solid var(--line); font-weight: 500; }
+
+        .status-badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; background: var(--status-green); color: white; }
 
         .download-btn { display: block; background: var(--btn-blue); color: white !important; text-decoration: none; text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; margin-bottom: 30px; }
 
-        .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 0 -20px 30px; padding: 0 20px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
-        .ss-container img { flex: 0 0 85%; max-width: 380px; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; scroll-snap-align: center; border: 0.5px solid var(--line); }
+        .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 0 -20px 25px; padding: 0 20px; scroll-snap-type: x mandatory; }
+        .ss-container img { flex: 0 0 85%; max-width: 380px; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; border: 0.5px solid var(--line); }
 
-        /* Store Section (2-row list) */
-        .store-section { margin-top: 40px; border-top: 0.5px solid var(--line); padding-top: 20px; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; text-decoration: none; color: inherit; }
-        .section-title { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
-        .section-arrow { color: var(--secondary-text); font-size: 1.2rem; }
+        /* リスト間の余白を極限まで狭く */
+        .store-section { margin-top: 15px; border-top: 0.5px solid var(--line); padding-top: 10px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; text-decoration: none; color: inherit; }
+        .section-title { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
 
         .app-list-scroll {
             display: grid; grid-template-rows: repeat(2, 1fr); grid-auto-flow: column;
-            overflow-x: auto; scroll-snap-type: x mandatory; gap: 0 20px; padding-bottom: 10px;
+            overflow-x: auto; scroll-snap-type: x mandatory; gap: 0 15px;
         }
         .app-list-scroll::-webkit-scrollbar { display: none; }
 
         .app-row {
-            display: flex; align-items: center; width: 85vw; max-width: 480px;
-            padding: 10px 0; border-bottom: 0.5px solid var(--line);
+            display: flex; align-items: center; width: 82vw; max-width: 460px;
+            padding: 8px 0; border-bottom: 0.5px solid var(--line);
             scroll-snap-align: start; text-decoration: none; color: inherit;
         }
         .app-row:nth-child(2n) { border-bottom: none; }
-        .app-row img { width: 60px; height: 60px; border-radius: 12px; margin-right: 15px; object-fit: cover; border: 0.5px solid var(--line); }
+        .app-row img { width: 56px; height: 56px; border-radius: 12px; margin-right: 12px; object-fit: cover; }
         .app-info { flex: 1; min-width: 0; }
-        .app-name { font-size: 1rem; font-weight: 600; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .app-desc { font-size: 0.8rem; color: var(--secondary-text); margin: 2px 0 0; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-        .get-small-btn { background: var(--btn-gray); color: var(--btn-blue); padding: 6px 20px; border-radius: 20px; font-weight: 800; font-size: 0.85rem; text-transform: uppercase; }
+        .app-name { font-size: 0.95rem; font-weight: 600; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .app-desc { font-size: 0.78rem; color: var(--secondary-text); margin: 1px 0 0; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .get-small-btn { background: var(--btn-gray); color: var(--btn-blue); padding: 5px 18px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; }
 
-        /* Info Content */
-        .info-content { line-height: 1.6; color: var(--secondary-text); font-size: 0.95rem; margin-bottom: 20px; }
-        .info-content h2, .info-content h3 { color: var(--text-color); margin-top: 20px; }
+        .info-content { line-height: 1.6; color: var(--secondary-text); font-size: 0.92rem; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -96,9 +90,9 @@
     <a href="javascript:history.back()" class="top-btn"><div class="back-icon"></div></a>
 
     <div id="js-sticky-header" class="sticky-header">
-        <div class="sticky-info">
-            <img id="js-sticky-icon" src="" alt="">
-            <span id="js-sticky-name">---</span>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <img id="js-sticky-icon" src="" style="width:30px;height:30px;border-radius:7px;">
+            <span id="js-sticky-name" style="font-weight:700;font-size:0.95rem;">---</span>
         </div>
         <a href="#" class="sticky-dl-btn" id="js-sticky-dl-btn">GET</a>
     </div>
@@ -109,39 +103,34 @@
         <div class="info-header">
             <div class="icon-box"><img id="js-main-icon" src="" alt=""></div>
             <div>
-                <div style="display:flex; align-items:center;">
+                <div class="version-wrapper">
                     <p class="version-num" id="js-version">v---</p>
+                    <button id="js-old-ver-toggle" class="old-ver-toggle">▽</button>
+                    <div id="js-old-ver-menu" class="old-ver-menu"></div>
                     <span id="js-status" class="status-badge">Available</span>
                 </div>
-                <div id="js-author-list" style="margin-top:4px; font-weight: 600; font-size: 0.85rem; color: var(--btn-blue);"></div>
-                <p style="font-size: 0.75rem; margin: 4px 0 0; color: var(--secondary-text);" id="ui-updated">---</p>
+                <div id="js-author-list" style="margin-top:4px; font-weight:600; font-size:0.85rem; color:var(--btn-blue);"></div>
+                <p style="font-size:0.75rem; margin:4px 0 0; color:var(--secondary-text);" id="ui-updated">---</p>
             </div>
         </div>
 
         <div id="js-dl-area"></div>
-
         <div class="ss-container" id="js-ss-container"></div>
         
-        <h2 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 10px;">Information</h2>
+        <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 8px;">Information</h2>
         <div id="js-info-content" class="info-content">Loading...</div>
 
         <div id="js-more-by-section" class="store-section" style="display:none;">
-            <a href="#" class="section-header">
-                <span class="section-title" id="js-more-by-title">---</span>
-                <span class="section-arrow">›</span>
-            </a>
+            <a href="#" class="section-header"><span class="section-title" id="js-more-by-title">---</span></a>
             <div class="app-list-scroll" id="js-more-by-list"></div>
         </div>
 
         <div id="js-suggested-section" class="store-section" style="display:none;">
-            <a href="#" class="section-header">
-                <span class="section-title" id="js-suggested-title">---</span>
-                <span class="section-arrow">›</span>
-            </a>
+            <a href="#" class="section-header"><span class="section-title" id="js-suggested-title">---</span></a>
             <div class="app-list-scroll" id="js-suggested-list"></div>
         </div>
 
-        <div id="js-contact-area" style="margin-top:30px;"></div>
+        <div id="js-contact-area" style="margin-top:20px;"></div>
     </div>
 
     <script>
@@ -154,144 +143,96 @@
             en: { available: "Available", updated: "Last Updated: ", download: "DOWNLOAD", moreBy: "More by {name}", suggested: "You Might Also Like", get: "Get" }
         };
 
-        // デバッグ用言語ボタン
+        // デバッグツール
         if (config.isDebug) {
             const btn = document.createElement('div');
             btn.id = 'debug-lang-tool';
             btn.textContent = `Lang: ${currentLang.toUpperCase()}`;
-            btn.onclick = () => {
-                currentLang = (currentLang === 'ja') ? 'en' : 'ja';
-                btn.textContent = `Lang: ${currentLang.toUpperCase()}`;
-                renderPage();
-            };
+            btn.onclick = () => { currentLang = (currentLang === 'ja') ? 'en' : 'ja'; btn.textContent = `Lang: ${currentLang.toUpperCase()}`; renderPage(); };
             document.getElementById('debug-container').appendChild(btn);
-        }
-
-        function getOS() {
-            const ua = navigator.userAgent;
-            if (/android/i.test(ua)) return "android";
-            if (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return "ios";
-            return "pc";
         }
 
         async function renderPage() {
             if(!codename) return;
             const t = uiText[currentLang];
-            const device = getOS();
             const resDir = `../resources/${codename}`;
             
             try {
-                // 1. メインのversion.json読み込み
                 const vRes = await fetch(`${resDir}/version.json?${Date.now()}`);
                 const vData = await vRes.json();
                 const primaryAuthor = vData.authors[0];
 
-                // テキスト更新
                 document.getElementById('js-sticky-name').textContent = vData.name;
                 document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-main-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-hero').style.backgroundImage = `url('${resDir}/header.png')`;
                 document.getElementById('js-version').textContent = vData.version;
                 document.getElementById('ui-updated').textContent = t.updated + vData.lastUpdated;
-                document.getElementById('js-status').textContent = t.available;
 
-                // DLボタン（OSに応じてURL変更）
-                const dlUrl = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
-                const finalDlUrl = dlUrl || vData.androidDownloadUrl || vData.iosDownloadUrl;
-                if(finalDlUrl) {
-                    document.getElementById('js-dl-area').innerHTML = `<a class="download-btn" href="${finalDlUrl}" target="_blank">${t.download}</a>`;
-                    document.getElementById('js-sticky-dl-btn').href = finalDlUrl;
-                    document.getElementById('js-sticky-dl-btn').textContent = t.get;
-                }
+                // DLボタン & 旧バージョンメニュー
+                const dlUrl = /iPhone|iPad/i.test(navigator.userAgent) ? vData.iosDownloadUrl : vData.androidDownloadUrl;
+                const finalDl = dlUrl || vData.androidDownloadUrl || vData.iosDownloadUrl;
+                document.getElementById('js-dl-area').innerHTML = `<a class="download-btn" href="${finalDl}" target="_blank">${t.download}</a>`;
+                document.getElementById('js-sticky-dl-btn').href = finalDl;
 
-                // 作者名
-                document.getElementById('js-author-list').innerHTML = vData.authors.map(a => `<a href="../dev/?id=${a.id}" style="color:inherit;text-decoration:none;margin-right:8px;">${a.name}</a>`).join('');
-
-                // スクリーンショット (1回だけ描画)
-                const ssc = document.getElementById('js-ss-container');
-                if (ssc.children.length === 0) {
-                    [1,2,3].forEach(n => {
-                        const img = document.createElement('img');
-                        img.src = `${resDir}/ss${n}.png`;
-                        img.onerror = () => img.remove();
-                        ssc.appendChild(img);
+                const menu = document.getElementById('js-old-ver-menu');
+                menu.innerHTML = '';
+                if(vData.oldVersions) {
+                    vData.oldVersions.forEach(ov => {
+                        const item = document.createElement('a');
+                        item.className = 'old-ver-item';
+                        item.textContent = ov.version;
+                        item.href = ov.url;
+                        menu.appendChild(item);
                     });
+                    document.getElementById('js-old-ver-toggle').style.display = 'flex';
                 }
 
-                // --- 重要: Information(HTML)の読み込み ---
-                // 元のコードの仕様 (info_lang_device.html) に合わせて再構成
-                const infoPath = `${resDir}/info_${currentLang}_${device}.html`;
-                const infoRes = await fetch(infoPath).catch(() => null);
-                if(infoRes && infoRes.ok) {
-                    document.getElementById('js-info-content').innerHTML = await infoRes.text();
-                } else {
-                    // フォールバック: デバイス指定なしのファイル
-                    const fallbackRes = await fetch(`${resDir}/info_${currentLang}.html`).catch(() => null);
-                    document.getElementById('js-info-content').innerHTML = (fallbackRes && fallbackRes.ok) ? await fallbackRes.text() : "No information available.";
-                }
+                // 情報HTMLの読み込み
+                const infoRes = await fetch(`${resDir}/info_${currentLang}.html`).catch(() => null);
+                document.getElementById('js-info-content').innerHTML = (infoRes && infoRes.ok) ? await infoRes.text() : "No info.";
 
-                // 2. おすすめ・他のアプリ リスト作成
-                const fetchJson = async (p) => { try { const r = await fetch(`${p}?${Date.now()}`); return r.ok ? await r.json() : []; } catch { return []; } };
-                const [appsData, prodData] = await Promise.all([fetchJson('../apps.json'), fetchJson('../prod.json')]);
-                
-                const combined = [...appsData, ...prodData];
-                const seenIds = new Set([codename]);
-                const moreByList = document.getElementById('js-more-by-list');
+                // おすすめリスト描画
+                const [apps, prods] = await Promise.all([
+                    fetch(`../apps.json?${Date.now()}`).then(r => r.json()).catch(() => []),
+                    fetch(`../prod.json?${Date.now()}`).then(r => r.json()).catch(() => [])
+                ]);
+                const combined = [...apps, ...prods];
+                const seen = new Set([codename]);
+                const moreList = document.getElementById('js-more-by-list');
                 const sugList = document.getElementById('js-suggested-list');
-                
-                moreByList.innerHTML = '';
-                sugList.innerHTML = '';
+                moreList.innerHTML = ''; sugList.innerHTML = '';
 
                 for (const app of combined) {
                     const id = app.id || app.codename;
-                    if (!id || seenIds.has(id)) continue;
-                    seenIds.add(id);
-
+                    if (!id || seen.has(id)) continue;
+                    seen.add(id);
                     try {
-                        const itemRes = await fetch(`../resources/${id}/version.json`);
-                        if (!itemRes.ok) continue;
-                        const itemV = await itemRes.json();
-                        
-                        // descはmeta[lang].descから取得
-                        const description = (itemV.meta && itemV.meta[currentLang]) ? itemV.meta[currentLang].desc : (itemV.meta?.en?.desc || "");
-
-                        const html = `
-                            <a href="?id=${id}" class="app-row">
-                                <img src="../resources/${id}/icon.png" loading="lazy">
-                                <div class="app-info">
-                                    <div class="app-name">${itemV.name}</div>
-                                    <div class="app-desc">${description}</div>
-                                </div>
-                                <div class="get-small-btn">${t.get}</div>
-                            </a>`;
-
-                        const isSameAuthor = itemV.authors?.some(a => a.id === primaryAuthor.id);
-                        if (isSameAuthor) moreByList.insertAdjacentHTML('beforeend', html);
+                        const itemV = await fetch(`../resources/${id}/version.json`).then(r => r.json());
+                        const desc = itemV.meta?.[currentLang]?.desc || itemV.meta?.en?.desc || "";
+                        const html = `<a href="?id=${id}" class="app-row"><img src="../resources/${id}/icon.png" loading="lazy"><div class="app-info"><div class="app-name">${itemV.name}</div><div class="app-desc">${desc}</div></div><div class="get-small-btn">${t.get}</div></a>`;
+                        if (itemV.authors?.some(a => a.id === primaryAuthor.id)) moreList.insertAdjacentHTML('beforeend', html);
                         else sugList.insertAdjacentHTML('beforeend', html);
-                    } catch(e) {}
+                    } catch(e){}
                 }
-
-                document.getElementById('js-more-by-section').style.display = moreByList.children.length ? 'block' : 'none';
+                document.getElementById('js-more-by-section').style.display = moreList.children.length ? 'block' : 'none';
                 document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', primaryAuthor.name);
                 document.getElementById('js-suggested-section').style.display = sugList.children.length ? 'block' : 'none';
                 document.getElementById('js-suggested-title').textContent = t.suggested;
 
-                // Contact Buttons
-                const contact = document.getElementById('js-contact-area');
-                contact.innerHTML = '';
-                if (vData.discord) contact.innerHTML += `<a href="${vData.discord}" target="_blank" class="download-btn" style="background:#5865F2; margin-top:10px;">Discord</a>`;
-                if (vData.telegram) contact.innerHTML += `<a href="${vData.telegram}" target="_blank" class="download-btn" style="background:#0088cc; margin-top:10px;">Telegram</a>`;
-
-            } catch (e) { 
-                console.error(e);
-                document.getElementById('js-info-content').textContent = "Failed to load application data.";
-            }
+            } catch (e) { console.error(e); }
         }
 
+        // 旧バージョンメニューの開閉
+        document.getElementById('js-old-ver-toggle').onclick = (e) => {
+            e.stopPropagation();
+            document.getElementById('js-old-ver-menu').classList.toggle('show');
+        };
+        window.onclick = () => document.getElementById('js-old-ver-menu').classList.remove('show');
+
         window.onscroll = () => {
-            const header = document.getElementById('js-sticky-header');
-            if (window.scrollY > 150) header.classList.add('active');
-            else header.classList.remove('active');
+            const h = document.getElementById('js-sticky-header');
+            if (window.scrollY > 150) h.classList.add('active'); else h.classList.remove('active');
         };
         window.onload = renderPage;
     </script>
