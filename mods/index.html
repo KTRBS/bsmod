@@ -61,7 +61,7 @@
         .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 15px -20px 25px; padding: 0 20px; -webkit-overflow-scrolling: touch; }
         .ss-container img { flex: 0 0 85%; max-width: 380px; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; border: 0.5px solid var(--line); }
 
-        /* リスト表示メソッドの移植 */
+        /* リストスタイル */
         .store-section { margin-top: 15px; border-top: 0.5px solid var(--line); padding-top: 10px; }
         .section-title { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
 
@@ -143,14 +143,12 @@
         const params = new URLSearchParams(window.location.search);
         const codename = params.get('id');
 
-        let cachedVData = null;
-        let cachedAppDetails = null;
-
         const uiText = {
             ja: { available: "利用可能", updated: "最終更新: ", download: "ダウンロード", unsupported: "非対応", moreBy: "{name}の他のアプリ", suggested: "おすすめ", get: "入手" },
             en: { available: "Available", updated: "Last Updated: ", download: "DOWNLOAD", unsupported: "Unsupported", moreBy: "More by {name}", suggested: "You Might Also Like", get: "Get" }
         };
 
+        // デバッグツール
         if (config.isDebug) {
             const btn = document.createElement('div');
             btn.id = 'debug-lang-tool';
@@ -158,7 +156,7 @@
             btn.onclick = () => { 
                 currentLang = (currentLang === 'ja') ? 'en' : 'ja'; 
                 btn.textContent = `Lang: ${currentLang.toUpperCase()}`;
-                updateDisplay(); 
+                renderPage(); // 言語切り替え時に再描画
             };
             document.getElementById('debug-container').appendChild(btn);
         }
@@ -170,81 +168,58 @@
             return "pc";
         }
 
-        async function updateDisplay() {
-            if(!cachedVData) return;
+        async function renderPage() {
+            if(!codename) return;
             const t = uiText[currentLang];
             const device = getOS();
             const resDir = `../resources/${codename}`;
-
-            document.getElementById('ui-updated').textContent = t.updated + cachedVData.lastUpdated;
-            document.getElementById('js-status').textContent = t.available;
-
-            const finalUrl = (device === "ios") ? cachedVData.iosDownloadUrl : cachedVData.androidDownloadUrl;
-            const isDisabled = !finalUrl;
-            document.getElementById('js-dl-area').innerHTML = `<a class="download-btn ${isDisabled?'disabled':''}" href="${finalUrl || '#'}" target="_blank">${isDisabled ? t.unsupported : t.download}</a>`;
-            
-            const stickyDlBtn = document.getElementById('js-sticky-dl-btn');
-            if (isDisabled) { stickyDlBtn.style.display = 'none'; } 
-            else { stickyDlBtn.style.display = 'block'; stickyDlBtn.href = finalUrl; stickyDlBtn.textContent = t.get; }
-
-            // Informationの読み込み（jsonに情報がある場合のみ）
-            const infoPath = `${resDir}/info_${currentLang}_${device}.html`;
-            fetch(infoPath).then(r => r.ok ? r.text() : fetch(`${resDir}/info_${currentLang}.html`).then(r2 => r2.text()))
-                .then(html => {
-                    if(html && html.trim().length > 0) {
-                        document.getElementById('js-info-title').style.display = 'block';
-                        document.getElementById('js-info-content').innerHTML = html;
-                    }
-                }).catch(() => {});
-
-            // リスト表示メソッドの移植
-            if (cachedAppDetails) {
-                const primaryAuthor = cachedVData.authors[0];
-                const moreList = document.getElementById('js-more-by-list');
-                const sugList = document.getElementById('js-suggested-list');
-                moreList.innerHTML = ''; sugList.innerHTML = '';
-
-                cachedAppDetails.forEach(item => {
-                    const isAuthor = item.res.authors?.some(au => au.id === primaryAuthor.id);
-                    const desc = item.res.meta?.[currentLang]?.desc || item.res.meta?.en?.desc || "";
-                    const html = `<a href="?id=${item.id}" class="app-row"><img src="../resources/${item.id}/icon.png" loading="lazy"><div class="app-info"><div class="app-name">${item.res.name}</div><div class="app-desc">${desc}</div></div><div class="get-small-btn">${t.get}</div></a>`;
-                    
-                    if (isAuthor) moreList.insertAdjacentHTML('beforeend', html);
-                    else sugList.insertAdjacentHTML('beforeend', html);
-                });
-
-                document.getElementById('js-more-by-section').style.display = moreList.children.length ? 'block' : 'none';
-                document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', primaryAuthor.name);
-                document.getElementById('js-suggested-section').style.display = sugList.children.length ? 'block' : 'none';
-                document.getElementById('js-suggested-title').textContent = t.suggested;
-            }
-        }
-
-        async function initPage() {
-            if(!codename) return;
-            const resDir = `../resources/${codename}`;
             
             try {
-                cachedVData = await fetch(`${resDir}/version.json?${Date.now()}`).then(r => r.json());
-                
-                document.getElementById('js-sticky-name').textContent = cachedVData.name;
+                // 基本データ取得
+                const vRes = await fetch(`${resDir}/version.json?${Date.now()}`);
+                const vData = await vRes.json();
+                const primaryAuthor = vData.authors[0];
+
+                // ヘッダー/基本情報
+                document.getElementById('js-sticky-name').textContent = vData.name;
                 document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-main-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-hero').style.backgroundImage = `url('${resDir}/header.png')`;
-                document.getElementById('js-version').textContent = cachedVData.version;
-                document.getElementById('js-author-list').innerHTML = cachedVData.authors.map(a => `<a href="../dev/?id=${a.id}" style="color:inherit;text-decoration:none;">${a.name}</a>`).join(', ');
+                document.getElementById('js-version').textContent = vData.version;
+                document.getElementById('js-status').textContent = t.available;
+                document.getElementById('ui-updated').textContent = t.updated + vData.lastUpdated;
+                document.getElementById('js-author-list').innerHTML = vData.authors.map(a => `<a href="../dev/?id=${a.id}" style="color:inherit;text-decoration:none;">${a.name}</a>`).join(', ');
 
+                // ボタン制御
+                const dlUrl = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
+                const isDisabled = !dlUrl;
+                document.getElementById('js-dl-area').innerHTML = `<a class="download-btn ${isDisabled?'disabled':''}" href="${dlUrl || '#'}" target="_blank">${isDisabled ? t.unsupported : t.download}</a>`;
+                
+                const stickyDlBtn = document.getElementById('js-sticky-dl-btn');
+                if (isDisabled) {
+                    stickyDlBtn.style.display = 'none';
+                } else {
+                    stickyDlBtn.style.display = 'block';
+                    stickyDlBtn.href = dlUrl;
+                    stickyDlBtn.textContent = t.get;
+                }
+
+                // SNS & 旧バージョン
                 const snsArea = document.getElementById('js-sns-area');
-                if (cachedVData.discord) snsArea.innerHTML += `<a href="${cachedVData.discord}" target="_blank" class="download-btn" style="background:#5865F2;">Discord</a>`;
-                if (cachedVData.telegram) snsArea.innerHTML += `<a href="${cachedVData.telegram}" target="_blank" class="download-btn" style="background:#0088cc;">Telegram</a>`;
+                snsArea.innerHTML = '';
+                if (vData.discord) snsArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="download-btn" style="background:#5865F2;">Discord</a>`;
+                if (vData.telegram) snsArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="download-btn" style="background:#0088cc;">Telegram</a>`;
                 
                 const menu = document.getElementById('js-old-ver-menu');
-                if(cachedVData.oldVersions?.length) {
-                    cachedVData.oldVersions.forEach(ov => menu.insertAdjacentHTML('beforeend', `<a class="old-ver-item" href="${ov.url}">${ov.version}</a>`));
+                menu.innerHTML = '';
+                if(vData.oldVersions?.length) {
+                    vData.oldVersions.forEach(ov => menu.insertAdjacentHTML('beforeend', `<a class="old-ver-item" href="${ov.url}">${ov.version}</a>`));
                     document.getElementById('js-old-ver-toggle').style.display = 'flex';
                 }
 
+                // スクショ
                 const ssc = document.getElementById('js-ss-container');
+                ssc.innerHTML = '';
                 [1,2,3].forEach(n => {
                     const img = document.createElement('img');
                     img.src = `${resDir}/ss${n}.png`;
@@ -252,19 +227,50 @@
                     ssc.appendChild(img);
                 });
 
-                updateDisplay();
+                // Information読み込み
+                const infoPath = `${resDir}/info_${currentLang}_${device}.html`;
+                fetch(infoPath).then(r => r.ok ? r.text() : fetch(`${resDir}/info_${currentLang}.html`).then(r2 => r2.text()))
+                .then(html => {
+                    if(html && html.trim()){
+                        document.getElementById('js-info-title').style.display = 'block';
+                        document.getElementById('js-info-content').innerHTML = html;
+                    } else {
+                        document.getElementById('js-info-title').style.display = 'none';
+                    }
+                }).catch(() => {});
 
+                // リスト描画（ここを高速化：非同期ループに変更）
                 const [apps, prods] = await Promise.all([
                     fetch(`../apps.json`).then(r => r.json()).catch(() => []),
                     fetch(`../prod.json`).then(r => r.json()).catch(() => [])
                 ]);
-                const combined = [...apps, ...prods].filter(a => (a.id || a.codename) !== codename);
-                cachedAppDetails = (await Promise.all(combined.map(async (app) => {
-                    const id = app.id || app.codename;
-                    try { return { id, res: await fetch(`../resources/${id}/version.json`).then(r => r.json()) }; } catch(e) { return null; }
-                }))).filter(d => d !== null);
+                const combined = [...apps, ...prods];
+                const moreList = document.getElementById('js-more-by-list');
+                const sugList = document.getElementById('js-suggested-list');
+                moreList.innerHTML = ''; sugList.innerHTML = '';
+                
+                // 表示タイトル初期化
+                document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', primaryAuthor.name);
+                document.getElementById('js-suggested-title').textContent = t.suggested;
 
-                updateDisplay();
+                combined.forEach(async (app) => {
+                    const id = app.id || app.codename;
+                    if (!id || id === codename) return;
+                    
+                    try {
+                        const itemV = await fetch(`../resources/${id}/version.json`).then(r => r.json());
+                        const desc = itemV.meta?.[currentLang]?.desc || itemV.meta?.en?.desc || "";
+                        const html = `<a href="?id=${id}" class="app-row"><img src="../resources/${id}/icon.png" loading="lazy"><div class="app-info"><div class="app-name">${itemV.name}</div><div class="app-desc">${desc}</div></div><div class="get-small-btn">${t.get}</div></a>`;
+                        
+                        if (itemV.authors?.some(a => a.id === primaryAuthor.id)) {
+                            moreList.insertAdjacentHTML('beforeend', html);
+                            document.getElementById('js-more-by-section').style.display = 'block';
+                        } else {
+                            sugList.insertAdjacentHTML('beforeend', html);
+                            document.getElementById('js-suggested-section').style.display = 'block';
+                        }
+                    } catch(e){}
+                });
 
             } catch (e) { console.error(e); }
         }
@@ -275,7 +281,7 @@
             const h = document.getElementById('js-sticky-header');
             if (window.scrollY > 150) h.classList.add('active'); else h.classList.remove('active');
         };
-        window.onload = initPage;
+        window.onload = renderPage;
     </script>
 </body>
 </html>
