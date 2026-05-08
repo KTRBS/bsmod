@@ -48,33 +48,27 @@
         .version-wrapper { display: flex; align-items: center; gap: 6px; position: relative; }
         .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
         
-        /* 旧バージョンボタン */
         .old-ver-toggle { background: none; border: none; color: var(--btn-blue); font-size: 1.2rem; cursor: pointer; padding: 4px; display: none; align-items: center; }
         .old-ver-menu { position: absolute; top: 100%; left: 0; background: var(--menu-bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: none; z-index: 120; min-width: 180px; margin-top: 8px; overflow-y: auto; max-height: 250px; }
         .old-ver-menu.show { display: block; }
-        .old-ver-item { display: block; padding: 12px 16px; text-decoration: none; color: var(--text-color); font-size: 0.95rem; border-bottom: 0.5px solid var(--line); font-weight: 500; }
-        .old-ver-item:last-child { border-bottom: none; }
+        .old-ver-item { display: block; padding: 12px 16px; text-decoration: none; color: var(--text-color); font-size: 0.95rem; border-bottom: 0.5px solid var(--line); }
 
         .status-badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; background: var(--status-green); color: white; }
 
         .download-btn { display: block; background: var(--btn-blue); color: white !important; text-decoration: none; text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; }
         .download-btn.disabled { background: var(--btn-disabled); pointer-events: none; }
 
-        .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 15px -20px 25px; padding: 0 20px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-        .ss-container::-webkit-scrollbar { display: none; }
+        .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 15px -20px 25px; padding: 0 20px; -webkit-overflow-scrolling: touch; }
         .ss-container img { flex: 0 0 85%; max-width: 380px; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; border: 0.5px solid var(--line); }
 
-        /* Store List 横スクロール戻し */
         .store-section { margin-top: 15px; border-top: 0.5px solid var(--line); padding-top: 10px; }
-        .section-header { margin-bottom: 8px; }
-        .section-title { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.5px; }
+        .section-title { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
 
-        .app-list-scroll { display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; gap: 15px; scrollbar-width: none; }
+        .app-list-scroll { display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; gap: 15px; padding-bottom: 5px; }
         .app-list-scroll::-webkit-scrollbar { display: none; }
 
         .app-column { display: flex; flex-direction: column; min-width: 82vw; max-width: 460px; }
         .app-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 0.5px solid var(--line); text-decoration: none; color: inherit; }
-        .app-row:last-child { border-bottom: none; }
         .app-row img { width: 56px; height: 56px; border-radius: 12px; margin-right: 12px; object-fit: cover; }
         .app-info { flex: 1; min-width: 0; }
         .app-name { font-size: 0.95rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -94,7 +88,7 @@
             <img id="js-sticky-icon" src="" style="width:30px;height:30px;border-radius:7px;">
             <span id="js-sticky-name" style="font-weight:700;font-size:0.95rem;">---</span>
         </div>
-        <a href="#" class="sticky-dl-btn" id="js-sticky-dl-btn" style="background:var(--btn-gray);color:var(--btn-blue);padding:5px 16px;border-radius:20px;text-decoration:none;font-weight:800;font-size:0.8rem;">GET</a>
+        <a href="#" class="sticky-dl-btn" id="js-sticky-dl-btn">GET</a>
     </div>
 
     <section class="hero" id="js-hero"></section>
@@ -115,22 +109,24 @@
         </div>
 
         <div id="js-dl-area"></div>
-        <div id="js-sns-area"></div> <div class="ss-container" id="js-ss-container"></div>
+        <div class="ss-container" id="js-ss-container"></div>
         
         <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 8px;">Information</h2>
         <div id="js-info-content" class="info-content">Loading...</div>
 
+        <div id="js-sns-area"></div>
+
         <div id="js-more-by-section" class="store-section" style="display:none;">
-            <div class="section-header"><span class="section-title" id="js-more-by-title">---</span></div>
+            <div class="section-title" id="js-more-by-title">---</div>
             <div class="app-list-scroll" id="js-more-by-list"></div>
         </div>
 
         <div id="js-suggested-section" class="store-section" style="display:none;">
-            <div class="section-header"><span class="section-title" id="js-suggested-title">---</span></div>
+            <div class="section-title" id="js-suggested-title">---</div>
             <div class="app-list-scroll" id="js-suggested-list"></div>
         </div>
 
-        <div style="height:40px;"></div>
+        <div style="height:50px;"></div>
     </div>
 
     <script>
@@ -165,8 +161,7 @@
             const resDir = `../resources/${codename}`;
             
             try {
-                const vRes = await fetch(`${resDir}/version.json?${Date.now()}`);
-                const vData = await vRes.json();
+                const vData = await fetch(`${resDir}/version.json?${Date.now()}`).then(r => r.json());
                 const primaryAuthor = vData.authors[0];
 
                 document.getElementById('js-sticky-name').textContent = vData.name;
@@ -176,39 +171,30 @@
                 document.getElementById('js-version').textContent = vData.version;
                 document.getElementById('ui-updated').textContent = t.updated + vData.lastUpdated;
 
-                // DLボタン & OS判定
-                const iosUrl = vData.iosDownloadUrl;
-                const androidUrl = vData.androidDownloadUrl;
-                let finalUrl = (device === "ios") ? iosUrl : androidUrl;
-                let isDisabled = !finalUrl;
-
+                // DL & OS判定
+                const finalUrl = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
+                const isDisabled = !finalUrl;
                 document.getElementById('js-dl-area').innerHTML = `<a class="download-btn ${isDisabled?'disabled':''}" href="${finalUrl || '#'}" target="_blank">${isDisabled ? t.unsupported : t.download}</a>`;
                 document.getElementById('js-sticky-dl-btn').href = finalUrl || "#";
                 document.getElementById('js-sticky-dl-btn').textContent = isDisabled ? "N/A" : t.get;
 
-                // SNSボタン (Discord/Telegram)
+                // SNSボタン (Informationの下)
                 const snsArea = document.getElementById('js-sns-area');
                 snsArea.innerHTML = '';
-                if (vData.discord) snsArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="download-btn" style="background:#5865F2; margin-bottom:10px;">Discord</a>`;
-                if (vData.telegram) snsArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="download-btn" style="background:#0088cc; margin-bottom:30px;">Telegram</a>`;
+                if (vData.discord) snsArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="download-btn" style="background:#5865F2;">Discord</a>`;
+                if (vData.telegram) snsArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="download-btn" style="background:#0088cc;">Telegram</a>`;
 
-                // 旧バージョンメニュー復旧
+                // 旧バージョン
                 const menu = document.getElementById('js-old-ver-menu');
                 menu.innerHTML = '';
-                if(vData.oldVersions && vData.oldVersions.length > 0) {
-                    vData.oldVersions.forEach(ov => {
-                        const item = document.createElement('a');
-                        item.className = 'old-ver-item';
-                        item.textContent = ov.version;
-                        item.href = ov.url;
-                        menu.appendChild(item);
-                    });
+                if(vData.oldVersions?.length) {
+                    vData.oldVersions.forEach(ov => menu.insertAdjacentHTML('beforeend', `<a class="old-ver-item" href="${ov.url}">${ov.version}</a>`));
                     document.getElementById('js-old-ver-toggle').style.display = 'flex';
                 }
 
                 document.getElementById('js-author-list').innerHTML = vData.authors.map(a => `<a href="../dev/?id=${a.id}" style="color:inherit;text-decoration:none;">${a.name}</a>`).join(', ');
 
-                // スクリーンショット
+                // スクショ
                 const ssc = document.getElementById('js-ss-container');
                 ssc.innerHTML = '';
                 [1,2,3].forEach(n => {
@@ -221,48 +207,53 @@
                 // Information
                 const infoPath = `${resDir}/info_${currentLang}_${device}.html`;
                 const infoRes = await fetch(infoPath).catch(() => null);
-                document.getElementById('js-info-content').innerHTML = (infoRes && infoRes.ok) ? await infoRes.text() : "No Information.";
+                document.getElementById('js-info-content').innerHTML = (infoRes && infoRes.ok) ? await infoRes.text() : "No Information available.";
 
-                // おすすめリスト (横スクロール形式)
-                const appsData = await fetch(`../apps.json?${Date.now()}`).then(r => r.json()).catch(() => []);
-                const prodData = await fetch(`../prod.json?${Date.now()}`).then(r => r.json()).catch(() => []);
-                const combined = [...appsData, ...prodData];
-                const moreByList = document.getElementById('js-more-by-list');
-                const sugList = document.getElementById('js-suggested-list');
-                moreByList.innerHTML = ''; sugList.innerHTML = '';
-
-                // リストを2行1列のセットにするための処理
-                const filterApps = combined.filter(a => (a.id || a.codename) !== codename);
+                // おすすめリスト構築
+                const [apps, prods] = await Promise.all([
+                    fetch(`../apps.json?${Date.now()}`).then(r => r.json()).catch(() => []),
+                    fetch(`../prod.json?${Date.now()}`).then(r => r.json()).catch(() => [])
+                ]);
+                const combined = [...apps, ...prods].filter(a => (a.id || a.codename) !== codename);
                 
-                async function buildList(container, filteredArray) {
+                const authorApps = [];
+                const otherApps = [];
+
+                // 各アプリの情報を取得
+                for (const app of combined) {
+                    const id = app.id || app.codename;
+                    try {
+                        const res = await fetch(`../resources/${id}/version.json`).then(r => r.json());
+                        const isAuthor = res.authors?.some(au => au.id === primaryAuthor.id);
+                        const appData = { id, name: res.name, desc: res.meta?.[currentLang]?.desc || res.meta?.en?.desc || "" };
+                        if (isAuthor) authorApps.push(appData); else otherApps.push(appData);
+                    } catch(e) {}
+                }
+
+                const renderScrollList = (container, list) => {
                     let html = '';
-                    for (let i = 0; i < filteredArray.length; i += 2) {
+                    for (let i = 0; i < list.length; i += 2) {
                         html += '<div class="app-column">';
                         for (let j = 0; j < 2; j++) {
-                            const app = filteredArray[i + j];
-                            if (!app) break;
-                            const id = app.id || app.codename;
-                            const res = await fetch(`../resources/${id}/version.json`).then(r => r.json());
-                            const desc = res.meta?.[currentLang]?.desc || res.meta?.en?.desc || "";
-                            html += `<a href="?id=${id}" class="app-row"><img src="../resources/${id}/icon.png" loading="lazy"><div class="app-info"><div class="app-name">${res.name}</div><div class="app-desc">${desc}</div></div><div class="get-small-btn">${t.get}</div></a>`;
+                            const a = list[i + j];
+                            if (!a) break;
+                            html += `<a href="?id=${a.id}" class="app-row"><img src="../resources/${a.id}/icon.png" loading="lazy"><div class="app-info"><div class="app-name">${a.name}</div><div class="app-desc">${a.desc}</div></div><div class="get-small-btn">${t.get}</div></a>`;
                         }
                         html += '</div>';
                     }
                     container.innerHTML = html;
+                };
+
+                if (authorApps.length) {
+                    renderScrollList(document.getElementById('js-more-by-list'), authorApps);
+                    document.getElementById('js-more-by-section').style.display = 'block';
+                    document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', primaryAuthor.name);
                 }
-
-                const authorApps = []; const otherApps = [];
-                for(const a of filterApps) {
-                    const id = a.id || a.codename;
-                    const res = await fetch(`../resources/${id}/version.json`).then(r => r.json());
-                    if(res.authors?.some(au => au.id === primaryAuthor.id)) authorApps.push(a); else otherApps.push(a);
+                if (otherApps.length) {
+                    renderScrollList(document.getElementById('js-suggested-list'), otherApps);
+                    document.getElementById('js-suggested-section').style.display = 'block';
+                    document.getElementById('js-suggested-title').textContent = t.suggested;
                 }
-
-                if(authorApps.length) { await buildList(moreByList, authorApps); document.getElementById('js-more-by-section').style.display='block'; }
-                if(otherApps.length) { await buildList(sugList, otherApps); document.getElementById('js-suggested-section').style.display='block'; }
-
-                document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', primaryAuthor.name);
-                document.getElementById('js-suggested-title').textContent = t.suggested;
 
             } catch (e) { console.error(e); }
         }
