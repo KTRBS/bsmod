@@ -76,9 +76,9 @@
         .contact-btn.telegram { color: var(--btn-blue) !important; }
         .contact-btn .arrow { color: var(--secondary-text); font-weight: normal; }
 
-        /* AppStore Style Sections */
+        /* Store Sections */
         .store-section { margin-top: 35px; }
-        .store-section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 15px; }
+        .store-section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 15px; color: var(--text-color); }
         .app-grid-scroll { display: flex; overflow-x: auto; gap: 16px; padding: 0 0 15px 0; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; margin: 0 -5px; }
         .app-grid-scroll::-webkit-scrollbar { display: none; }
         .app-item-card { flex: 0 0 100px; scroll-snap-align: start; text-decoration: none; color: var(--text-color); }
@@ -125,7 +125,7 @@
         <h2 style="font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px;">Information</h2>
         <div id="js-info-content" style="line-height: 1.6; color: var(--secondary-text);">Loading...</div>
 
-        <!-- More by Author -->
+        <!-- More by Section -->
         <div id="js-more-by-section" class="store-section" style="display:none;">
             <div class="store-section-title" id="js-more-by-title">More by ---</div>
             <div class="app-grid-scroll" id="js-more-by-list"></div>
@@ -133,7 +133,7 @@
 
         <!-- You Might Also Like -->
         <div id="js-suggested-section" class="store-section" style="display:none;">
-            <div class="store-section-title">You Might Also Like</div>
+            <div class="store-section-title" id="js-suggested-title">You Might Also Like</div>
             <div class="app-grid-scroll" id="js-suggested-list"></div>
         </div>
         
@@ -148,8 +148,20 @@
         const targetVer = params.get('v');
 
         const uiText = {
-            ja: { available: "利用可能", updated: "最終更新: ", download: "ダウンロード", moreBy: "製作" },
-            en: { available: "Available", updated: "Last Updated: ", download: "DOWNLOAD", moreBy: "More by" }
+            ja: { 
+                available: "利用可能", 
+                updated: "最終更新: ", 
+                download: "ダウンロード", 
+                moreBy: "{name}の他のアプリ",
+                suggested: "おすすめ"
+            },
+            en: { 
+                available: "Available", 
+                updated: "Last Updated: ", 
+                download: "DOWNLOAD", 
+                moreBy: "More by {name}",
+                suggested: "You Might Also Like"
+            }
         };
 
         function getOS() {
@@ -169,7 +181,7 @@
                 // 1. Current App Info
                 const vRes = await fetch(`${resDir}/version.json?${new Date().getTime()}`);
                 const vData = await vRes.json();
-                const primaryAuthorId = vData.authors[0]?.id;
+                const primaryAuthor = vData.authors[0];
 
                 document.getElementById('ui-main-title').textContent = vData.name;
                 document.getElementById('js-sticky-name').textContent = vData.name;
@@ -178,8 +190,9 @@
                 document.getElementById('js-hero').style.backgroundImage = `url('${resDir}/header.png')`;
                 document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
                 document.getElementById('js-status').textContent = t.available;
+                document.getElementById('js-suggested-title').textContent = t.suggested;
 
-                // Download Logic
+                // Download
                 const dlArea = document.getElementById('js-dl-area');
                 const stickyBtn = document.getElementById('js-sticky-dl-btn');
                 function updateToVersion(verName, url, platName) {
@@ -207,7 +220,7 @@
                     ssContainer.appendChild(img);
                 });
 
-                // Author Section
+                // Authors
                 vData.authors.forEach(a => {
                     const link = document.createElement('a');
                     link.href = `../dev/?id=${a.id}`; link.className = 'author-link'; link.textContent = a.name + " ";
@@ -216,23 +229,15 @@
 
                 // Info HTML
                 const infoRes = await fetch(`${resDir}/info_${lang}_${device}.html`);
-                document.getElementById('js-info-content').innerHTML = infoRes.ok ? await infoRes.text() : "No info.";
+                document.getElementById('js-info-content').innerHTML = infoRes.ok ? await infoRes.text() : "No information available.";
 
-                // --- 2. RECOMMENDATION ENGINE (apps.json + prod.json) ---
-                const fetchList = async (path) => {
-                    try { const r = await fetch(`${path}?${new Date().getTime()}`); return r.ok ? await r.json() : []; }
-                    catch { return []; }
-                };
+                // --- RECOMMENDATIONS (prod.json & apps.json) ---
+                const fetchJson = async (p) => { try { const r = await fetch(`${p}?${new Date().getTime()}`); return r.ok ? await r.json() : []; } catch { return []; } };
+                const [appsData, prodData] = await Promise.all([fetchJson('../apps.json'), fetchJson('../prod.json')]);
 
-                const [appsData, prodData] = await Promise.all([
-                    fetchList('../apps.json'),
-                    fetchList('../prod.json')
-                ]);
-
-                // Merge and normalize data (prod.json uses 'codename', apps.json might use 'id')
                 const combined = [...appsData, ...prodData];
                 const uniqueApps = [];
-                const seenIds = new Set([codename]); // Current app is already "seen"
+                const seenIds = new Set([codename]);
 
                 combined.forEach(app => {
                     const id = app.id || app.codename;
@@ -241,7 +246,6 @@
                         uniqueApps.push({
                             id: id,
                             name: app.name,
-                            // If icon starts with resources/, use it as is, otherwise construct it
                             icon: app.icon ? (app.icon.startsWith('resources') ? `../${app.icon}` : `../resources/${id}/icon.png`) : `../resources/${id}/icon.png`
                         });
                     }
@@ -250,11 +254,10 @@
                 const moreByList = document.getElementById('js-more-by-list');
                 const suggestedList = document.getElementById('js-suggested-list');
 
-                // Process each unique app to check authors
                 const renderTasks = uniqueApps.map(async (app) => {
                     try {
                         const itemRes = await fetch(`../resources/${app.id}/version.json`);
-                        if (!itemRes.ok) throw new Error();
+                        if (!itemRes.ok) throw 1;
                         const itemData = await itemRes.json();
 
                         const card = document.createElement('a');
@@ -262,14 +265,10 @@
                         card.className = 'app-item-card';
                         card.innerHTML = `<img src="${app.icon}" loading="lazy"><div class="app-item-name">${app.name}</div>`;
 
-                        const isSameAuthor = itemData.authors && itemData.authors.some(a => a.id === primaryAuthorId);
-                        if (isSameAuthor) {
-                            moreByList.appendChild(card);
-                        } else {
-                            suggestedList.appendChild(card);
-                        }
+                        const isSameAuthor = itemData.authors && itemData.authors.some(a => a.id === primaryAuthor.id);
+                        if (isSameAuthor) moreByList.appendChild(card);
+                        else suggestedList.appendChild(card);
                     } catch {
-                        // Fallback to suggestions if version.json is missing
                         const card = document.createElement('a');
                         card.href = `?id=${app.id}`;
                         card.className = 'app-item-card';
@@ -282,17 +281,20 @@
 
                 if (moreByList.children.length > 0) {
                     document.getElementById('js-more-by-section').style.display = 'block';
-                    document.getElementById('js-more-by-title').textContent = `${t.moreBy} ${vData.authors[0].name}`;
+                    document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', primaryAuthor.name);
                 }
                 if (suggestedList.children.length > 0) {
                     document.getElementById('js-suggested-section').style.display = 'block';
                 }
 
+                const contactArea = document.getElementById('js-contact-area');
+                if (vData.discord) contactArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="contact-btn discord"><span>Discord Server</span><span class="arrow">›</span></a>`;
+                if (vData.telegram) contactArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="contact-btn telegram"><span>Telegram Channel</span><span class="arrow">›</span></a>`;
+
             } catch (e) { console.error(e); }
 
             window.onscroll = () => {
-                const scrollY = window.scrollY;
-                if (scrollY > 150) document.getElementById('js-sticky-header').classList.add('active');
+                if (window.scrollY > 150) document.getElementById('js-sticky-header').classList.add('active');
                 else document.getElementById('js-sticky-header').classList.remove('active');
             };
         }
