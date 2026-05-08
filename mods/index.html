@@ -3,302 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    
-    <title id="js-meta-title">Brawl stars mods / ブロスタ mod</title>
-    <meta id="meta-desc" name="description" content="最新のmodをktr.brawlmods.comからインストール">
+    <title id="js-meta-title">App Store Style</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --bg-color: #ffffff; --text-color: #000000; --secondary-text: #8e8e93;
-            --grad-color: rgba(255,255,255,1); --header-bg: rgba(255,255,255,0.85);
             --btn-blue: #007aff; --line: rgba(0,0,0,0.1); --card-bg: #f2f2f7;
-            --discord: #5865F2; --status-green: #28a745; --status-gray: #8e8e93;
-            --menu-bg: #ffffff;
+            --btn-gray: #f0f0f7;
         }
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-color: #000000; --text-color: #ffffff; --secondary-text: #8e8e93;
-                --grad-color: rgba(0,0,0,1); --header-bg: rgba(20,20,20,0.85);
                 --line: rgba(255,255,255,0.15); --card-bg: #1c1c1e;
-                --menu-bg: #2c2c2e;
+                --btn-gray: #1c1c1e;
             }
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; -webkit-tap-highlight-color: transparent; line-height: 1.4; }
-        
-        .top-btn { position: absolute; top: 20px; z-index: 50; width: 32px; height: 32px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); backdrop-filter: blur(5px); }
-        .top-back-btn { left: 20px; text-decoration: none; }
-        .back-icon { width: 10px; height: 10px; border-left: 2.5px solid var(--btn-blue); border-bottom: 2.5px solid var(--btn-blue); transform: rotate(45deg); margin-left: 4px; }
-        
-        .sticky-header { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; transform: translateY(-100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s; opacity: 0; border-bottom: 0.5px solid var(--line); }
-        .sticky-header.active { transform: translateY(0); opacity: 1; }
-        .sticky-left { display: flex; align-items: center; gap: 12px; }
-        .sticky-info { display: flex; align-items: center; gap: 10px; }
-        .sticky-info img { width: 30px; height: 30px; border-radius: 7px; object-fit: cover; }
-        .sticky-info span { font-weight: 700; font-size: 0.95rem; color: var(--text-color); }
-        .sticky-dl-btn { background: #f0f0f7; color: var(--btn-blue) !important; text-decoration: none; padding: 5px 16px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; }
-        @media (prefers-color-scheme: dark) { .sticky-dl-btn { background: #3a3a3c; } }
-
-        .hero { position: relative; height: 240px; background: center/cover no-repeat; display: flex; align-items: flex-end; }
-        .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--grad-color) 100%); }
-        .mod-name-hero { position: relative; z-index: 10; font-size: 2.2rem; font-weight: 700; margin: 0 0 20px 20px; letter-spacing: -1px; color: var(--text-color); transition: opacity 0.3s; }
-        
+        body { 
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; 
+            margin: 0; background-color: var(--bg-color); color: var(--text-color); 
+            line-height: 1.4; -webkit-font-smoothing: antialiased;
+        }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .info-header { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; }
-        .icon-box img { width: 92px; height: 92px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); object-fit: cover; }
+
+        /* セクション設定 */
+        .store-section { margin-top: 40px; border-top: 0.5px solid var(--line); padding-top: 20px; }
+        .section-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 15px; text-decoration: none; color: inherit;
+        }
+        .section-title { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+        .section-arrow { color: var(--secondary-text); font-size: 1.2rem; font-weight: 300; margin-left: 5px; }
+
+        /* 横スクロール & 2段組みの魔法 */
+        .app-list-scroll {
+            display: grid;
+            grid-template-rows: repeat(2, 1fr); /* 2行にする */
+            grid-auto-flow: column; /* 横に流す */
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 0 20px;
+            padding-bottom: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .app-list-scroll::-webkit-scrollbar { display: none; }
+
+        /* アプリ行のスタイル */
+        .app-row {
+            display: flex; align-items: center; width: 85vw; max-width: 500px;
+            padding: 10px 0; border-bottom: 0.5px solid var(--line);
+            scroll-snap-align: start; text-decoration: none; color: inherit;
+        }
+        .app-row:nth-child(2n) { border-bottom: none; } /* 2段目の下の線は消す */
+
+        .app-icon { width: 64px; height: 64px; border-radius: 14px; object-fit: cover; margin-right: 15px; border: 0.5px solid var(--line); }
         
-        .version-wrapper { display: flex; align-items: center; gap: 6px; position: relative; }
-        .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
-        
-        .old-ver-toggle { background: none; border: none; color: var(--btn-blue); font-size: 1.2rem; cursor: pointer; padding: 4px; display: none; align-items: center; transition: transform 0.2s; }
-        .old-ver-toggle.active { transform: rotate(180deg); }
-        
-        .old-ver-menu { position: absolute; top: 100%; left: 0; background: var(--menu-bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: none; z-index: 120; min-width: 180px; margin-top: 8px; overflow-y: auto; max-height: 300px; }
-        .old-ver-menu.show { display: block; }
-        .menu-label { padding: 8px 16px; font-size: 0.75rem; font-weight: 800; color: var(--secondary-text); background: var(--card-bg); text-transform: uppercase; letter-spacing: 0.5px; }
-        .old-ver-item { display: block; padding: 12px 16px; text-decoration: none; color: var(--text-color); font-size: 0.95rem; border-bottom: 0.5px solid var(--line); font-weight: 500; cursor: pointer; }
-        .old-ver-item:last-child { border-bottom: none; }
-        .old-ver-item:hover { background: rgba(0,122,255,0.1); }
+        .app-info { flex: 1; min-width: 0; }
+        .app-name { font-size: 1.05rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .app-desc { font-size: 0.85rem; color: var(--secondary-text); margin: 2px 0 0; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
 
-        .status-badge-inline { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; color: white !important; }
-        .status-available { background-color: var(--status-green) !important; }
-
-        #js-dl-area { margin-bottom: 25px; }
-        .download-btn { display: block; background-color: var(--btn-blue); color: white !important; text-decoration: none; text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; transition: opacity 0.2s; }
-        .download-btn:active { opacity: 0.7; }
-
-        .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 20px -20px 30px -20px; padding: 0 20px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
-        .ss-container img { flex: 0 0 85%; max-width: 380px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; scroll-snap-align: center; border: 0.5px solid var(--line); }
-
-        .author-link { color: var(--btn-blue) !important; text-decoration: none; font-weight: 600; font-size: 0.85rem; }
-
-        .contact-btn { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: var(--card-bg); border-radius: 12px; text-decoration: none; margin-bottom: 10px; font-weight: 600; }
-        .contact-btn.discord { color: var(--discord) !important; }
-        .contact-btn.telegram { color: var(--btn-blue) !important; }
-        .contact-btn .arrow { color: var(--secondary-text); font-weight: normal; }
-
-        /* Store Sections */
-        .store-section { margin-top: 35px; }
-        .store-section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 15px; color: var(--text-color); }
-        .app-grid-scroll { display: flex; overflow-x: auto; gap: 16px; padding: 0 0 15px 0; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; margin: 0 -5px; }
-        .app-grid-scroll::-webkit-scrollbar { display: none; }
-        .app-item-card { flex: 0 0 100px; scroll-snap-align: start; text-decoration: none; color: var(--text-color); }
-        .app-item-card img { width: 100px; height: 100px; border-radius: 22px; border: 0.5px solid var(--line); object-fit: cover; margin-bottom: 8px; background: var(--card-bg); }
-        .app-item-card .app-item-name { font-size: 0.75rem; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2; height: 2.4em; }
+        .get-btn {
+            background: var(--btn-gray); color: var(--btn-blue);
+            padding: 6px 24px; border-radius: 20px; font-weight: 800; font-size: 0.9rem;
+            text-transform: uppercase; margin-left: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <a href="javascript:history.back()" class="top-btn top-back-btn"><div class="back-icon"></div></a>
-
-    <div id="js-sticky-header" class="sticky-header">
-        <div class="sticky-left">
-            <div class="sticky-info">
-                <img id="js-sticky-icon" src="" alt="Icon">
-                <span id="js-sticky-name">---</span>
-            </div>
-        </div>
-        <a href="#" class="sticky-dl-btn" id="js-sticky-dl-btn">GET</a>
+<div class="container">
+    <div id="js-more-by-section" class="store-section" style="display:none;">
+        <a href="#" class="section-header">
+            <span class="section-title" id="js-more-by-title">More by ---</span>
+            <span class="section-arrow">›</span>
+        </a>
+        <div class="app-list-scroll" id="js-more-by-list"></div>
     </div>
 
-    <section class="hero" id="js-hero">
-        <div class="mod-name-hero" id="ui-main-title">---</div>
-    </section>
-
-    <div class="container">
-        <div class="info-header">
-            <div class="icon-box"><img id="js-main-icon" src="" alt="Icon"></div>
-            <div>
-                <div class="version-wrapper">
-                    <p class="version-num" id="js-version">v---</p>
-                    <button id="js-old-ver-toggle" class="old-ver-toggle">▽</button>
-                    <div id="js-status" class="status-badge-inline status-available">Available</div>
-                </div>
-                <div id="js-author-list" class="author-section"></div>
-                <p style="font-size: 0.8rem; margin: 6px 0 0; color: var(--secondary-text);" id="ui-updated">Last Updated: --</p>
-            </div>
-        </div>
-
-        <div id="js-dl-area"></div>
-
-        <div class="ss-container" id="js-ss-container"></div>
-        
-        <h2 style="font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px;">Information</h2>
-        <div id="js-info-content" style="line-height: 1.6; color: var(--secondary-text);">Loading...</div>
-
-        <!-- More by Section -->
-        <div id="js-more-by-section" class="store-section" style="display:none;">
-            <div class="store-section-title" id="js-more-by-title">More by ---</div>
-            <div class="app-grid-scroll" id="js-more-by-list"></div>
-        </div>
-
-        <!-- You Might Also Like -->
-        <div id="js-suggested-section" class="store-section" style="display:none;">
-            <div class="store-section-title" id="js-suggested-title">You Might Also Like</div>
-            <div class="app-grid-scroll" id="js-suggested-list"></div>
-        </div>
-        
-        <div id="js-contact-area" style="margin-top:25px;"></div>
+    <div id="js-suggested-section" class="store-section" style="display:none;">
+        <a href="#" class="section-header">
+            <span class="section-title" id="js-suggested-title">You Might Also Like</span>
+            <span class="section-arrow">›</span>
+        </a>
+        <div class="app-list-scroll" id="js-suggested-list"></div>
     </div>
+</div>
 
-    <script>
-        const isJa = navigator.language.includes('ja');
-        const lang = isJa ? 'ja' : 'en';
-        const params = new URLSearchParams(window.location.search);
-        const codename = params.get('id');
-        const targetVer = params.get('v');
+<script>
+    const isJa = navigator.language.includes('ja');
+    const lang = isJa ? 'ja' : 'en';
+    const params = new URLSearchParams(window.location.search);
+    const codename = params.get('id');
 
-        const uiText = {
-            ja: { 
-                available: "利用可能", 
-                updated: "最終更新: ", 
-                download: "ダウンロード", 
-                moreBy: "{name}の他のアプリ",
-                suggested: "おすすめ"
-            },
-            en: { 
-                available: "Available", 
-                updated: "Last Updated: ", 
-                download: "DOWNLOAD", 
-                moreBy: "More by {name}",
-                suggested: "You Might Also Like"
+    const uiText = {
+        ja: { moreBy: "{name}の他のアプリ", suggested: "おすすめ", get: "入手" },
+        en: { moreBy: "More by {name}", suggested: "You Might Also Like", get: "Get" }
+    };
+
+    async function initRecommendations() {
+        if(!codename) return;
+        const t = uiText[lang];
+
+        try {
+            // 自アプリの作者情報を取得
+            const meRes = await fetch(`../resources/${codename}/version.json`);
+            const meData = await meRes.json();
+            const primaryAuthor = meData.authors[0];
+
+            // リスト読み込み
+            const [appsData, prodData] = await Promise.all([
+                fetch('../apps.json').then(r => r.json()).catch(() => []),
+                fetch('../prod.json').then(r => r.json()).catch(() => [])
+            ]);
+
+            const combined = [...appsData, ...prodData];
+            const seenIds = new Set([codename]);
+            const uniqueApps = [];
+
+            combined.forEach(app => {
+                const id = app.id || app.codename;
+                if (id && !seenIds.has(id)) {
+                    seenIds.add(id);
+                    uniqueApps.push({ id, name: app.name });
+                }
+            });
+
+            const moreByList = document.getElementById('js-more-by-list');
+            const suggestedList = document.getElementById('js-suggested-list');
+
+            const tasks = uniqueApps.map(async (app) => {
+                try {
+                    const itemRes = await fetch(`../resources/${app.id}/version.json`);
+                    if (!itemRes.ok) throw 1;
+                    const itemData = await itemRes.json();
+
+                    // 言語別の説明文を取得
+                    const description = (itemData.meta && itemData.meta[lang]) 
+                                        ? itemData.meta[lang].desc 
+                                        : (itemData.meta && itemData.meta['en'] ? itemData.meta['en'].desc : "");
+
+                    const appHtml = `
+                        <a href="?id=${app.id}" class="app-row">
+                            <img src="../resources/${app.id}/icon.png" class="app-icon">
+                            <div class="app-info">
+                                <p class="app-name">${itemData.name}</p>
+                                <p class="app-desc">${description}</p>
+                            </div>
+                            <div class="get-btn">${t.get}</div>
+                        </a>
+                    `;
+
+                    const isSameAuthor = itemData.authors && itemData.authors.some(a => a.id === primaryAuthor.id);
+                    if (isSameAuthor) {
+                        moreByList.insertAdjacentHTML('beforeend', appHtml);
+                    } else {
+                        suggestedList.insertAdjacentHTML('beforeend', appHtml);
+                    }
+                } catch(e) {}
+            });
+
+            await Promise.all(tasks);
+
+            if (moreByList.children.length > 0) {
+                document.getElementById('js-more-by-section').style.display = 'block';
+                document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', primaryAuthor.name);
             }
-        };
-
-        function getOS() {
-            const ua = navigator.userAgent;
-            if (/android/i.test(ua)) return "android";
-            if (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return "ios";
-            return "pc";
-        }
-
-        async function initPage() {
-            if(!codename) return;
-            const device = getOS();
-            const resDir = `../resources/${codename}`;
-            const t = uiText[lang];
-            
-            try {
-                // 1. Current App Info
-                const vRes = await fetch(`${resDir}/version.json?${new Date().getTime()}`);
-                const vData = await vRes.json();
-                const primaryAuthor = vData.authors[0];
-
-                document.getElementById('ui-main-title').textContent = vData.name;
-                document.getElementById('js-sticky-name').textContent = vData.name;
-                document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
-                document.getElementById('js-main-icon').src = `${resDir}/icon.png`;
-                document.getElementById('js-hero').style.backgroundImage = `url('${resDir}/header.png')`;
-                document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
-                document.getElementById('js-status').textContent = t.available;
+            if (suggestedList.children.length > 0) {
+                document.getElementById('js-suggested-section').style.display = 'block';
                 document.getElementById('js-suggested-title').textContent = t.suggested;
+            }
 
-                // Download
-                const dlArea = document.getElementById('js-dl-area');
-                const stickyBtn = document.getElementById('js-sticky-dl-btn');
-                function updateToVersion(verName, url, platName) {
-                    const fullVer = verName.startsWith('v') ? verName : 'v' + verName;
-                    document.getElementById('js-version').textContent = fullVer;
-                    if (url) {
-                        dlArea.innerHTML = `<a class="download-btn" href="${url}" target="_blank">${t.download} ${fullVer} (${platName})</a>`;
-                        stickyBtn.href = url;
-                    }
-                }
-                let initialPlat = (device === "ios") ? "iOS" : "Android";
-                let initialUrl = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
-                if (!initialUrl) {
-                    if (vData.androidDownloadUrl) { initialPlat = "Android"; initialUrl = vData.androidDownloadUrl; }
-                    else if (vData.iosDownloadUrl) { initialPlat = "iOS"; initialUrl = vData.iosDownloadUrl; }
-                }
-                updateToVersion(vData.version, initialUrl, initialPlat);
+        } catch (e) { console.error(e); }
+    }
 
-                // Screenshots
-                const ssContainer = document.getElementById('js-ss-container');
-                [1,2,3].forEach(n => {
-                    const img = document.createElement('img');
-                    img.src = `${resDir}/ss${n}.png`;
-                    img.onerror = () => img.style.display = "none";
-                    ssContainer.appendChild(img);
-                });
-
-                // Authors
-                vData.authors.forEach(a => {
-                    const link = document.createElement('a');
-                    link.href = `../dev/?id=${a.id}`; link.className = 'author-link'; link.textContent = a.name + " ";
-                    document.getElementById('js-author-list').appendChild(link);
-                });
-
-                // Info HTML
-                const infoRes = await fetch(`${resDir}/info_${lang}_${device}.html`);
-                document.getElementById('js-info-content').innerHTML = infoRes.ok ? await infoRes.text() : "No information available.";
-
-                // --- RECOMMENDATIONS (prod.json & apps.json) ---
-                const fetchJson = async (p) => { try { const r = await fetch(`${p}?${new Date().getTime()}`); return r.ok ? await r.json() : []; } catch { return []; } };
-                const [appsData, prodData] = await Promise.all([fetchJson('../apps.json'), fetchJson('../prod.json')]);
-
-                const combined = [...appsData, ...prodData];
-                const uniqueApps = [];
-                const seenIds = new Set([codename]);
-
-                combined.forEach(app => {
-                    const id = app.id || app.codename;
-                    if (id && !seenIds.has(id)) {
-                        seenIds.add(id);
-                        uniqueApps.push({
-                            id: id,
-                            name: app.name,
-                            icon: app.icon ? (app.icon.startsWith('resources') ? `../${app.icon}` : `../resources/${id}/icon.png`) : `../resources/${id}/icon.png`
-                        });
-                    }
-                });
-
-                const moreByList = document.getElementById('js-more-by-list');
-                const suggestedList = document.getElementById('js-suggested-list');
-
-                const renderTasks = uniqueApps.map(async (app) => {
-                    try {
-                        const itemRes = await fetch(`../resources/${app.id}/version.json`);
-                        if (!itemRes.ok) throw 1;
-                        const itemData = await itemRes.json();
-
-                        const card = document.createElement('a');
-                        card.href = `?id=${app.id}`;
-                        card.className = 'app-item-card';
-                        card.innerHTML = `<img src="${app.icon}" loading="lazy"><div class="app-item-name">${app.name}</div>`;
-
-                        const isSameAuthor = itemData.authors && itemData.authors.some(a => a.id === primaryAuthor.id);
-                        if (isSameAuthor) moreByList.appendChild(card);
-                        else suggestedList.appendChild(card);
-                    } catch {
-                        const card = document.createElement('a');
-                        card.href = `?id=${app.id}`;
-                        card.className = 'app-item-card';
-                        card.innerHTML = `<img src="${app.icon}" loading="lazy"><div class="app-item-name">${app.name}</div>`;
-                        suggestedList.appendChild(card);
-                    }
-                });
-
-                await Promise.all(renderTasks);
-
-                if (moreByList.children.length > 0) {
-                    document.getElementById('js-more-by-section').style.display = 'block';
-                    document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', primaryAuthor.name);
-                }
-                if (suggestedList.children.length > 0) {
-                    document.getElementById('js-suggested-section').style.display = 'block';
-                }
-
-                const contactArea = document.getElementById('js-contact-area');
-                if (vData.discord) contactArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="contact-btn discord"><span>Discord Server</span><span class="arrow">›</span></a>`;
-                if (vData.telegram) contactArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="contact-btn telegram"><span>Telegram Channel</span><span class="arrow">›</span></a>`;
-
-            } catch (e) { console.error(e); }
-
-            window.onscroll = () => {
-                if (window.scrollY > 150) document.getElementById('js-sticky-header').classList.add('active');
-                else document.getElementById('js-sticky-header').classList.remove('active');
-            };
-        }
-        window.onload = initPage;
-    </script>
+    window.onload = initRecommendations;
+</script>
 </body>
 </html>
