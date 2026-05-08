@@ -3,180 +3,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title id="js-meta-title">App Store Style</title>
+    <title id="js-meta-title">Brawl stars mods</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --bg-color: #ffffff; --text-color: #000000; --secondary-text: #8e8e93;
+            --grad-color: rgba(255,255,255,1); --header-bg: rgba(255,255,255,0.85);
             --btn-blue: #007aff; --line: rgba(0,0,0,0.1); --card-bg: #f2f2f7;
-            --btn-gray: #f0f0f7;
+            --btn-gray: #f0f0f7; --status-green: #28a745;
         }
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-color: #000000; --text-color: #ffffff; --secondary-text: #8e8e93;
+                --grad-color: rgba(0,0,0,1); --header-bg: rgba(20,20,20,0.85);
                 --line: rgba(255,255,255,0.15); --card-bg: #1c1c1e;
-                --btn-gray: #1c1c1e;
+                --btn-gray: #2c2c2e;
             }
         }
-        body { 
-            font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; 
-            margin: 0; background-color: var(--bg-color); color: var(--text-color); 
-            line-height: 1.4; -webkit-font-smoothing: antialiased;
-        }
+        body { font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.4; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        
+        /* 共通ボタン・ヘッダー */
+        .top-btn { position: absolute; top: 20px; z-index: 50; width: 32px; height: 32px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); backdrop-filter: blur(5px); left: 20px; text-decoration: none; }
+        .back-icon { width: 10px; height: 10px; border-left: 2.5px solid var(--btn-blue); border-bottom: 2.5px solid var(--btn-blue); transform: rotate(45deg); margin-left: 4px; }
+        
+        .sticky-header { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; transform: translateY(-100%); transition: 0.3s; opacity: 0; border-bottom: 0.5px solid var(--line); }
+        .sticky-header.active { transform: translateY(0); opacity: 1; }
+        .sticky-info { display: flex; align-items: center; gap: 10px; }
+        .sticky-info img { width: 30px; height: 30px; border-radius: 7px; object-fit: cover; }
+        .sticky-info span { font-weight: 700; font-size: 0.95rem; }
+        .sticky-dl-btn { background: var(--btn-gray); color: var(--btn-blue); text-decoration: none; padding: 5px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; }
+
+        .hero { position: relative; height: 220px; background: center/cover no-repeat; display: flex; align-items: flex-end; }
+        .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to bottom, rgba(0,0,0,0), var(--bg-color)); }
+        
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        
+        /* メイン情報 */
+        .info-header { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; }
+        .icon-box img { width: 92px; height: 92px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); object-fit: cover; }
+        .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; }
+        .status-badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; background: var(--status-green); color: white; margin-left: 8px; }
 
-        /* セクション設定 */
+        .download-btn { display: block; background: var(--btn-blue); color: white !important; text-decoration: none; text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; margin-bottom: 30px; }
+
+        .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 0 -20px 30px; padding: 0 20px; scroll-snap-type: x mandatory; }
+        .ss-container img { flex: 0 0 85%; max-width: 380px; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; scroll-snap-align: center; border: 0.5px solid var(--line); }
+
+        /* App Storeリスト再現 (2段組) */
         .store-section { margin-top: 40px; border-top: 0.5px solid var(--line); padding-top: 20px; }
-        .section-header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            margin-bottom: 15px; text-decoration: none; color: inherit;
-        }
-        .section-title { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
-        .section-arrow { color: var(--secondary-text); font-size: 1.2rem; font-weight: 300; margin-left: 5px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; text-decoration: none; color: inherit; }
+        .section-title { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
+        .section-arrow { color: var(--secondary-text); font-size: 1.2rem; }
 
-        /* 横スクロール & 2段組みの魔法 */
         .app-list-scroll {
-            display: grid;
-            grid-template-rows: repeat(2, 1fr); /* 2行にする */
-            grid-auto-flow: column; /* 横に流す */
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            gap: 0 20px;
-            padding-bottom: 10px;
-            -webkit-overflow-scrolling: touch;
+            display: grid; grid-template-rows: repeat(2, 1fr); grid-auto-flow: column;
+            overflow-x: auto; scroll-snap-type: x mandatory; gap: 0 20px; padding-bottom: 10px;
         }
         .app-list-scroll::-webkit-scrollbar { display: none; }
 
-        /* アプリ行のスタイル */
         .app-row {
-            display: flex; align-items: center; width: 85vw; max-width: 500px;
+            display: flex; align-items: center; width: 85vw; max-width: 480px;
             padding: 10px 0; border-bottom: 0.5px solid var(--line);
             scroll-snap-align: start; text-decoration: none; color: inherit;
         }
-        .app-row:nth-child(2n) { border-bottom: none; } /* 2段目の下の線は消す */
-
-        .app-icon { width: 64px; height: 64px; border-radius: 14px; object-fit: cover; margin-right: 15px; border: 0.5px solid var(--line); }
-        
+        .app-row:nth-child(2n) { border-bottom: none; }
+        .app-row img { width: 60px; height: 60px; border-radius: 12px; margin-right: 15px; object-fit: cover; border: 0.5px solid var(--line); }
         .app-info { flex: 1; min-width: 0; }
-        .app-name { font-size: 1.05rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .app-desc { font-size: 0.85rem; color: var(--secondary-text); margin: 2px 0 0; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .app-name { font-size: 1rem; font-weight: 600; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .app-desc { font-size: 0.8rem; color: var(--secondary-text); margin: 2px 0 0; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .get-small-btn { background: var(--btn-gray); color: var(--btn-blue); padding: 6px 20px; border-radius: 20px; font-weight: 800; font-size: 0.85rem; text-transform: uppercase; }
 
-        .get-btn {
-            background: var(--btn-gray); color: var(--btn-blue);
-            padding: 6px 24px; border-radius: 20px; font-weight: 800; font-size: 0.9rem;
-            text-transform: uppercase; margin-left: 10px;
-        }
+        .info-text { line-height: 1.6; color: var(--secondary-text); font-size: 0.95rem; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="js-more-by-section" class="store-section" style="display:none;">
-        <a href="#" class="section-header">
-            <span class="section-title" id="js-more-by-title">More by ---</span>
-            <span class="section-arrow">›</span>
-        </a>
-        <div class="app-list-scroll" id="js-more-by-list"></div>
+    <a href="javascript:history.back()" class="top-btn"><div class="back-icon"></div></a>
+
+    <div id="js-sticky-header" class="sticky-header">
+        <div class="sticky-info">
+            <img id="js-sticky-icon" src="" alt="">
+            <span id="js-sticky-name">---</span>
+        </div>
+        <a href="#" class="sticky-dl-btn" id="js-sticky-dl-btn">GET</a>
     </div>
 
-    <div id="js-suggested-section" class="store-section" style="display:none;">
-        <a href="#" class="section-header">
-            <span class="section-title" id="js-suggested-title">You Might Also Like</span>
-            <span class="section-arrow">›</span>
-        </a>
-        <div class="app-list-scroll" id="js-suggested-list"></div>
+    <section class="hero" id="js-hero"></section>
+
+    <div class="container">
+        <div class="info-header">
+            <div class="icon-box"><img id="js-main-icon" src="" alt=""></div>
+            <div>
+                <div style="display:flex; align-items:center;">
+                    <p class="version-num" id="js-version">v---</p>
+                    <span id="js-status" class="status-badge">Available</span>
+                </div>
+                <div id="js-author-list" style="margin-top:4px;"></div>
+                <p style="font-size: 0.75rem; margin: 4px 0 0; color: var(--secondary-text);" id="ui-updated">---</p>
+            </div>
+        </div>
+
+        <div id="js-dl-area"></div>
+
+        <div class="ss-container" id="js-ss-container"></div>
+        
+        <h2 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 10px;">Information</h2>
+        <div id="js-info-content" class="info-text">Loading...</div>
+
+        <div id="js-more-by-section" class="store-section" style="display:none;">
+            <a href="#" class="section-header">
+                <span class="section-title" id="js-more-by-title">---</span>
+                <span class="section-arrow">›</span>
+            </a>
+            <div class="app-list-scroll" id="js-more-by-list"></div>
+        </div>
+
+        <div id="js-suggested-section" class="store-section" style="display:none;">
+            <a href="#" class="section-header">
+                <span class="section-title" id="js-suggested-title">---</span>
+                <span class="section-arrow">›</span>
+            </a>
+            <div class="app-list-scroll" id="js-suggested-list"></div>
+        </div>
+
+        <div id="js-contact-area" style="margin-top:30px;"></div>
     </div>
-</div>
 
-<script>
-    const isJa = navigator.language.includes('ja');
-    const lang = isJa ? 'ja' : 'en';
-    const params = new URLSearchParams(window.location.search);
-    const codename = params.get('id');
+    <script>
+        const isJa = navigator.language.includes('ja');
+        const lang = isJa ? 'ja' : 'en';
+        const params = new URLSearchParams(window.location.search);
+        const codename = params.get('id');
 
-    const uiText = {
-        ja: { moreBy: "{name}の他のアプリ", suggested: "おすすめ", get: "入手" },
-        en: { moreBy: "More by {name}", suggested: "You Might Also Like", get: "Get" }
-    };
+        const uiText = {
+            ja: { available: "利用可能", updated: "最終更新: ", download: "ダウンロード", moreBy: "{name}の他のアプリ", suggested: "おすすめ", get: "入手" },
+            en: { available: "Available", updated: "Last Updated: ", download: "DOWNLOAD", moreBy: "More by {name}", suggested: "You Might Also Like", get: "Get" }
+        };
 
-    async function initRecommendations() {
-        if(!codename) return;
-        const t = uiText[lang];
+        async function initPage() {
+            if(!codename) return;
+            const t = uiText[lang];
+            const resDir = `../resources/${codename}`;
+            
+            try {
+                // 1. メインアプリ情報
+                const vRes = await fetch(`${resDir}/version.json?${Date.now()}`);
+                const vData = await vRes.json();
+                const author = vData.authors[0];
 
-        try {
-            // 自アプリの作者情報を取得
-            const meRes = await fetch(`../resources/${codename}/version.json`);
-            const meData = await meRes.json();
-            const primaryAuthor = meData.authors[0];
+                document.getElementById('js-sticky-name').textContent = vData.name;
+                document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
+                document.getElementById('js-main-icon').src = `${resDir}/icon.png`;
+                document.getElementById('js-hero').style.backgroundImage = `url('${resDir}/header.png')`;
+                document.getElementById('js-version').textContent = vData.version;
+                document.getElementById('ui-updated').textContent = t.updated + vData.lastUpdated;
 
-            // リスト読み込み
-            const [appsData, prodData] = await Promise.all([
-                fetch('../apps.json').then(r => r.json()).catch(() => []),
-                fetch('../prod.json').then(r => r.json()).catch(() => [])
-            ]);
-
-            const combined = [...appsData, ...prodData];
-            const seenIds = new Set([codename]);
-            const uniqueApps = [];
-
-            combined.forEach(app => {
-                const id = app.id || app.codename;
-                if (id && !seenIds.has(id)) {
-                    seenIds.add(id);
-                    uniqueApps.push({ id, name: app.name });
+                // DLボタン設定
+                const ua = navigator.userAgent;
+                const isIos = /iPad|iPhone|iPod/.test(ua);
+                const dlUrl = isIos ? vData.iosDownloadUrl : vData.androidDownloadUrl;
+                if(dlUrl) {
+                    document.getElementById('js-dl-area').innerHTML = `<a class="download-btn" href="${dlUrl}" target="_blank">${t.download}</a>`;
+                    document.getElementById('js-sticky-dl-btn').href = dlUrl;
                 }
-            });
 
-            const moreByList = document.getElementById('js-more-by-list');
-            const suggestedList = document.getElementById('js-suggested-list');
+                // SS
+                const ssc = document.getElementById('js-ss-container');
+                [1,2,3].forEach(n => {
+                    const img = document.createElement('img');
+                    img.src = `${resDir}/ss${n}.png`;
+                    img.onerror = () => img.remove();
+                    ssc.appendChild(img);
+                });
 
-            const tasks = uniqueApps.map(async (app) => {
-                try {
-                    const itemRes = await fetch(`../resources/${app.id}/version.json`);
-                    if (!itemRes.ok) throw 1;
-                    const itemData = await itemRes.json();
+                // 作者リンク
+                vData.authors.forEach(a => {
+                    const link = document.createElement('a');
+                    link.href = `../dev/?id=${a.id}`; link.className = 'author-link'; 
+                    link.style = "color:var(--btn-blue); text-decoration:none; font-weight:600; font-size:0.85rem; margin-right:8px;";
+                    link.textContent = a.name;
+                    document.getElementById('js-author-list').appendChild(link);
+                });
 
-                    // 言語別の説明文を取得
-                    const description = (itemData.meta && itemData.meta[lang]) 
-                                        ? itemData.meta[lang].desc 
-                                        : (itemData.meta && itemData.meta['en'] ? itemData.meta['en'].desc : "");
+                // 情報HTML
+                const infoRes = await fetch(`${resDir}/info_${lang}.html`).catch(() => null);
+                if(infoRes && infoRes.ok) document.getElementById('js-info-content').innerHTML = await infoRes.text();
 
-                    const appHtml = `
-                        <a href="?id=${app.id}" class="app-row">
-                            <img src="../resources/${app.id}/icon.png" class="app-icon">
-                            <div class="app-info">
-                                <p class="app-name">${itemData.name}</p>
-                                <p class="app-desc">${description}</p>
-                            </div>
-                            <div class="get-btn">${t.get}</div>
-                        </a>
-                    `;
+                // 2. おすすめ・他のアプリ (prod & apps)
+                const fetchList = async (p) => { try { const r = await fetch(`${p}?${Date.now()}`); return r.ok ? await r.json() : []; } catch { return []; } };
+                const [apps, prods] = await Promise.all([fetchList('../apps.json'), fetchList('../prod.json')]);
+                
+                const combined = [...apps, ...prods];
+                const seenIds = new Set([codename]);
+                const moreByList = document.getElementById('js-more-by-list');
+                const sugList = document.getElementById('js-suggested-list');
 
-                    const isSameAuthor = itemData.authors && itemData.authors.some(a => a.id === primaryAuthor.id);
-                    if (isSameAuthor) {
-                        moreByList.insertAdjacentHTML('beforeend', appHtml);
-                    } else {
-                        suggestedList.insertAdjacentHTML('beforeend', appHtml);
-                    }
-                } catch(e) {}
-            });
+                for (const item of combined) {
+                    const id = item.id || item.codename;
+                    if (!id || seenIds.has(id)) continue;
+                    seenIds.add(id);
 
-            await Promise.all(tasks);
+                    try {
+                        const itemVRes = await fetch(`../resources/${id}/version.json`);
+                        const itemV = await itemVRes.json();
+                        const itemDesc = (itemV.meta && itemV.meta[lang]) ? itemV.meta[lang].desc : (itemV.meta?.en?.desc || "");
 
-            if (moreByList.children.length > 0) {
-                document.getElementById('js-more-by-section').style.display = 'block';
-                document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', primaryAuthor.name);
-            }
-            if (suggestedList.children.length > 0) {
-                document.getElementById('js-suggested-section').style.display = 'block';
-                document.getElementById('js-suggested-title').textContent = t.suggested;
-            }
+                        const html = `
+                            <a href="?id=${id}" class="app-row">
+                                <img src="../resources/${id}/icon.png" loading="lazy">
+                                <div class="app-info">
+                                    <div class="app-name">${itemV.name}</div>
+                                    <div class="app-desc">${itemDesc}</div>
+                                </div>
+                                <div class="get-small-btn">${t.get}</div>
+                            </a>`;
 
-        } catch (e) { console.error(e); }
-    }
+                        if (itemV.authors?.some(a => a.id === author.id)) {
+                            moreByList.insertAdjacentHTML('beforeend', html);
+                        } else {
+                            sugList.insertAdjacentHTML('beforeend', html);
+                        }
+                    } catch(e) {}
+                }
 
-    window.onload = initRecommendations;
-</script>
+                if (moreByList.children.length > 0) {
+                    document.getElementById('js-more-by-section').style.display = 'block';
+                    document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', author.name);
+                }
+                if (sugList.children.length > 0) {
+                    document.getElementById('js-suggested-section').style.display = 'block';
+                    document.getElementById('js-suggested-title').textContent = t.suggested;
+                }
+
+                // SNS
+                const contact = document.getElementById('js-contact-area');
+                if (vData.discord) contact.innerHTML += `<a href="${vData.discord}" class="download-btn" style="background:#5865F2; margin-top:10px;">Discord</a>`;
+                if (vData.telegram) contact.innerHTML += `<a href="${vData.telegram}" class="download-btn" style="background:#0088cc; margin-top:10px;">Telegram</a>`;
+
+            } catch (e) { console.error(e); }
+
+            window.onscroll = () => {
+                const header = document.getElementById('js-sticky-header');
+                if (window.scrollY > 150) header.classList.add('active');
+                else header.classList.remove('active');
+            };
+        }
+        window.onload = initPage;
+    </script>
 </body>
 </html>
