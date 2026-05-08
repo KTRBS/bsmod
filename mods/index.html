@@ -76,13 +76,13 @@
         .contact-btn.telegram { color: var(--btn-blue) !important; }
         .contact-btn .arrow { color: var(--secondary-text); font-weight: normal; }
 
-        /* Store Recommendation Styles */
+        /* Store Sections */
         .store-section { margin-top: 35px; }
-        .store-section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .store-section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 15px; }
         .app-grid-scroll { display: flex; overflow-x: auto; gap: 16px; padding: 0 0 15px 0; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; margin: 0 -5px; }
         .app-grid-scroll::-webkit-scrollbar { display: none; }
         .app-item-card { flex: 0 0 100px; scroll-snap-align: start; text-decoration: none; color: var(--text-color); }
-        .app-item-card img { width: 100px; height: 100px; border-radius: 22px; border: 0.5px solid var(--line); object-fit: cover; margin-bottom: 6px; }
+        .app-item-card img { width: 100px; height: 100px; border-radius: 22px; border: 0.5px solid var(--line); object-fit: cover; margin-bottom: 8px; background: var(--card-bg); }
         .app-item-card .app-item-name { font-size: 0.75rem; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2; height: 2.4em; }
     </style>
 </head>
@@ -125,13 +125,13 @@
         <h2 style="font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px;">Information</h2>
         <div id="js-info-content" style="line-height: 1.6; color: var(--secondary-text);">Loading...</div>
 
-        <!-- More by Author -->
+        <!-- More by Section -->
         <div id="js-more-by-section" class="store-section" style="display:none;">
-            <div class="store-section-title"><span id="js-more-by-title">More by ---</span></div>
+            <div class="store-section-title" id="js-more-by-title">More by ---</div>
             <div class="app-grid-scroll" id="js-more-by-list"></div>
         </div>
 
-        <!-- You Might Also Like -->
+        <!-- Suggested Section -->
         <div id="js-suggested-section" class="store-section" style="display:none;">
             <div class="store-section-title">You Might Also Like</div>
             <div class="app-grid-scroll" id="js-suggested-list"></div>
@@ -166,11 +166,13 @@
             const t = uiText[lang];
             
             try {
-                // 1. メインのアプリデータを取得
+                // Main App Data
                 const vRes = await fetch(`${resDir}/version.json?${new Date().getTime()}`);
                 const vData = await vRes.json();
                 
                 const latestVer = vData.version;
+                const primaryAuthor = vData.authors[0];
+
                 document.getElementById('ui-main-title').textContent = vData.name;
                 document.getElementById('js-sticky-name').textContent = vData.name;
                 document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
@@ -196,21 +198,13 @@
 
                 let initialPlat = (device === "ios") ? "iOS" : "Android";
                 let initialUrl = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
-                if (!initialUrl || initialUrl === "") {
+                if (!initialUrl) {
                     if (vData.androidDownloadUrl) { initialPlat = "Android"; initialUrl = vData.androidDownloadUrl; }
                     else if (vData.iosDownloadUrl) { initialPlat = "iOS"; initialUrl = vData.iosDownloadUrl; }
                 }
-
-                if (targetVer) {
-                    const cleanT = targetVer.replace(/^v/, '');
-                    const iosO = vData.iosoldver || {};
-                    const andO = vData.androidoldver || {};
-                    if (iosO[targetVer] || iosO[cleanT]) { initialUrl = iosO[targetVer] || iosO[cleanT]; initialPlat = "iOS"; }
-                    else if (andO[targetVer] || andO[cleanT]) { initialUrl = andO[targetVer] || andO[cleanT]; initialPlat = "Android"; }
-                }
                 updateToVersion(latestVer, initialUrl, initialPlat);
 
-                // スクショ
+                // Screenshots
                 const ssContainer = document.getElementById('js-ss-container');
                 [1,2,3].forEach(n => {
                     const img = document.createElement('img');
@@ -219,86 +213,64 @@
                     ssContainer.appendChild(img);
                 });
 
-                // バージョンメニュー
-                const menu = document.createElement('div');
-                menu.className = 'old-ver-menu';
-                let totalItems = 0;
-                const createSection = (title, items, plat) => {
-                    const validItems = items ? Object.entries(items).filter(([v, u]) => u && u.trim() !== "") : [];
-                    if (validItems.length > 0) {
-                        const label = document.createElement('div');
-                        label.className = 'menu-label'; label.textContent = title;
-                        menu.appendChild(label);
-                        validItems.forEach(([v, u]) => {
-                            totalItems++;
-                            const item = document.createElement('div');
-                            item.className = 'old-ver-item'; item.textContent = v;
-                            item.onclick = () => { updateToVersion(v, u, plat); menu.classList.remove('show'); };
-                            menu.appendChild(item);
-                        });
-                    }
-                };
-                createSection("iOS (Latest)", vData.iosDownloadUrl ? {[vData.version]: vData.iosDownloadUrl} : null, "iOS");
-                createSection("iOS (Older)", vData.iosoldver, "iOS");
-                createSection("Android (Latest)", vData.androidDownloadUrl ? {[vData.version]: vData.androidDownloadUrl} : null, "Android");
-                createSection("Android (Older)", vData.androidoldver, "Android");
-
-                const toggleBtn = document.getElementById('js-old-ver-toggle');
-                if (totalItems > 1) {
-                    toggleBtn.style.display = "flex";
-                    document.querySelector('.version-wrapper').appendChild(menu);
-                    toggleBtn.onclick = (e) => { e.stopPropagation(); menu.classList.toggle('show'); toggleBtn.classList.toggle('active'); };
-                    window.onclick = () => { menu.classList.remove('show'); toggleBtn.classList.remove('active'); };
-                }
-
-                // 著者表示
-                const primaryAuthor = vData.authors[0];
+                // Author List
                 vData.authors.forEach(a => {
                     const link = document.createElement('a');
                     link.href = `../dev/?id=${a.id}`; link.className = 'author-link'; link.textContent = a.name + " ";
                     document.getElementById('js-author-list').appendChild(link);
                 });
 
-                // コンタクト
+                // Contact
                 const contactArea = document.getElementById('js-contact-area');
                 if (vData.discord) contactArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="contact-btn discord"><span>Discord Server</span><span class="arrow">›</span></a>`;
                 if (vData.telegram) contactArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="contact-btn telegram"><span>Telegram Channel</span><span class="arrow">›</span></a>`;
 
-                // インフォメーション
+                // Information content
                 const infoRes = await fetch(`${resDir}/info_${lang}_${device}.html`);
-                if (infoRes.ok) document.getElementById('js-info-content').innerHTML = await infoRes.text();
-                else {
-                    const fallback = await fetch(`${resDir}/info_en_pc.html`);
-                    if(fallback.ok) document.getElementById('js-info-content').innerHTML = await fallback.text();
-                }
+                document.getElementById('js-info-content').innerHTML = infoRes.ok ? await infoRes.text() : "Information not available.";
 
-                // --- 2. ストア推薦セクション (More by / You might like) ---
-                const appsRes = await fetch(`../apps.json?${new Date().getTime()}`);
-                if (appsRes.ok) {
-                    const allApps = await appsRes.json();
+                // --- Recommendations from prod.json ---
+                const prodRes = await fetch(`../prod.json?${new Date().getTime()}`);
+                if (prodRes.ok) {
+                    const prodData = await prodRes.json();
                     const moreByList = document.getElementById('js-more-by-list');
                     const suggestedList = document.getElementById('js-suggested-list');
-                    
-                    allApps.forEach(app => {
-                        if (app.id === codename) return; // 自分は除外
 
-                        const card = document.createElement('a');
-                        card.href = `?id=${app.id}`;
-                        card.className = 'app-item-card';
-                        card.innerHTML = `
-                            <img src="../resources/${app.id}/icon.png" loading="lazy">
-                            <div class="app-item-name">${app.name}</div>
-                        `;
+                    // 非同期で全アプリの作者情報をチェックして振り分け
+                    const tasks = prodData.map(async (item) => {
+                        if (item.codename === codename) return;
 
-                        // 作者 ID が一致するかチェック (複数の作者に対応)
-                        const isSameAuthor = app.authors && app.authors.some(a => a.id === primaryAuthor.id);
+                        // 各アプリのversion.jsonを読み込んで作者を確認
+                        try {
+                            const itemVRes = await fetch(`../resources/${item.codename}/version.json`);
+                            if (!itemVRes.ok) throw new Error();
+                            const itemVData = await itemVRes.json();
 
-                        if (isSameAuthor) {
-                            moreByList.appendChild(card);
-                        } else {
-                            suggestedList.appendChild(card.cloneNode(true));
+                            const card = document.createElement('a');
+                            card.href = `?id=${item.codename}`;
+                            card.className = 'app-item-card';
+                            card.innerHTML = `
+                                <img src="../${item.icon}" loading="lazy">
+                                <div class="app-item-name">${item.name}</div>
+                            `;
+
+                            const isSameAuthor = itemVData.authors && itemVData.authors.some(a => a.id === primaryAuthor.id);
+                            if (isSameAuthor) {
+                                moreByList.appendChild(card);
+                            } else {
+                                suggestedList.appendChild(card);
+                            }
+                        } catch(e) {
+                            // version.jsonがない場合はとりあえずSuggestへ
+                            const card = document.createElement('a');
+                            card.href = `?id=${item.codename}`;
+                            card.className = 'app-item-card';
+                            card.innerHTML = `<img src="../${item.icon}" loading="lazy"><div class="app-item-name">${item.name}</div>`;
+                            suggestedList.appendChild(card);
                         }
                     });
+
+                    await Promise.all(tasks);
 
                     if (moreByList.children.length > 0) {
                         document.getElementById('js-more-by-section').style.display = 'block';
