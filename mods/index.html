@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <script>
+        // --- CONFIG ---
+        const config = {
+            isDebug: true // trueで画面中央に言語切替ボタンを表示
+        };
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title id="js-meta-title">Brawl stars mods</title>
@@ -23,7 +30,10 @@
         }
         body { font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-color); line-height: 1.4; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
         
-        /* 共通ボタン・ヘッダー */
+        /* Debug Tool */
+        #debug-lang-tool { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 9999; background: rgba(0,0,0,0.7); color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); }
+
+        /* Header & Sticky */
         .top-btn { position: absolute; top: 20px; z-index: 50; width: 32px; height: 32px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); backdrop-filter: blur(5px); left: 20px; text-decoration: none; }
         .back-icon { width: 10px; height: 10px; border-left: 2.5px solid var(--btn-blue); border-bottom: 2.5px solid var(--btn-blue); transform: rotate(45deg); margin-left: 4px; }
         
@@ -34,23 +44,24 @@
         .sticky-info span { font-weight: 700; font-size: 0.95rem; }
         .sticky-dl-btn { background: var(--btn-gray); color: var(--btn-blue); text-decoration: none; padding: 5px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; }
 
+        /* Hero */
         .hero { position: relative; height: 220px; background: center/cover no-repeat; display: flex; align-items: flex-end; }
         .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to bottom, rgba(0,0,0,0), var(--bg-color)); }
         
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         
-        /* メイン情報 */
+        /* Main App Info */
         .info-header { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; }
         .icon-box img { width: 92px; height: 92px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); object-fit: cover; }
-        .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; }
+        .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
         .status-badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; background: var(--status-green); color: white; margin-left: 8px; }
 
         .download-btn { display: block; background: var(--btn-blue); color: white !important; text-decoration: none; text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; margin-bottom: 30px; }
 
-        .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 0 -20px 30px; padding: 0 20px; scroll-snap-type: x mandatory; }
+        .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 0 -20px 30px; padding: 0 20px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
         .ss-container img { flex: 0 0 85%; max-width: 380px; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; scroll-snap-align: center; border: 0.5px solid var(--line); }
 
-        /* App Storeリスト再現 (2段組) */
+        /* Store Section (2-row list) */
         .store-section { margin-top: 40px; border-top: 0.5px solid var(--line); padding-top: 20px; }
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; text-decoration: none; color: inherit; }
         .section-title { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
@@ -74,11 +85,14 @@
         .app-desc { font-size: 0.8rem; color: var(--secondary-text); margin: 2px 0 0; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
         .get-small-btn { background: var(--btn-gray); color: var(--btn-blue); padding: 6px 20px; border-radius: 20px; font-weight: 800; font-size: 0.85rem; text-transform: uppercase; }
 
-        .info-text { line-height: 1.6; color: var(--secondary-text); font-size: 0.95rem; }
+        /* Info Content */
+        .info-content { line-height: 1.6; color: var(--secondary-text); font-size: 0.95rem; margin-bottom: 20px; }
+        .info-content h2, .info-content h3 { color: var(--text-color); margin-top: 20px; }
     </style>
 </head>
 <body>
 
+    <div id="debug-container"></div>
     <a href="javascript:history.back()" class="top-btn"><div class="back-icon"></div></a>
 
     <div id="js-sticky-header" class="sticky-header">
@@ -99,7 +113,7 @@
                     <p class="version-num" id="js-version">v---</p>
                     <span id="js-status" class="status-badge">Available</span>
                 </div>
-                <div id="js-author-list" style="margin-top:4px;"></div>
+                <div id="js-author-list" style="margin-top:4px; font-weight: 600; font-size: 0.85rem; color: var(--btn-blue);"></div>
                 <p style="font-size: 0.75rem; margin: 4px 0 0; color: var(--secondary-text);" id="ui-updated">---</p>
             </div>
         </div>
@@ -109,7 +123,7 @@
         <div class="ss-container" id="js-ss-container"></div>
         
         <h2 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 10px;">Information</h2>
-        <div id="js-info-content" class="info-text">Loading...</div>
+        <div id="js-info-content" class="info-content">Loading...</div>
 
         <div id="js-more-by-section" class="store-section" style="display:none;">
             <a href="#" class="section-header">
@@ -131,8 +145,7 @@
     </div>
 
     <script>
-        const isJa = navigator.language.includes('ja');
-        const lang = isJa ? 'ja' : 'en';
+        let currentLang = navigator.language.includes('ja') ? 'ja' : 'en';
         const params = new URLSearchParams(window.location.search);
         const codename = params.get('id');
 
@@ -141,115 +154,146 @@
             en: { available: "Available", updated: "Last Updated: ", download: "DOWNLOAD", moreBy: "More by {name}", suggested: "You Might Also Like", get: "Get" }
         };
 
-        async function initPage() {
+        // デバッグ用言語ボタン
+        if (config.isDebug) {
+            const btn = document.createElement('div');
+            btn.id = 'debug-lang-tool';
+            btn.textContent = `Lang: ${currentLang.toUpperCase()}`;
+            btn.onclick = () => {
+                currentLang = (currentLang === 'ja') ? 'en' : 'ja';
+                btn.textContent = `Lang: ${currentLang.toUpperCase()}`;
+                renderPage();
+            };
+            document.getElementById('debug-container').appendChild(btn);
+        }
+
+        function getOS() {
+            const ua = navigator.userAgent;
+            if (/android/i.test(ua)) return "android";
+            if (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return "ios";
+            return "pc";
+        }
+
+        async function renderPage() {
             if(!codename) return;
-            const t = uiText[lang];
+            const t = uiText[currentLang];
+            const device = getOS();
             const resDir = `../resources/${codename}`;
             
             try {
-                // 1. メインアプリ情報
+                // 1. メインのversion.json読み込み
                 const vRes = await fetch(`${resDir}/version.json?${Date.now()}`);
                 const vData = await vRes.json();
-                const author = vData.authors[0];
+                const primaryAuthor = vData.authors[0];
 
+                // テキスト更新
                 document.getElementById('js-sticky-name').textContent = vData.name;
                 document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-main-icon').src = `${resDir}/icon.png`;
                 document.getElementById('js-hero').style.backgroundImage = `url('${resDir}/header.png')`;
                 document.getElementById('js-version').textContent = vData.version;
                 document.getElementById('ui-updated').textContent = t.updated + vData.lastUpdated;
+                document.getElementById('js-status').textContent = t.available;
 
-                // DLボタン設定
-                const ua = navigator.userAgent;
-                const isIos = /iPad|iPhone|iPod/.test(ua);
-                const dlUrl = isIos ? vData.iosDownloadUrl : vData.androidDownloadUrl;
-                if(dlUrl) {
-                    document.getElementById('js-dl-area').innerHTML = `<a class="download-btn" href="${dlUrl}" target="_blank">${t.download}</a>`;
-                    document.getElementById('js-sticky-dl-btn').href = dlUrl;
+                // DLボタン（OSに応じてURL変更）
+                const dlUrl = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
+                const finalDlUrl = dlUrl || vData.androidDownloadUrl || vData.iosDownloadUrl;
+                if(finalDlUrl) {
+                    document.getElementById('js-dl-area').innerHTML = `<a class="download-btn" href="${finalDlUrl}" target="_blank">${t.download}</a>`;
+                    document.getElementById('js-sticky-dl-btn').href = finalDlUrl;
+                    document.getElementById('js-sticky-dl-btn').textContent = t.get;
                 }
 
-                // SS
+                // 作者名
+                document.getElementById('js-author-list').innerHTML = vData.authors.map(a => `<a href="../dev/?id=${a.id}" style="color:inherit;text-decoration:none;margin-right:8px;">${a.name}</a>`).join('');
+
+                // スクリーンショット (1回だけ描画)
                 const ssc = document.getElementById('js-ss-container');
-                [1,2,3].forEach(n => {
-                    const img = document.createElement('img');
-                    img.src = `${resDir}/ss${n}.png`;
-                    img.onerror = () => img.remove();
-                    ssc.appendChild(img);
-                });
+                if (ssc.children.length === 0) {
+                    [1,2,3].forEach(n => {
+                        const img = document.createElement('img');
+                        img.src = `${resDir}/ss${n}.png`;
+                        img.onerror = () => img.remove();
+                        ssc.appendChild(img);
+                    });
+                }
 
-                // 作者リンク
-                vData.authors.forEach(a => {
-                    const link = document.createElement('a');
-                    link.href = `../dev/?id=${a.id}`; link.className = 'author-link'; 
-                    link.style = "color:var(--btn-blue); text-decoration:none; font-weight:600; font-size:0.85rem; margin-right:8px;";
-                    link.textContent = a.name;
-                    document.getElementById('js-author-list').appendChild(link);
-                });
+                // --- 重要: Information(HTML)の読み込み ---
+                // 元のコードの仕様 (info_lang_device.html) に合わせて再構成
+                const infoPath = `${resDir}/info_${currentLang}_${device}.html`;
+                const infoRes = await fetch(infoPath).catch(() => null);
+                if(infoRes && infoRes.ok) {
+                    document.getElementById('js-info-content').innerHTML = await infoRes.text();
+                } else {
+                    // フォールバック: デバイス指定なしのファイル
+                    const fallbackRes = await fetch(`${resDir}/info_${currentLang}.html`).catch(() => null);
+                    document.getElementById('js-info-content').innerHTML = (fallbackRes && fallbackRes.ok) ? await fallbackRes.text() : "No information available.";
+                }
 
-                // 情報HTML
-                const infoRes = await fetch(`${resDir}/info_${lang}.html`).catch(() => null);
-                if(infoRes && infoRes.ok) document.getElementById('js-info-content').innerHTML = await infoRes.text();
-
-                // 2. おすすめ・他のアプリ (prod & apps)
-                const fetchList = async (p) => { try { const r = await fetch(`${p}?${Date.now()}`); return r.ok ? await r.json() : []; } catch { return []; } };
-                const [apps, prods] = await Promise.all([fetchList('../apps.json'), fetchList('../prod.json')]);
+                // 2. おすすめ・他のアプリ リスト作成
+                const fetchJson = async (p) => { try { const r = await fetch(`${p}?${Date.now()}`); return r.ok ? await r.json() : []; } catch { return []; } };
+                const [appsData, prodData] = await Promise.all([fetchJson('../apps.json'), fetchJson('../prod.json')]);
                 
-                const combined = [...apps, ...prods];
+                const combined = [...appsData, ...prodData];
                 const seenIds = new Set([codename]);
                 const moreByList = document.getElementById('js-more-by-list');
                 const sugList = document.getElementById('js-suggested-list');
+                
+                moreByList.innerHTML = '';
+                sugList.innerHTML = '';
 
-                for (const item of combined) {
-                    const id = item.id || item.codename;
+                for (const app of combined) {
+                    const id = app.id || app.codename;
                     if (!id || seenIds.has(id)) continue;
                     seenIds.add(id);
 
                     try {
-                        const itemVRes = await fetch(`../resources/${id}/version.json`);
-                        const itemV = await itemVRes.json();
-                        const itemDesc = (itemV.meta && itemV.meta[lang]) ? itemV.meta[lang].desc : (itemV.meta?.en?.desc || "");
+                        const itemRes = await fetch(`../resources/${id}/version.json`);
+                        if (!itemRes.ok) continue;
+                        const itemV = await itemRes.json();
+                        
+                        // descはmeta[lang].descから取得
+                        const description = (itemV.meta && itemV.meta[currentLang]) ? itemV.meta[currentLang].desc : (itemV.meta?.en?.desc || "");
 
                         const html = `
                             <a href="?id=${id}" class="app-row">
                                 <img src="../resources/${id}/icon.png" loading="lazy">
                                 <div class="app-info">
                                     <div class="app-name">${itemV.name}</div>
-                                    <div class="app-desc">${itemDesc}</div>
+                                    <div class="app-desc">${description}</div>
                                 </div>
                                 <div class="get-small-btn">${t.get}</div>
                             </a>`;
 
-                        if (itemV.authors?.some(a => a.id === author.id)) {
-                            moreByList.insertAdjacentHTML('beforeend', html);
-                        } else {
-                            sugList.insertAdjacentHTML('beforeend', html);
-                        }
+                        const isSameAuthor = itemV.authors?.some(a => a.id === primaryAuthor.id);
+                        if (isSameAuthor) moreByList.insertAdjacentHTML('beforeend', html);
+                        else sugList.insertAdjacentHTML('beforeend', html);
                     } catch(e) {}
                 }
 
-                if (moreByList.children.length > 0) {
-                    document.getElementById('js-more-by-section').style.display = 'block';
-                    document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', author.name);
-                }
-                if (sugList.children.length > 0) {
-                    document.getElementById('js-suggested-section').style.display = 'block';
-                    document.getElementById('js-suggested-title').textContent = t.suggested;
-                }
+                document.getElementById('js-more-by-section').style.display = moreByList.children.length ? 'block' : 'none';
+                document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', primaryAuthor.name);
+                document.getElementById('js-suggested-section').style.display = sugList.children.length ? 'block' : 'none';
+                document.getElementById('js-suggested-title').textContent = t.suggested;
 
-                // SNS
+                // Contact Buttons
                 const contact = document.getElementById('js-contact-area');
-                if (vData.discord) contact.innerHTML += `<a href="${vData.discord}" class="download-btn" style="background:#5865F2; margin-top:10px;">Discord</a>`;
-                if (vData.telegram) contact.innerHTML += `<a href="${vData.telegram}" class="download-btn" style="background:#0088cc; margin-top:10px;">Telegram</a>`;
+                contact.innerHTML = '';
+                if (vData.discord) contact.innerHTML += `<a href="${vData.discord}" target="_blank" class="download-btn" style="background:#5865F2; margin-top:10px;">Discord</a>`;
+                if (vData.telegram) contact.innerHTML += `<a href="${vData.telegram}" target="_blank" class="download-btn" style="background:#0088cc; margin-top:10px;">Telegram</a>`;
 
-            } catch (e) { console.error(e); }
-
-            window.onscroll = () => {
-                const header = document.getElementById('js-sticky-header');
-                if (window.scrollY > 150) header.classList.add('active');
-                else header.classList.remove('active');
-            };
+            } catch (e) { 
+                console.error(e);
+                document.getElementById('js-info-content').textContent = "Failed to load application data.";
+            }
         }
-        window.onload = initPage;
+
+        window.onscroll = () => {
+            const header = document.getElementById('js-sticky-header');
+            if (window.scrollY > 150) header.classList.add('active');
+            else header.classList.remove('active');
+        };
+        window.onload = renderPage;
     </script>
 </body>
 </html>
