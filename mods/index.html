@@ -76,7 +76,7 @@
         .contact-btn.telegram { color: var(--btn-blue) !important; }
         .contact-btn .arrow { color: var(--secondary-text); font-weight: normal; }
 
-        /* Store Sections */
+        /* AppStore Style Sections */
         .store-section { margin-top: 35px; }
         .store-section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 15px; }
         .app-grid-scroll { display: flex; overflow-x: auto; gap: 16px; padding: 0 0 15px 0; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; margin: 0 -5px; }
@@ -125,13 +125,13 @@
         <h2 style="font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px;">Information</h2>
         <div id="js-info-content" style="line-height: 1.6; color: var(--secondary-text);">Loading...</div>
 
-        <!-- More by Section -->
+        <!-- More by Author -->
         <div id="js-more-by-section" class="store-section" style="display:none;">
             <div class="store-section-title" id="js-more-by-title">More by ---</div>
             <div class="app-grid-scroll" id="js-more-by-list"></div>
         </div>
 
-        <!-- Suggested Section -->
+        <!-- You Might Also Like -->
         <div id="js-suggested-section" class="store-section" style="display:none;">
             <div class="store-section-title">You Might Also Like</div>
             <div class="app-grid-scroll" id="js-suggested-list"></div>
@@ -166,12 +166,10 @@
             const t = uiText[lang];
             
             try {
-                // Main App Data
+                // 1. Current App Info
                 const vRes = await fetch(`${resDir}/version.json?${new Date().getTime()}`);
                 const vData = await vRes.json();
-                
-                const latestVer = vData.version;
-                const primaryAuthor = vData.authors[0];
+                const primaryAuthorId = vData.authors[0]?.id;
 
                 document.getElementById('ui-main-title').textContent = vData.name;
                 document.getElementById('js-sticky-name').textContent = vData.name;
@@ -181,28 +179,24 @@
                 document.getElementById('ui-updated').innerHTML = `<span>${t.updated}</span>${vData.lastUpdated}`;
                 document.getElementById('js-status').textContent = t.available;
 
+                // Download Logic
                 const dlArea = document.getElementById('js-dl-area');
                 const stickyBtn = document.getElementById('js-sticky-dl-btn');
-
                 function updateToVersion(verName, url, platName) {
                     const fullVer = verName.startsWith('v') ? verName : 'v' + verName;
                     document.getElementById('js-version').textContent = fullVer;
-                    document.getElementById('ui-main-title').textContent = vData.name + " " + fullVer;
-                    document.getElementById('js-sticky-name').textContent = vData.name + " " + fullVer;
                     if (url) {
                         dlArea.innerHTML = `<a class="download-btn" href="${url}" target="_blank">${t.download} ${fullVer} (${platName})</a>`;
                         stickyBtn.href = url;
-                        stickyBtn.style.display = "block";
                     }
                 }
-
                 let initialPlat = (device === "ios") ? "iOS" : "Android";
                 let initialUrl = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
                 if (!initialUrl) {
                     if (vData.androidDownloadUrl) { initialPlat = "Android"; initialUrl = vData.androidDownloadUrl; }
                     else if (vData.iosDownloadUrl) { initialPlat = "iOS"; initialUrl = vData.iosDownloadUrl; }
                 }
-                updateToVersion(latestVer, initialUrl, initialPlat);
+                updateToVersion(vData.version, initialUrl, initialPlat);
 
                 // Screenshots
                 const ssContainer = document.getElementById('js-ss-container');
@@ -213,79 +207,91 @@
                     ssContainer.appendChild(img);
                 });
 
-                // Author List
+                // Author Section
                 vData.authors.forEach(a => {
                     const link = document.createElement('a');
                     link.href = `../dev/?id=${a.id}`; link.className = 'author-link'; link.textContent = a.name + " ";
                     document.getElementById('js-author-list').appendChild(link);
                 });
 
-                // Contact
-                const contactArea = document.getElementById('js-contact-area');
-                if (vData.discord) contactArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="contact-btn discord"><span>Discord Server</span><span class="arrow">›</span></a>`;
-                if (vData.telegram) contactArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="contact-btn telegram"><span>Telegram Channel</span><span class="arrow">›</span></a>`;
-
-                // Information content
+                // Info HTML
                 const infoRes = await fetch(`${resDir}/info_${lang}_${device}.html`);
-                document.getElementById('js-info-content').innerHTML = infoRes.ok ? await infoRes.text() : "Information not available.";
+                document.getElementById('js-info-content').innerHTML = infoRes.ok ? await infoRes.text() : "No info.";
 
-                // --- Recommendations from prod.json ---
-                const prodRes = await fetch(`../prod.json?${new Date().getTime()}`);
-                if (prodRes.ok) {
-                    const prodData = await prodRes.json();
-                    const moreByList = document.getElementById('js-more-by-list');
-                    const suggestedList = document.getElementById('js-suggested-list');
+                // --- 2. RECOMMENDATION ENGINE (apps.json + prod.json) ---
+                const fetchList = async (path) => {
+                    try { const r = await fetch(`${path}?${new Date().getTime()}`); return r.ok ? await r.json() : []; }
+                    catch { return []; }
+                };
 
-                    // 非同期で全アプリの作者情報をチェックして振り分け
-                    const tasks = prodData.map(async (item) => {
-                        if (item.codename === codename) return;
+                const [appsData, prodData] = await Promise.all([
+                    fetchList('../apps.json'),
+                    fetchList('../prod.json')
+                ]);
 
-                        // 各アプリのversion.jsonを読み込んで作者を確認
-                        try {
-                            const itemVRes = await fetch(`../resources/${item.codename}/version.json`);
-                            if (!itemVRes.ok) throw new Error();
-                            const itemVData = await itemVRes.json();
+                // Merge and normalize data (prod.json uses 'codename', apps.json might use 'id')
+                const combined = [...appsData, ...prodData];
+                const uniqueApps = [];
+                const seenIds = new Set([codename]); // Current app is already "seen"
 
-                            const card = document.createElement('a');
-                            card.href = `?id=${item.codename}`;
-                            card.className = 'app-item-card';
-                            card.innerHTML = `
-                                <img src="../${item.icon}" loading="lazy">
-                                <div class="app-item-name">${item.name}</div>
-                            `;
+                combined.forEach(app => {
+                    const id = app.id || app.codename;
+                    if (id && !seenIds.has(id)) {
+                        seenIds.add(id);
+                        uniqueApps.push({
+                            id: id,
+                            name: app.name,
+                            // If icon starts with resources/, use it as is, otherwise construct it
+                            icon: app.icon ? (app.icon.startsWith('resources') ? `../${app.icon}` : `../resources/${id}/icon.png`) : `../resources/${id}/icon.png`
+                        });
+                    }
+                });
 
-                            const isSameAuthor = itemVData.authors && itemVData.authors.some(a => a.id === primaryAuthor.id);
-                            if (isSameAuthor) {
-                                moreByList.appendChild(card);
-                            } else {
-                                suggestedList.appendChild(card);
-                            }
-                        } catch(e) {
-                            // version.jsonがない場合はとりあえずSuggestへ
-                            const card = document.createElement('a');
-                            card.href = `?id=${item.codename}`;
-                            card.className = 'app-item-card';
-                            card.innerHTML = `<img src="../${item.icon}" loading="lazy"><div class="app-item-name">${item.name}</div>`;
+                const moreByList = document.getElementById('js-more-by-list');
+                const suggestedList = document.getElementById('js-suggested-list');
+
+                // Process each unique app to check authors
+                const renderTasks = uniqueApps.map(async (app) => {
+                    try {
+                        const itemRes = await fetch(`../resources/${app.id}/version.json`);
+                        if (!itemRes.ok) throw new Error();
+                        const itemData = await itemRes.json();
+
+                        const card = document.createElement('a');
+                        card.href = `?id=${app.id}`;
+                        card.className = 'app-item-card';
+                        card.innerHTML = `<img src="${app.icon}" loading="lazy"><div class="app-item-name">${app.name}</div>`;
+
+                        const isSameAuthor = itemData.authors && itemData.authors.some(a => a.id === primaryAuthorId);
+                        if (isSameAuthor) {
+                            moreByList.appendChild(card);
+                        } else {
                             suggestedList.appendChild(card);
                         }
-                    });
-
-                    await Promise.all(tasks);
-
-                    if (moreByList.children.length > 0) {
-                        document.getElementById('js-more-by-section').style.display = 'block';
-                        document.getElementById('js-more-by-title').textContent = `${t.moreBy} ${primaryAuthor.name}`;
+                    } catch {
+                        // Fallback to suggestions if version.json is missing
+                        const card = document.createElement('a');
+                        card.href = `?id=${app.id}`;
+                        card.className = 'app-item-card';
+                        card.innerHTML = `<img src="${app.icon}" loading="lazy"><div class="app-item-name">${app.name}</div>`;
+                        suggestedList.appendChild(card);
                     }
-                    if (suggestedList.children.length > 0) {
-                        document.getElementById('js-suggested-section').style.display = 'block';
-                    }
+                });
+
+                await Promise.all(renderTasks);
+
+                if (moreByList.children.length > 0) {
+                    document.getElementById('js-more-by-section').style.display = 'block';
+                    document.getElementById('js-more-by-title').textContent = `${t.moreBy} ${vData.authors[0].name}`;
+                }
+                if (suggestedList.children.length > 0) {
+                    document.getElementById('js-suggested-section').style.display = 'block';
                 }
 
             } catch (e) { console.error(e); }
 
             window.onscroll = () => {
                 const scrollY = window.scrollY;
-                document.getElementById('ui-main-title').style.opacity = Math.max(1 - (scrollY / 150), 0);
                 if (scrollY > 150) document.getElementById('js-sticky-header').classList.add('active');
                 else document.getElementById('js-sticky-header').classList.remove('active');
             };
