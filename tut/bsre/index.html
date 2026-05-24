@@ -4,108 +4,263 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>BSRE 購入・導入方法</title>
-    <meta name="description" content="BSREの購入から導入までの手順を完全解説">
-    <meta property="og:title" content="BSRE 導入ガイド">
-    <meta property="og:description" content="BSREの購入から導入までの手順を完全解説">
-    <meta property="og:image" content="/resources/bsre/icon.png">
+    <title>BSRE購入・導入方法</title>
+    <meta name="description" content="BSREの購入から起動までを完全解説">
+    <meta property="og:title" content="BSRE購入・導入方法">
+    <meta property="og:description" content="BSREの購入から起動までを完全解説">
+    <meta property="og:image" content="/tut/re/img/icon.png">
     <meta property="og:type" content="article">
 
     <style>
         :root {
             --primary-color: #007AFF;
-            --bg-color: #f2f2f7;
-            --card-bg: #ffffff;
+            --bg-color: #ffffff;
             --text-color: #1c1c1e;
+            --card-bg: #f8f8f8;
+            --border-color: #e5e5e5;
         }
+
+        /* ダークモード対応 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #0a84ff;
+                --bg-color: #000000;
+                --text-color: #f5f5f7;
+                --card-bg: #1c1c1e;
+                --border-color: #333333;
+            }
+        }
+
         body {
-            font-family: -apple-system, "Helvetica Neue", sans-serif;
+            font-family: -apple-system, "Helvetica Neue", "Hiragino Kaku Gothic ProN", sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.5;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
-        .top-banner { background-color: var(--primary-color); padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .top-banner a { color: white; text-decoration: none; font-weight: bold; font-size: 1.1rem; }
-        .container { max-width: 500px; margin: 20px auto; padding: 0 20px; }
-        h1, h2 { text-align: center; }
-        h2 { margin-top: 40px; color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; font-size: 1.3rem; }
-        .step { background: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .step-header { display: flex; align-items: center; margin-bottom: 12px; font-weight: bold; font-size: 1.1rem; }
-        .number { background: var(--primary-color); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; flex-shrink: 0; font-size: 0.9rem; }
-        .step-img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #e5e5e5; margin-top: 10px; }
-        .btn-link { display: inline-block; background: var(--primary-color); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; margin: 10px 0; }
+
+        .link-underline {
+            text-decoration: underline;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        h2 {
+            margin-top: 40px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        .step {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .number {
+            background: var(--primary-color);
+            color: #ffffff;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        .step-img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
+        }
+        .btn-link {
+            display: inline-block;
+            background: var(--primary-color);
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
 
-<div class="top-banner">
-    <a href="https://ktr.brawlmods.com/mods/?id=bsre">BSREをインストール</a>
-</div>
-
 <div class="container">
     <h1>BSRE 導入ガイド</h1>
-    <p style="text-align: center; color: #666; margin-top: -15px;">購入からアクティベートまでの完全手順</p>
+    <p style="text-align: center; color: #8e8e93; margin-top: -15px;">購入からアクティベートまでの完全ガイド</p>
 
     <h2>1. BSRE の購入方法</h2>
     <div class="step">
-        <div class="step-header"><span class="number">1</span>ボットを開く</div>
+        <div class="step-header"><span class="number">1</span>ボットを開始</div>
         <div>
-            <a href="https://t.me/bsre_bot_link" class="btn-link">BSRE Botを開く</a><br>
-            リンクからボットを開始してください。
+            <a href="https://t.me/regeared_bot?start=cmVmOlkzdno0TA" class="btn-link">BSRE Botを開く</a><br>
+            リンクを開き、一番下の<strong>「start」</strong>をタップします。<br>
+            <small>リンクが無効と表示される場合は<a href="https://apps.apple.com/us/app/telegram-messenger/id686449807" class="link-underline">Telegram</a>をインストールしてください。</small><br>
+            <small><a href="https://discord.gg/m7AJPfbQg6" class="link-underline">サポートが必要ですか？</a></small>
         </div>
-        <img src="/tut/bsre/bot_start.png" class="step-img">
+        <img src="tut/re/img/bot_start.png" class="step-img">
     </div>
     
     <div class="step">
-        <div class="step-header"><span class="number">2</span>購入メニュー</div>
-        <div>メニューから<strong>「Purchase」</strong>を選択し、支払いを行います。</div>
-        <img src="/tut/bsre/bot_purchase.png" class="step-img">
+        <div class="step-header"><span class="number">2</span>Balanceを開く</div>
+        <div>画面の左側にある、<strong>「Balance」</strong>を押します。</div>
+        <img src="tut/re/img/bot_balance_btn.png" class="step-img">
     </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">3</span>金額の選択</div>
+        <div><strong>「2000⭐️」</strong>を押します。</div>
+        <img src="tut/re/img/bot_select_2000.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">4</span>決済方法の選択</div>
+        <div><strong>「Telegram stars」</strong>を選択します。</div>
+        <img src="tut/re/img/bot_stars_select.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">5</span>決済の完了</div>
+        <div>Telegram starsを購入して、支払いを済ませます。</div>
+        <img src="tut/re/img/bot_payment_done.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">6</span>メニューの表示</div>
+        <div>チャット欄に<strong>「/stat」</strong>とbotに送って、メニューを表示させます。</div>
+        <img src="tut/re/img/bot_send_stat.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">7</span>プロダクトリスト</div>
+        <div><strong>「Product list」</strong>を押します。</div>
+        <img src="tut/re/img/bot_product_list.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">8</span>商品の確認と購入</div>
+        <div>2回<strong>「NEXT」</strong>を押して、メッセージの上に<strong>「bsre」</strong>と書いてあることを確認してから、<strong>「buy now」</strong>をタップします。</div>
+        <img src="tut/re/img/bot_confirm_bsre.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">9</span>スター数の確認</div>
+        <div><strong>「⭐️2000」</strong>をタップします。</div>
+        <img src="tut/re/img/bot_click_stars_price.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">10</span>購入確定</div>
+        <div><strong>「✅Purchase」</strong>をタップします。</div>
+        <img src="tut/re/img/bot_final_purchase.png" class="step-img">
+    </div>
+
 
     <h2>2. BSRE のインストール</h2>
     <div class="step">
-        <div class="step-header"><span class="number">1</span>ダウンロード</div>
-        <div>
-            <a href="#" class="btn-link">BSREをダウンロード</a><br>
-            ZIPファイルを解凍してください。
-        </div>
-        <img src="/tut/bsre/download_unzip.png" class="step-img">
+        <div class="step-header"><span class="number">1</span>アプリの入手</div>
+        <div>右上の<strong>「入手」</strong>ボタンを押してください。</div>
+        <img src="/tut/ios/resources/tale_unzip.png" class="step-img">
     </div>
+
     <div class="step">
-        <div class="step-header"><span class="number">2</span>署名手順</div>
-        <div>Ksign等を使用して署名・インストールを行います。</div>
-        <img src="/tut/bsre/ksign_sign.png" class="step-img">
+        <div class="step-header"><span class="number">2</span>Telegramを開く</div>
+        <div>「このページをTelegramで開きますか？」と出るので、<strong>「開く」</strong>をタップしてください。</div>
+        <img src="/tut/ios/resources/open_telegram_confirm.png" class="step-img">
     </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">3</span>ファイルのダウンロード</div>
+        <div>ハイライトされたファイルの<strong>「↓（ダウンロード）」ボタン</strong>を押してダウンロードを開始してください。</div>
+        <img src="/tut/ios/resources/telegram_file_download.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">4</span>ファイルに保存</div>
+        <div>ダウンロードが終わったら、共有メニューを開いて<strong>「ファイルに保存」</strong>を選択してください。</div>
+        <img src="/tut/ios/resources/telegram_save_to_files.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">5</span>Libraryを選択</div>
+        <div>
+            Ksignの<strong>「Library」</strong>タブを選択します。<br>
+            <a href="https://ktr.brawlmods.com/tut/" class="link-underline">Ksignがありませんか？</a>
+        </div>
+        <img src="/tut/ios/resources/ksign_library_tab.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">6</span>追加ボタンを押す</div>
+        <div>右上の<strong>「+」</strong>ボタンをタップします。</div>
+        <img src="/tut/ios/resources/ksign_plus_button.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">7</span>インポート形式の選択</div>
+        <div><strong>「import from files」</strong>を選択します。</div>
+        <img src="/tut/ios/resources/ksign_import_files.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">8</span>最近使った項目</div>
+        <div>右下の<strong>「最近使った項目」</strong>を選びます。</div>
+        <img src="/tut/ios/resources/ksign_recent_tab.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">9</span>ipaファイルの選択</div>
+        <div><strong>BSREのipa</strong>を選択してインポートします。</div>
+        <img src="tut/re/img/ksign_select_bsre_ipa.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">10</span>アプリを選択</div>
+        <div>リストに追加された<strong>BSRE</strong>をタップします。</div>
+        <img src="tut/re/img/ksign_select_bsre.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">11</span>署名の開始</div>
+        <div><strong>「sign&install」</strong>を押し、次の画面で<strong>「Start signing」</strong>をタップ。5分程度待ちます。</div>
+        <img src="tut/re/img/ksign_bsre_start_signing.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">12</span>完了</div>
+        <div>画面に<strong>completed</strong>と出たら、インストールを確認して終了です。</div>
+        <img src="tut/re/img/ksign_bsre_completed.png" class="step-img">
+    </div>
+
 
     <h2>3. アクティベート手順</h2>
-    <div class="step">
-        <div class="step-header"><span class="number">1</span>キーのコピー</div>
-        <div>起動後のメニューからアクティベーションキーをコピーします。</div>
-        <img src="/tut/bsre/get_key.png" class="step-img">
-    </div>
-    <div class="step">
-        <div class="step-header"><span class="number">2</span>認証完了</div>
-        <div>BotのActivationメニューにキーを貼り付けて完了です。</div>
-        <img src="/tut/bsre/activation.png" class="step-img">
-    </div>
+    <!-- アクティベーション手順は後ほど追記 -->
 </div>
-
-<div style="margin: 60px 0 40px 0; text-align: center; padding: 0 20px;">
-    <button id="shareButton" style="background-color: #007AFF; color: white; border: none; padding: 16px 0; border-radius: 16px; font-size: 1rem; font-weight: 600; width: 100%; max-width: 320px; cursor: pointer;">
-        このサイトを友達に教える
-    </button>
-</div>
-
-<script>
-    document.getElementById('shareButton').addEventListener('click', async () => {
-        const shareData = { title: 'BSRE 導入ガイド', text: 'BSREの導入手順がわかるサイトだよ', url: 'https://ktr.brawlmods.com/tut/bsre/' };
-        if (navigator.share) await navigator.share(shareData);
-        else { navigator.clipboard.writeText(shareData.url); alert('URLをコピーしました！'); }
-    });
-</script>
 
 </body>
 </html>
-
