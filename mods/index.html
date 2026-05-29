@@ -318,6 +318,12 @@
                         authorListEl.appendChild(document.createTextNode(', '));
                     }
                 });
+
+                // SNSエリアと共有ボタン生成
+                const snsArea = document.getElementById('js-sns-area');
+                snsArea.innerHTML = '';
+                if (vData.discord) snsArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="download-btn" style="background:#5865F2;">Discord</a>`;
+                if (vData.telegram) snsArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="download-btn" style="background:#0088cc;">Telegram</a>`;
                 
                 // 共有ボタンとシェアメソッドの追加
                 if (navigator.share) {
