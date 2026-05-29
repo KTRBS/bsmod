@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="ブロスタmod入れ方を日本語で無料解説！Tale stars, BSRE, NR의入れ方紹介、日本語の無料ガイド、無料サポート付きのダウンロードサイト">
+    <meta name="description" content="ブロスタmod入れ方を日本語で無料解説！Tale stars, BSRE, NRの入れ方紹介、日本語の無料ガイド、無料サポート付きのダウンロードサイト">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>App Store - Mods</title>
     <style>
@@ -10,15 +10,15 @@
         @media (prefers-color-scheme: dark) { :root { --ios-bg: #000000; --card-bg: #1c1c1e; --search-bg: rgba(255, 255, 255, 0.12); --text-color: #ffffff; --line: rgba(255,255,255,0.15); --tab-bg: rgba(20, 20, 20, 0.85); } }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--ios-bg); color: var(--text-color); margin: 0; padding: 0 16px 70px 16px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; width: 100vw; box-sizing: border-box; }
         .hidden { display: none !important; }
-        header { padding: 20px 0 5px 0; } /* 下パディングを縮小 */
+        header { padding: 20px 0 5px 0; }
         .date-str { color: var(--ios-gray); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
         h1 { font-size: 1.8rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
         
-        .grid-container { display: grid; grid-template-columns: 1fr; gap: 10px; } /* ギャップを最小限に */
+        .grid-container { display: grid; grid-template-columns: 1fr; gap: 10px; }
         @media (orientation: landscape) or (min-width: 768px) { .grid-container { grid-template-columns: 1fr 1fr; column-gap: 25px; } }
 
         /* バナーカード (Ad-style) */
-        .ad-banner-card { display: block; width: 100%; aspect-ratio: 2.1 / 1; border-radius: 20px; position: relative; text-decoration: none; color: #fff; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15); margin: 0 0 10px 0; } /* マージンを最小限に */
+        .ad-banner-card { display: block; width: 100%; aspect-ratio: 2.1 / 1; border-radius: 20px; position: relative; text-decoration: none; color: #fff; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15); margin: 0 0 10px 0; }
         .ad-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; filter: brightness(0.7) saturate(1.2); z-index: 1; }
         .ad-content { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; background: rgba(0,0,0,0.2); }
         .ad-icon { width: 64px; height: 64px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin-bottom: 12px; object-fit: cover; }
@@ -31,7 +31,7 @@
         .ad-iap { font-size: 0.5rem; opacity: 0.8; text-transform: uppercase; }
 
         /* リストスタイル */
-        .today-card { background: var(--card-bg); border-radius: 14px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line); margin-bottom: 10px; } /* 下マージンを最小限に */
+        .today-card { background: var(--card-bg); border-radius: 14px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line); margin-bottom: 10px; }
         .card-header-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; }
         .mod-row { display: flex; align-items: center; padding: 10px 0; text-decoration: none; color: inherit; border-bottom: 1px solid var(--line); width: 100%; box-sizing: border-box; overflow: hidden; }
         .mod-row:last-child { border-bottom: none; }
@@ -44,9 +44,16 @@
         
         .action-container { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; min-width: 75px; }
         .support-status { font-size: 0.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; text-align: center; }
-        @media (min-width: 768px) { .support-status { display: none; } }
+        @media (min-width: 768px) { .support-status { display: none !important; } }
         .get-btn { background: #f0f0f7; color: var(--ios-blue); font-weight: 800; padding: 5px 14px; border-radius: 15px; font-size: 0.78rem; width: 100%; box-sizing: border-box; text-align: center; }
         @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
+
+        /* 検索結果・スクリーンショット（復元） */
+        #search-results { display: grid; grid-template-columns: 1fr; gap: 30px; }
+        @media (orientation: landscape) or (min-width: 768px) { #search-results { grid-template-columns: 1fr 1fr; } }
+        .search-result-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; width: 100%; box-sizing: border-box; overflow: hidden; }
+        .ss-container { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line); aspect-ratio: 16 / 9; background: var(--search-bg); box-sizing: border-box; }
+        .ss-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
         /* 検索バー */
         .search-wrapper { position: relative; margin: 15px 0 25px 0; }
@@ -59,6 +66,7 @@
         .tab-item.active { color: var(--ios-blue); }
         .tab-icon-svg { width: 22px; height: 22px; fill: var(--ios-gray); margin-bottom: 2px; }
         .active .tab-icon-svg { fill: var(--ios-blue); }
+        .dev-icon-placeholder { display: flex; align-items: center; justify-content: center; background: var(--search-bg); border-radius: 50%; }
     </style>
 </head>
 <body>
@@ -127,12 +135,14 @@
             return `<div class="action-container"><div class="support-status" style="color: ${supportColor};">${supportText}</div><div class="get-btn">GET</div></div>`;
         }
 
+        function formatVersion(v) { if (!v) return ""; return "v" + v.toString().trim().replace(/^[vV]+/, ""); }
+
         async function fetchAppDetails(app) {
             let ver = "", desc = "Play now", supported = true;
             if (app.codename) {
                 try {
                     const v = await fetch(`./resources/${app.codename}/version.json`).then(r => r.json());
-                    ver = "v" + v.version;
+                    ver = formatVersion(v.version);
                     if (isIOS) supported = (app.type === 'ipa' || v.iossupport === 'available');
                     else supported = (app.type !== 'ipa' && v.androidsupport !== 'unavailable');
                     const isJa = navigator.language.includes('ja');
@@ -215,7 +225,10 @@
         }
 
         async function runSearch() {
-            if (!isLoaded) return;
+            if (!isLoaded) { 
+                setTimeout(runSearch, 100);
+                return; 
+            }
             const q = document.getElementById('searchInput').value.toLowerCase();
             const res = document.getElementById('search-results');
             res.innerHTML = "";
@@ -224,21 +237,23 @@
             const filtered = allData.filter(a => a.name.toLowerCase().includes(q));
             for (const app of filtered) {
                 const details = await fetchAppDetails(app);
-                const iconPath = app.icon ? `./${app.icon}` : (app.codename ? `./resources/${app.codename}/icon.png` : null);
-                const ssPath = app.ss1 ? `./${app.ss1}` : (app.codename ? `./resources/${app.codename}/ss1.png` : null);
-                let iconImg = iconPath ? `<img src="${iconPath}" class="mod-icon" onerror="this.style.opacity='0'">` : `<div class="mod-icon"></div>`;
-
-                let html = `<div class="search-result-item"><a href="${app.link}" class="mod-row" style="border:none;">
-                    ${iconImg}
-                    <div class="mod-info">
-                        <div class="mod-name-container"><div class="mod-name">${app.name}</div><div class="mod-version">${details.ver}</div></div>
-                        <div class="mod-sub">${details.desc}</div>
-                    </div>
-                    ${createActionHtml(details.supported)}
-                </a>`;
-                if (ssPath) html += `<div class="ss-container"><img src="${ssPath}" class="ss-img" onerror="this.parentElement.remove()"></div>`;
-                html += `</div>`;
-                res.innerHTML += html;
+                const item = document.createElement('a');
+                item.href = app.link;
+                item.className = 'search-result-item';
+                
+                const iconUrl = app.icon ? `./${app.icon}` : (app.codename ? `./resources/${app.codename}/icon.png` : null);
+                const ssUrl = app.ss1 ? `./${app.ss1}` : (app.codename ? `./resources/${app.codename}/ss1.png` : null);
+                
+                const imgTag = iconUrl ? `<img src="${iconUrl}" class="mod-icon" onerror="this.style.opacity='0'">` : `<div class="mod-icon" style="background:transparent;"></div>`;
+                
+                let html = `<div class="mod-row" style="border:none; padding:0;">${imgTag}<div class="mod-info"><div class="mod-name-container"><div class="mod-name">${app.name}</div><div class="mod-version">${details.ver}</div></div><div class="mod-sub">${details.desc}</div></div>${createActionHtml(details.supported)}</div>`;
+                
+                if (ssUrl) {
+                    html += `<div class="ss-container"><img src="${ssUrl}" class="ss-img" onerror="this.parentElement.remove()"></div>`;
+                }
+                
+                item.innerHTML = html;
+                res.appendChild(item);
             }
         }
 
@@ -248,7 +263,7 @@
                 if (!app.codename) continue;
                 try {
                     const v = await fetch(`./resources/${app.codename}/version.json`).then(r => r.json());
-                    if (v.authors) {
+                    if (v.authors && Array.isArray(v.authors)) {
                         v.authors.forEach(auth => {
                             if (!devMap[auth.id]) devMap[auth.id] = { name: auth.name, count: 0, id: auth.id };
                             devMap[auth.id].count++;
@@ -259,13 +274,11 @@
             const list = document.getElementById('developers-list');
             list.innerHTML = "";
             Object.values(devMap).sort((a,b) => b.count - a.count).forEach(dev => {
-                list.innerHTML += `<a href="/dev/?id=${dev.id}" class="mod-row">
-                    <div class="mod-icon dev-icon-placeholder"><svg width="24" height="24" fill="var(--ios-gray)" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
-                    <div class="mod-info">
-                        <div class="mod-name-container"><div class="mod-name">${dev.name} (${dev.count})</div></div>
-                        <div class="mod-sub">View all mods by ${dev.name}</div>
-                    </div>
-                </a>`;
+                const row = document.createElement('a');
+                row.href = `/dev/?id=${dev.id}`;
+                row.className = 'mod-row';
+                row.innerHTML = `<div class="mod-icon dev-icon-placeholder"><svg width="24" height="24" fill="var(--ios-gray)" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><div class="mod-info"><div class="mod-name-container"><div class="mod-name">${dev.name} <span style="font-weight:normal; color:var(--ios-gray);">(${dev.count})</span></div></div><div class="mod-sub">View all mods by ${dev.name}</div></div><div style="color: var(--ios-gray); padding-right: 5px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9.29 15.88L13.17 12 9.29 8.12c-.39-.39-.39-1.02 0-1.41.39-.39 1.02-.39 1.41 0l4.59 4.59c.39.39.39 1.02 0 1.41l-4.59 4.59c-.39.39-1.02.39-1.41 0-.38-.39-.39-1.03 0-1.42z"/></svg></div>`;
+                list.appendChild(row);
             });
         }
 
