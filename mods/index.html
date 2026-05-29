@@ -9,88 +9,127 @@
 
     <style>
         :root {
-            --bg-color: #ffffff; --text-color: #000000; --secondary-text: #8e8e93;
+            --bg-color: #ffffff;
+            --text-color: #000000; --secondary-text: #8e8e93;
             --grad-color: rgba(255,255,255,1); --header-bg: rgba(255,255,255,0.85);
             --btn-blue: #007aff; --line: rgba(0,0,0,0.1); --card-bg: #f2f2f7;
             --discord: #5865F2; --status-green: #28a745; --status-gray: #8e8e93;
             --menu-bg: #ffffff;
-            --btn-disabled: #cccccc;
         }
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-color: #000000; --text-color: #ffffff; --secondary-text: #8e8e93;
+                --bg-color: #000000;
+                --text-color: #ffffff; --secondary-text: #8e8e93;
                 --grad-color: rgba(0,0,0,1); --header-bg: rgba(20,20,20,0.85);
                 --line: rgba(255,255,255,0.15); --card-bg: #1c1c1e;
                 --menu-bg: #2c2c2e;
-                --btn-disabled: #444444;
             }
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", sans-serif; margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; -webkit-tap-highlight-color: transparent; line-height: 1.4; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", sans-serif;
+            margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; -webkit-tap-highlight-color: transparent; line-height: 1.4;
+        }
         
-        /* デバッグ用ツールのスタイルを追加 */
-        #debug-lang-tool { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 9999; background: rgba(0,0,0,0.7); color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; backdrop-filter: blur(5px); }
+        .top-btn { position: absolute;
+            top: 20px; z-index: 50; width: 32px; height: 32px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); backdrop-filter: blur(5px); }
+        .top-back-btn { left: 20px;
+            text-decoration: none; }
+        
+        /* 右上配置の共有ボタン用スタイル */
+        .top-share-btn { right: 20px; border: none; cursor: pointer; padding: 0; display: flex; }
+        .share-icon { width: 16px; height: 16px; position: relative; margin-bottom: 2px; }
+        .share-icon::before { content: ''; position: absolute; top: 4px; left: 2px; width: 10px; height: 10px; border: 2px solid var(--btn-blue); border-top: none; border-radius: 0 0 2px 2px; }
+        .share-icon::after { content: ''; position: absolute; top: 1px; left: 6px; width: 0; height: 8px; border-left: 2px solid var(--btn-blue); }
+        .share-arrow-head { position: absolute; top: 0; left: 4px; width: 4px; height: 4px; border-top: 2px solid var(--btn-blue); border-left: 2px solid var(--btn-blue); transform: rotate(45deg); }
 
-        .top-btn { position: absolute; top: 20px; z-index: 50; width: 32px; height: 32px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); backdrop-filter: blur(5px); }
-        .top-back-btn { left: 20px; text-decoration: none; }
-        .back-icon { width: 10px; height: 10px; border-left: 2.5px solid var(--btn-blue); border-bottom: 2.5px solid var(--btn-blue); transform: rotate(45deg); margin-left: 4px; }
+        .back-icon { width: 10px; height: 10px; border-left: 2.5px solid var(--btn-blue);
+            border-bottom: 2.5px solid var(--btn-blue); transform: rotate(45deg); margin-left: 4px; }
         
-        .sticky-header { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; transform: translateY(-100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s; opacity: 0; border-bottom: 0.5px solid var(--line); }
-        .sticky-header.active { transform: translateY(0); opacity: 1; }
-        .sticky-left { display: flex; align-items: center; gap: 12px; }
-        .sticky-info { display: flex; align-items: center; gap: 10px; }
-        .sticky-info img { width: 30px; height: 30px; border-radius: 7px; object-fit: cover; }
-        .sticky-info span { font-weight: 700; font-size: 0.95rem; color: var(--text-color); }
-        .sticky-dl-btn { background: #f0f0f7; color: var(--btn-blue) !important; text-decoration: none; padding: 5px 16px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; }
-        @media (prefers-color-scheme: dark) { .sticky-dl-btn { background: #3a3a3c; } }
+        .sticky-header { position: fixed;
+            top: 0; left: 0; right: 0; height: 60px; background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between;
+            padding: 0 15px; z-index: 100; transform: translateY(-100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s; opacity: 0;
+            border-bottom: 0.5px solid var(--line); }
+        .sticky-header.active { transform: translateY(0); opacity: 1;
+            }
+        .sticky-left { display: flex; align-items: center; gap: 12px;
+            }
+        .sticky-info { display: flex; align-items: center; gap: 10px;
+            }
+        .sticky-info img { width: 30px; height: 30px; border-radius: 7px; object-fit: cover;
+            }
+        .sticky-info span { font-weight: 700; font-size: 0.95rem; color: var(--text-color);
+            }
+        .sticky-dl-btn { background: #f0f0f7; color: var(--btn-blue) !important; text-decoration: none; padding: 5px 16px;
+            border-radius: 20px; font-weight: 700; font-size: 0.8rem; }
+        @media (prefers-color-scheme: dark) { .sticky-dl-btn { background: #3a3a3c;
+            } }
 
-        .hero { position: relative; height: 240px; background: center/cover no-repeat; display: flex; align-items: flex-end; }
-        .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--grad-color) 100%); }
-        .mod-name-hero { position: relative; z-index: 10; font-size: 2.2rem; font-weight: 700; margin: 0 0 20px 20px; letter-spacing: -1px; color: var(--text-color); transition: opacity 0.3s; }
+        .hero { position: relative; height: 240px; background: center/cover no-repeat; display: flex;
+            align-items: flex-end; }
+        .hero::after { content: ''; position: absolute; bottom: 0; left: 0;
+            right: 0; height: 100px; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--grad-color) 100%);
+            }
+        .mod-name-hero { position: relative; z-index: 10; font-size: 2.2rem; font-weight: 700;
+            margin: 0 0 20px 20px; letter-spacing: -1px; color: var(--text-color); transition: opacity 0.3s;
+            }
         
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .info-header { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; }
-        .icon-box img { width: 92px; height: 92px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); object-fit: cover; }
+        .container { max-width: 600px;
+            margin: 0 auto; padding: 20px; }
+        .info-header { display: flex; align-items: center;
+            gap: 18px; margin-bottom: 25px; }
+        .icon-box img { width: 92px; height: 92px;
+            border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); object-fit: cover; }
         
-        .version-wrapper { display: flex; align-items: center; gap: 6px; position: relative; }
-        .version-num { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
+        .version-wrapper { display: flex;
+            align-items: center; gap: 6px; position: relative; }
+        .version-num { font-size: 1.4rem; font-weight: 700;
+            margin: 0; letter-spacing: -0.5px; }
         
         /* ▽ボタンのスタイル */
-        .old-ver-toggle { background: none; border: none; color: var(--btn-blue); font-size: 1.2rem; cursor: pointer; padding: 4px; display: none; align-items: center; transition: transform 0.2s; }
-        .old-ver-toggle.active { transform: rotate(180deg); }
+        .old-ver-toggle { background: none;
+            border: none; color: var(--btn-blue); font-size: 1.2rem; cursor: pointer; padding: 4px; display: none; align-items: center; transition: transform 0.2s;
+            }
+        .old-ver-toggle.active { transform: rotate(180deg);
+            }
         
-        .old-ver-menu { position: absolute; top: 100%; left: 0; background: var(--menu-bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: none; z-index: 120; min-width: 180px; margin-top: 8px; overflow-y: auto; max-height: 300px; }
-        .old-ver-menu.show { display: block; }
-        .menu-label { padding: 8px 16px; font-size: 0.75rem; font-weight: 800; color: var(--secondary-text); background: var(--card-bg); text-transform: uppercase; letter-spacing: 0.5px; }
-        .old-ver-item { display: block; padding: 12px 16px; text-decoration: none; color: var(--text-color); font-size: 0.95rem; border-bottom: 0.5px solid var(--line); font-weight: 500; cursor: pointer; }
-        .old-ver-item:last-child { border-bottom: none; }
-        .old-ver-item:hover { background: rgba(0,122,255,0.1); }
+        .old-ver-menu { position: absolute;
+            top: 100%; left: 0; background: var(--menu-bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: none;
+            z-index: 120; min-width: 180px; margin-top: 8px; overflow-y: auto; max-height: 300px;
+            }
+        .old-ver-menu.show { display: block;
+            }
+        .menu-label { padding: 8px 16px; font-size: 0.75rem; font-weight: 800; color: var(--secondary-text);
+            background: var(--card-bg); text-transform: uppercase; letter-spacing: 0.5px; }
+        .old-ver-item { display: block;
+            padding: 12px 16px; text-decoration: none; color: var(--text-color); font-size: 0.95rem; border-bottom: 0.5px solid var(--line); font-weight: 500; cursor: pointer;
+            }
+        .old-ver-item:last-child { border-bottom: none;
+            }
+        .old-ver-item:hover { background: rgba(0,122,255,0.1);
+            }
 
-        .status-badge-inline { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; color: white !important; }
-        .status-available { background-color: var(--status-green) !important; }
+        .status-badge-inline { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 700;
+            text-transform: uppercase; color: white !important; }
+        .status-available { background-color: var(--status-green) !important;
+            }
 
-        #js-dl-area { margin-bottom: 25px; }
-        .download-btn { display: block; background-color: var(--btn-blue); color: white !important; text-decoration: none; text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; transition: opacity 0.2s; margin-bottom: 10px; }
-        .download-btn:active { opacity: 0.7; }
-        .download-btn.disabled { background: var(--btn-disabled); pointer-events: none; }
+        #js-dl-area { margin-bottom: 25px;
+            }
+        .download-btn { display: block; background-color: var(--btn-blue); color: white !important; text-decoration: none;
+            text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; transition: opacity 0.2s;
+            }
+        .download-btn:active { opacity: 0.7;
+            }
 
-        .ss-container { display: flex; overflow-x: auto; gap: 14px; margin: 20px -20px 30px -20px; padding: 0 20px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
-        .ss-container img { flex: 0 0 85%; max-width: 380px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; scroll-snap-align: center; border: 0.5px solid var(--line); }
+        .ss-container { display: flex; overflow-x: auto; gap: 14px;
+            margin: 20px -20px 30px -20px; padding: 0 20px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+            }
+        .ss-container img { flex: 0 0 85%; max-width: 380px;
+            aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; scroll-snap-align: center; border: 0.5px solid var(--line);
+            }
 
-        /* アプリリスト用（More by / Suggested）のスタイル */
-        .store-section { margin-top: 15px; border-top: 0.5px solid var(--line); padding-top: 10px; }
-        .section-title { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
-        .app-list-scroll { display: grid; grid-template-rows: repeat(2, 1fr); grid-auto-flow: column; overflow-x: auto; scroll-snap-type: x mandatory; gap: 0 15px; -webkit-overflow-scrolling: touch; }
-        .app-list-scroll::-webkit-scrollbar { display: none; }
-        .app-row { display: flex; align-items: center; width: 82vw; max-width: 460px; padding: 8px 0; border-bottom: 0.5px solid var(--line); scroll-snap-align: start; text-decoration: none; color: inherit; }
-        .app-row:nth-child(2n) { border-bottom: none; }
-        .app-row img { width: 56px; height: 56px; border-radius: 12px; margin-right: 12px; object-fit: cover; }
-        .app-info { flex: 1; min-width: 0; }
-        .app-name { font-size: 0.95rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .app-desc { font-size: 0.78rem; color: var(--secondary-text); margin: 1px 0 0; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-        .get-small-btn { background: #f0f0f7; color: var(--btn-blue); padding: 5px 18px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; }
-        @media (prefers-color-scheme: dark) { .get-small-btn { background: #2c2c2e; } }
-
-        .author-link { color: var(--btn-blue) !important; text-decoration: none; font-weight: 600; font-size: 0.85rem; }
+        .author-link { color: var(--btn-blue) !important; text-decoration: none; font-weight: 600; font-size: 0.85rem;
+            }
 
         .contact-btn { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: var(--card-bg); border-radius: 12px; text-decoration: none; margin-bottom: 10px; font-weight: 600; }
         .contact-btn.discord { color: var(--discord) !important; }
@@ -100,8 +139,12 @@
 </head>
 <body>
 
-    <div id="debug-container"></div>
     <a href="javascript:history.back()" class="top-btn top-back-btn"><div class="back-icon"></div></a>
+    
+    <!-- 右上配置の共有ボタン -->
+    <button id="js-share-btn" class="top-btn top-share-btn">
+        <div class="share-icon"><div class="share-arrow-head"></div></div>
+    </button>
 
     <div id="js-sticky-header" class="sticky-header">
         <div class="sticky-left">
@@ -110,6 +153,7 @@
                 <span id="js-sticky-name">---</span>
             </div>
         </div>
+    
         <a href="#" class="sticky-dl-btn" id="js-sticky-dl-btn">GET</a>
     </div>
 
@@ -122,14 +166,15 @@
             <div class="icon-box"><img id="js-main-icon" src="" alt="Icon"></div>
             <div>
                 <div class="version-wrapper">
-                    <p class="version-num" id="js-version">v---</p>
+          
+                  <p class="version-num" id="js-version">v---</p>
                     <button id="js-old-ver-toggle" class="old-ver-toggle">▽</button>
-                    <!-- 旧バージョンメニュー生成用コンテナ -->
-                    <div id="js-old-ver-menu" class="old-ver-menu"></div>
-                    <span id="js-status" class="status-badge-inline status-available">Available</span>
+                    <div id="js-status" class="status-badge-inline status-available">Available</div>
                 </div>
                 <div id="js-author-list" class="author-section"></div>
-                <p style="font-size: 0.8rem; margin: 6px 0 0; color: var(--secondary-text);" id="ui-updated">Last Updated: --</p>
+         
+               <p style="font-size: 0.8rem; margin: 6px 0 0;
+color: var(--secondary-text);" id="ui-updated">Last Updated: --</p>
             </div>
         </div>
 
@@ -137,57 +182,33 @@
 
         <div class="ss-container" id="js-ss-container"></div>
         
-        <h2 style="font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px;">Information</h2>
-        <div id="js-info-content" style="line-height: 1.6; color: var(--secondary-text);">Loading...</div>
+        <h2 style="font-size: 1.2rem;
+font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px;">Information</h2>
+        <div id="js-info-content" style="line-height: 1.6;
+color: var(--secondary-text);">Loading...</div>
         
-        <!-- SNSエリア（兼共有ボタン追加先） -->
-        <div id="js-sns-area" style="margin-bottom: 25px;"></div>
+        <!-- ag.txt元々のDiscord/Telegram用コンタクトエリア（しっかり残しています） -->
         <div id="js-contact-area" style="margin-top:25px;"></div>
-
-        <!-- アプリリスト用セクション群（More by / Suggested） -->
-        <div id="js-more-by-section" class="store-section" style="display:none;">
-            <div class="section-title" id="js-more-by-title">---</div>
-            <div class="app-list-scroll" id="js-more-by-list"></div>
-        </div>
-
-        <div id="js-suggested-section" class="store-section" style="display:none;">
-            <div class="section-title" id="js-suggested-title">---</div>
-            <div class="app-list-scroll" id="js-suggested-list"></div>
-        </div>
-
-        <div style="height:50px;"></div>
     </div>
 
     <script>
-        // デバッグ設定用
-        const config = { isDebug: true };
-
-        let currentLang = navigator.language.includes('ja') ? 'ja' : 'en';
+        const isJa = navigator.language.includes('ja');
+        const lang = isJa ? 'ja' : 'en';
         const params = new URLSearchParams(window.location.search);
         const codename = params.get('id');
         const targetVer = params.get('v');
 
         const uiText = {
-            ja: { available: "利用可能", updated: "最終更新: ", download: "ダウンロード", unsupported: "非対応", moreBy: "{name}の他のアプリ", suggested: "おすすめ", get: "入手" },
-            en: { available: "Available", updated: "Last Updated: ", download: "DOWNLOAD", unsupported: "Unsupported", moreBy: "More by {name}", suggested: "You Might Also Like", get: "Get" }
+  
+          ja: { available: "利用可能", updated: "最終更新: ", download: "ダウンロード" },
+            en: { available: "Available", updated: "Last Updated: ", download: "DOWNLOAD" }
         };
-
-        if (config.isDebug) {
-            const btn = document.createElement('div');
-            btn.id = 'debug-lang-tool';
-            btn.textContent = `Lang: ${currentLang.toUpperCase()}`;
-            btn.onclick = () => { 
-                currentLang = (currentLang === 'ja') ? 'en' : 'ja'; 
-                btn.textContent = `Lang: ${currentLang.toUpperCase()}`;
-                initPage();
-            };
-            document.getElementById('debug-container').appendChild(btn);
-        }
 
         function getOS() {
             const ua = navigator.userAgent;
             if (/android/i.test(ua)) return "android";
-            if (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return "ios";
+           
+ if (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return "ios";
             return "pc";
         }
 
@@ -195,14 +216,14 @@
             if(!codename) return;
             const device = getOS();
             const resDir = `../resources/${codename}`;
-            const t = uiText[currentLang];
+            const t = uiText[lang];
             
             try {
                 const vRes = await fetch(`${resDir}/version.json?${new Date().getTime()}`);
                 const vData = await vRes.json();
-                const primaryAuthor = vData.authors[0];
                 
                 const latestVer = vData.version;
+                document.title = vData.name || "Brawl stars mods";
                 document.getElementById('ui-main-title').textContent = vData.name;
                 document.getElementById('js-sticky-name').textContent = vData.name;
                 document.getElementById('js-sticky-icon').src = `${resDir}/icon.png`;
@@ -213,59 +234,57 @@
 
                 const dlArea = document.getElementById('js-dl-area');
                 const stickyBtn = document.getElementById('js-sticky-dl-btn');
-
                 function updateToVersion(verName, url, platName) {
-                    const fullVer = verName.startsWith('v') ? verName : 'v' + verName;
+                    const fullVer = verName.startsWith('v') ?
+                        verName : 'v' + verName;
                     document.getElementById('js-version').textContent = fullVer;
                     document.getElementById('ui-main-title').textContent = vData.name + " " + fullVer;
                     document.getElementById('js-sticky-name').textContent = vData.name + " " + fullVer;
-                    
-                    const isDisabled = !url;
-                    if (isDisabled) {
-                        dlArea.innerHTML = `<a class="download-btn disabled" href="#">${t.unsupported}</a>`;
-                        stickyBtn.style.display = "none";
-                    } else {
+                    if (url) {
                         dlArea.innerHTML = `<a class="download-btn" href="${url}" target="_blank">${t.download} ${fullVer} (${platName})</a>`;
                         stickyBtn.href = url;
                         stickyBtn.style.display = "block";
-                        stickyBtn.textContent = t.get;
                     }
                 }
 
                 // 初期表示ロジック
-                let initialPlat = (device === "ios") ? "iOS" : "Android";
+                let initialPlat = (device === "ios") ?
+                    "iOS" : "Android";
                 let initialUrl = (device === "ios") ? vData.iosDownloadUrl : vData.androidDownloadUrl;
                 if (!initialUrl || initialUrl === "") {
-                    if (vData.androidDownloadUrl) { initialPlat = "Android"; initialUrl = vData.androidDownloadUrl; }
-                    else if (vData.iosDownloadUrl) { initialPlat = "iOS"; initialUrl = vData.iosDownloadUrl; }
+                    if (vData.androidDownloadUrl) { initialPlat = "Android";
+                        initialUrl = vData.androidDownloadUrl; }
+                    else if (vData.iosDownloadUrl) { initialPlat = "iOS";
+                        initialUrl = vData.iosDownloadUrl; }
                 }
 
                 if (targetVer) {
                     const cleanT = targetVer.replace(/^v/, '');
                     const iosO = vData.iosoldver || {};
                     const andO = vData.androidoldver || {};
-                    if (iosO[targetVer] || iosO[cleanT]) { initialUrl = iosO[targetVer] || iosO[cleanT]; initialPlat = "iOS"; }
-                    else if (andO[targetVer] || andO[cleanT]) { initialUrl = andO[targetVer] || andO[cleanT]; initialPlat = "Android"; }
+                    if (iosO[targetVer] || iosO[cleanT]) { initialVer = targetVer;
+                        initialUrl = iosO[targetVer] || iosO[cleanT]; initialPlat = "iOS"; }
+                    else if (andO[targetVer] || andO[cleanT]) { initialVer = targetVer;
+                        initialUrl = andO[targetVer] || andO[cleanT]; initialPlat = "Android"; }
                 }
                 updateToVersion(latestVer, initialUrl, initialPlat);
-
                 // スクショ表示
                 const ssContainer = document.getElementById('js-ss-container');
-                ssContainer.innerHTML = '';
                 [1,2,3].forEach(n => {
                     const img = document.createElement('img');
                     img.src = `${resDir}/ss${n}.png`;
                     img.onerror = () => img.style.display = "none";
                     ssContainer.appendChild(img);
-                });
-
-                // 旧バージョン・メニュー構築
-                const menu = document.getElementById('js-old-ver-menu');
-                menu.innerHTML = '';
+       
+                 });
+                // メニュー構築
+                const menu = document.createElement('div');
+                menu.className = 'old-ver-menu';
                 let totalItems = 0;
 
                 const createSection = (title, items, plat) => {
-                    const validItems = items ? Object.entries(items).filter(([v, u]) => u && u.trim() !== "") : [];
+                    const validItems = items ?
+                        Object.entries(items).filter(([v, u]) => u && u.trim() !== "") : [];
                     if (validItems.length > 0) {
                         const label = document.createElement('div');
                         label.className = 'menu-label'; label.textContent = title;
@@ -273,149 +292,77 @@
                         validItems.forEach(([v, u]) => {
                             totalItems++;
                             const item = document.createElement('div');
-                            item.className = 'old-ver-item'; item.textContent = v;
-                            item.onclick = () => { updateToVersion(v, u, plat); menu.classList.remove('show'); toggleBtn.classList.remove('active'); };
+                            item.className = 'old-ver-item'; 
+                            item.textContent = v;
+                            item.onclick = () => { updateToVersion(v, u, plat); menu.classList.remove('show'); };
                             menu.appendChild(item);
                         });
                     }
                 };
-
                 const iosLatest = vData.iosDownloadUrl ? { [vData.version]: vData.iosDownloadUrl } : null;
-                const androidLatest = vData.androidDownloadUrl ? { [vData.version]: vData.androidDownloadUrl } : null;
+                const androidLatest = vData.androidDownloadUrl ?
+                    { [vData.version]: vData.androidDownloadUrl } : null;
 
                 createSection("iOS (Latest)", iosLatest, "iOS");
                 createSection("iOS (Older)", vData.iosoldver, "iOS");
                 createSection("Android (Latest)", androidLatest, "Android");
                 createSection("Android (Older)", vData.androidoldver, "Android");
 
-                // トグルボタン制御（旧バージョンメニュー）
+                // アイテムが2つ以上ある場合のみトグルボタンを表示
                 const toggleBtn = document.getElementById('js-old-ver-toggle');
-                if (totalItems > 1 || (vData.oldVersions && vData.oldVersions.length)) {
-                    // Ag.html配列形式のデータがあった場合の互換処理
-                    if (vData.oldVersions?.length) {
-                        vData.oldVersions.forEach(ov => {
-                            const item = document.createElement('div');
-                            item.className = 'old-ver-item'; item.textContent = ov.version;
-                            item.onclick = () => { window.location.href = ov.url; };
-                            menu.appendChild(item);
-                        });
-                    }
+                if (totalItems > 1) {
                     toggleBtn.style.display = "flex";
+                    document.querySelector('.version-wrapper').appendChild(menu);
                     toggleBtn.onclick = (e) => { e.stopPropagation(); menu.classList.toggle('show'); toggleBtn.classList.toggle('active'); };
                     window.onclick = () => { menu.classList.remove('show'); toggleBtn.classList.remove('active'); };
-                } else {
-                    toggleBtn.style.display = "none";
                 }
 
-                // 著者表示
-                const authorListEl = document.getElementById('js-author-list');
-                authorListEl.innerHTML = '';
-                vData.authors.forEach((a, index) => {
+                // 著者・情報
+                vData.authors.forEach(a => {
                     const link = document.createElement('a');
-                    link.href = `../dev/?id=${a.id}`; link.className = 'author-link'; link.textContent = a.name;
-                    authorListEl.appendChild(link);
-                    if (index < vData.authors.length - 1) {
-                        authorListEl.appendChild(document.createTextNode(', '));
-                    }
+                    link.href = `../dev/?id=${a.id}`; link.className = 'author-link'; link.textContent = a.name + " ";
+           
+                    document.getElementById('js-author-list').appendChild(link);
                 });
 
-                // SNSエリアと共有ボタン生成
-                const snsArea = document.getElementById('js-sns-area');
-                snsArea.innerHTML = '';
-                if (vData.discord) snsArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="download-btn" style="background:#5865F2;">Discord</a>`;
-                if (vData.telegram) snsArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="download-btn" style="background:#0088cc;">Telegram</a>`;
-                
-                // 共有ボタンとシェアメソッドの追加
+                // コンタクトエリア（ag.txtのコードを正確に維持）
+                const contactArea = document.getElementById('js-contact-area');
+                contactArea.innerHTML = '';
+                if (vData.discord) contactArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="contact-btn discord"><span>Discord Server</span><span class="arrow">›</span></a>`;
+                if (vData.telegram) contactArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="contact-btn telegram"><span>Telegram Channel</span><span class="arrow">›</span></a>`;
+
+                // 右上の共有ボタンクリック時のメソッド
+                const shareBtn = document.getElementById('js-share-btn');
                 if (navigator.share) {
-                    const shareBtn = document.createElement('button');
-                    shareBtn.className = 'download-btn';
-                    shareBtn.style.background = 'var(--btn-gray)';
-                    shareBtn.style.color = 'var(--btn-blue)';
-                    shareBtn.style.border = 'none';
-                    shareBtn.style.width = '100%';
-                    shareBtn.style.cursor = 'pointer';
-                    shareBtn.textContent = currentLang === 'ja' ? '共有' : 'Share';
                     shareBtn.onclick = () => {
                         navigator.share({
                             title: document.title,
                             url: window.location.href
                         }).catch(console.error);
                     };
-                    snsArea.appendChild(shareBtn);
-                }
-
-                // 旧来のコンタクトエリアも保持
-                const contactArea = document.getElementById('js-contact-area');
-                contactArea.innerHTML = '';
-                if (vData.discord) contactArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="contact-btn discord"><span>Discord Server</span><span class="arrow">›</span></a>`;
-                if (vData.telegram) contactArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="contact-btn telegram"><span>Telegram Channel</span><span class="arrow">›</span></a>`;
-
-                // Information 読み込み（404ガード対応）
-                const infoContentEl = document.getElementById('js-info-content');
-                const getInfoHtml = async () => {
-                    const paths = [`${resDir}/info_${currentLang}_${device}.html`, `${resDir}/info_${currentLang}.html`];
-                    for (const path of paths) {
-                        try {
-                            const res = await fetch(path);
-                            if (res.ok && res.headers.get('content-type')?.includes('text/html')) {
-                                const txt = await res.text();
-                                if (!txt.includes('404 File not found') && !txt.toLowerCase().includes('<title>404')) return txt;
-                            }
-                        } catch (e) {}
-                    }
-                    return null;
-                };
-
-                const infoHtml = await getInfoHtml();
-                if (infoHtml && infoHtml.trim()) {
-                    infoContentEl.innerHTML = infoHtml;
                 } else {
-                    // フォールバック
-                    const fallback = await fetch(`${resDir}/info_en_pc.html`);
-                    if(fallback.ok) infoContentEl.innerHTML = await fallback.text();
-                    else infoContentEl.innerHTML = `<p style="color:var(--secondary-text); font-size:0.85rem; font-style:italic;">No information yet.</p>`;
+                    shareBtn.onclick = () => {
+                        navigator.clipboard.writeText(window.location.href)
+                            .then(() => alert(isJa ? 'URLをコピーしました' : 'URL copied to clipboard'))
+                            .catch(console.error);
+                    };
                 }
 
-                // アプリリスト群の処理 (More by / Suggested)
-                const [apps, prods] = await Promise.all([
-                    fetch(`../apps.json`).then(r => r.json()).catch(() => []),
-                    fetch(`../prod.json`).then(r => r.json()).catch(() => [])
-                ]);
-                const combined = [...apps, ...prods];
-                const moreList = document.getElementById('js-more-by-list');
-                const sugList = document.getElementById('js-suggested-list');
-                moreList.innerHTML = ''; sugList.innerHTML = '';
-                
-                document.getElementById('js-more-by-title').textContent = t.moreBy.replace('{name}', primaryAuthor.name);
-                document.getElementById('js-suggested-title').textContent = t.suggested;
+                const infoRes = await fetch(`${resDir}/info_${lang}_${device}.html`);
+                if (infoRes.ok) document.getElementById('js-info-content').innerHTML = await infoRes.text();
+                else {
+                    const fallback = await fetch(`${resDir}/info_en_pc.html`);
+                    if(fallback.ok) document.getElementById('js-info-content').innerHTML = await fallback.text();
+                }
 
-                combined.forEach(async (app) => {
-                    const id = app.id || app.codename;
-                    if (!id || id === codename) return;
-                    
-                    try {
-                        const itemV = await fetch(`../resources/${id}/version.json`).then(r => r.json());
-                        const desc = itemV.meta?.[currentLang]?.desc || itemV.meta?.en?.desc || "";
-                        const html = `<a href="?id=${id}" class="app-row"><img src="../resources/${id}/icon.png" loading="lazy"><div class="app-info"><div class="app-name">${itemV.name}</div><div class="app-desc">${desc}</div></div><div class="get-small-btn">${t.get}</div></a>`;
-                        
-                        if (itemV.authors?.some(a => a.id === primaryAuthor.id)) {
-                            moreList.insertAdjacentHTML('beforeend', html);
-                            document.getElementById('js-more-by-section').style.display = 'block';
-                        } else {
-                            sugList.insertAdjacentHTML('beforeend', html);
-                            document.getElementById('js-suggested-section').style.display = 'block';
-                        }
-                    } catch(e){}
-                });
-
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error(e);
+            }
 
             window.onscroll = () => {
                 const scrollY = window.scrollY;
                 document.getElementById('ui-main-title').style.opacity = Math.max(1 - (scrollY / 150), 0);
-                const h = document.getElementById('js-sticky-header');
-                if (scrollY > 150) h.classList.add('active');
-                else h.classList.remove('active');
+                if (scrollY > 150) document.getElementById('js-sticky-header').classList.add('active');
+                else document.getElementById('js-sticky-header').classList.remove('active');
             };
         }
         window.onload = initPage;
