@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Developer Profile</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --bg-color: #ffffff; --text-color: #000000; --secondary-text: #8e8e93;
@@ -16,7 +20,17 @@
                 --line: rgba(255,255,255,1); --btn-bg: #1c1c1e;
             }
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        body { 
+            /* 1. -apple-system, BlinkMacSystemFont で Apple製品の「San Francisco」を最優先
+               2. 次点に「Inter」を指定することで、AndroidやWindowsではInterが適用されるように設定
+            */
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif; 
+            margin: 0; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            overflow-x: hidden; 
+            -webkit-tap-highlight-color: transparent; 
+        }
         .nav-bar { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 12px 15px; display: flex; align-items: center; }
         @media (prefers-color-scheme: dark) { .nav-bar { background: rgba(0,0,0,0.7); } }
         .back-btn { text-decoration: none; color: var(--btn-blue); font-size: 1.1rem; font-weight: 500; display: flex; align-items: center; }
@@ -57,7 +71,7 @@
                 <h2 id="js-section-title">Games</h2>
             </div>
             <div id="js-app-list" class="app-scroll-container">
-                </div>
+            </div>
         </section>
     </div>
 
@@ -72,14 +86,12 @@
             }
 
             try {
-                // /dev/フォルダ名/data.json を読み込み
                 const response = await fetch(`./${devId}/data.json?${Date.now()}`);
                 const data = await response.json();
 
                 document.title = `${data.displayName} - Developer Profile`;
                 document.getElementById('js-dev-name').textContent = data.displayName;
                 
-                // アイコンがあれば表示
                 const iconImg = document.getElementById('js-dev-icon');
                 iconImg.src = `./${devId}/icon.png`;
                 iconImg.style.display = 'block';
@@ -90,14 +102,12 @@
                 let currentColumn;
 
                 apps.forEach((app, index) => {
-                    // 3つごとにカラム作成
                     if (index % 3 === 0) {
                         currentColumn = document.createElement('div');
                         currentColumn.className = 'app-column';
                         listContainer.appendChild(currentColumn);
                     }
 
-                    // リンク先： ../mods/?id=xxx に修正
                     const targetUrl = `../mods/?id=${app.id}`;
 
                     const appLink = document.createElement('a');
