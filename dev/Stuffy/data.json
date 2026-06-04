@@ -1,0 +1,7 @@
+{
+  "displayName": "Stuffy",
+  "apps": [
+    { "id": "mbcl", "mode": "offline", "name": "Multi Brawl CL", "subtitle": "Classic version of Multi brawl" },
+    { "id": "mbog", "mode": "offline", "name": "Multi Brawl OG", "subtitle": "Original version of Multi brawl"}
+  ]
+}
