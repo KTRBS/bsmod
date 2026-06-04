@@ -1,0 +1,34 @@
+{
+    "name": "Mutli Brawl OG",
+    "version": "V47",
+    "lastUpdated": "2026-01-18",
+    "iossupport": "unavailable ",
+    "androidsupport": "available",
+    "iosDownloadUrl": "",
+    "androidDownloadUrl": "https://t.me/PrivateBSDownload/1247",
+    "iosoldver": {},
+    "androidoldver": {
+        "V33": "https://t.me/PrivateBSDownload/278",
+        "V34": "https://t.me/PrivateBSDownload/279",
+        "V35": "https://t.me/PrivateBSDownload/401",
+        "V36": "https://t.me/PrivateBSDownload/245",
+        "V37": "https://t.me/PrivateBSDownload/7",
+        "V38": "https://t.me/PrivateBSDownload/8",
+        "V39": "https://t.me/PrivateBSDownload/9",
+        "V40": "https://t.me/PrivateBSDownload/56",
+        "V41": "https://t.me/PrivateBSDownload/117",
+        "V43": "https://t.me/PrivateBSDownload/12",
+        "V44": "https://t.me/PrivateBSDownload/403",
+        "V45": "https://t.me/PrivateBSDownload/116",
+        "V46": "https://t.me/PrivateBSDownload/1068"
+    },
+    "authors": [
+        { "name": "Stuffy", "id": "Stuffy" }
+    ],
+    "meta": {
+        "ja": { "title": "Multi Brawl", "desc": "Multi Brawl はカスタムキャラを備えたオフラインmodです！" },
+        "en": { "title": "Multi Brawl Details", "desc": "multi brawl hackersh" }   
+    },
+    "telegram": "https://t.me/multibrawl_official",
+    "discord": "https://discord.com/invite/CDYKGnqJqQ"
+}
