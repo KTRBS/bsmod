@@ -1,0 +1,23 @@
+{
+    "name": "Mutli Brawl CL",
+    "version": "V42",
+    "lastUpdated": "2023-08-23",
+    "iossupport": "unavailable ",
+    "androidsupport": "available",
+    "iosDownloadUrl": "",
+    "androidDownloadUrl": "https://t.me/PrivateBSDownload/16",
+    "iosoldver": {},
+    "androidoldver": {
+        "V40": "https://t.me/PrivateBSDownload/14",
+        "V41": "https://t.me/PrivateBSDownload/15"
+   },
+    "authors": [
+        { "name": "Stuffy", "id": "Stuffy" }
+    ],
+    "meta": {
+        "ja": { "title": "Multi Brawl", "desc": "Multi Brawl はカスタムキャラを備えたオフラインmodです！" },
+        "en": { "title": "Multi Brawl Details", "desc": "multi brawl hackersh" }   
+    },
+    "telegram": "https://t.me/multibrawl_official",
+    "discord": "https://discord.com/invite/CDYKGnqJqQ"
+}
