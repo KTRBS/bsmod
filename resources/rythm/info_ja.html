@@ -1,22 +1,242 @@
-<p>
-    null rythm hackersh
-</p>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Null Rhythm購入・導入方法</title>
+    <meta name="description" content="Null Rhythmの購入から起動・アクティベートまでを完全解説">
+    <meta property="og:title" content="Null Rhythm購入・導入方法">
+    <meta property="og:description" content="Null Rhythmの購入から起動・アクティベートまでを完全解説">
+    <meta property="og:image" content="/resources/tale/icon.png">
+    <meta property="og:type" content="article">
 
-<h3>feature</h3>
-<ul>
-    <li>hack</li>
-    <li>hack 2</li>
-    <li>hack 3</li>
-</ul>
+    <style>
+        :root {
+            --primary-color: #007AFF;
+            --bg-color: #ffffff;
+            --text-color: #1c1c1e;
+            --card-bg: #f8f8f8;
+            --border-color: #e5e5e5;
+        }
 
-<h3>tutorial</h3>
-<ol>
-    <li>tutorial1</li>
-    <li>line2</li>
-    <li>line 3</li>
-    <li>line 4</li>
-</ol>
+        /* ダークモード対応 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #0a84ff;
+                --bg-color: #000000;
+                --text-color: #f5f5f7;
+                --card-bg: #1c1c1e;
+                --border-color: #333333;
+            }
+        }
 
-<p style="color: #dc3545; font-weight: bold;">
-    This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see: Supercell's Fan Content Policy
-</p>
+        body {
+            font-family: -apple-system, "Helvetica Neue", "Hiragino Kaku Gothic ProN", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .link-underline {
+            text-decoration: underline;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        h2 {
+            margin-top: 40px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        .step {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .number {
+            background: var(--primary-color);
+            color: #ffffff;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        .step-img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
+        }
+        .btn-link {
+            display: inline-block;
+            background: var(--primary-color);
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Null Rhythm 導入ガイド</h1>
+    <p style="text-align: center; color: #8e8e93; margin-top: -15px;">購入からアクティベートまでの完全ガイド</p>
+
+    <h2>1. Null Rhythm の購入方法</h2>
+    <div class="step">
+        <div class="step-header"><span class="number">1</span>Discordに参加</div>
+        <div>
+            <a href="https://discord.gg/m7AJPfbQg6" class="btn-link">Discordサーバーに参加</a><br>
+            リンクからNull Rhythmの公式Discordサーバーに参加します。
+        </div>
+        <img src="tut/nr/img/discord_join.png" class="step-img">
+    </div>
+    
+    <div class="step">
+        <div class="step-header"><span class="number">2</span>チケットの作成</div>
+        <div>サポートチャンネル等からチケットを作成し、<strong>@abcd</strong> をメンションしてください。</div>
+        <img src="tut/nr/img/create_ticket.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">3</span>チャットを開く</div>
+        <div>案内・紹介された専用のチャット画面を開きます。</div>
+        <img src="tut/nr/img/open_chat.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">4</span>設定をタップ</div>
+        <div>一度画面を戻り、Telegramの<strong>「設定」</strong>タブをタップします。</div>
+        <img src="tut/nr/img/telegram_settings.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">5</span>My Starsを開く</div>
+        <div>メニュー内の<strong>「My Stars」</strong>をタップします。</div>
+        <img src="tut/nr/img/my_stars.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">6</span>フレンドへのギフトを選択</div>
+        <div><strong>「Gift Stars to Friends」</strong>を選択します。</div>
+        <img src="tut/nr/img/gift_stars.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">7</span>ユーザーの選択</div>
+        <div>指定されたユーザー（送り先）を選択します。</div>
+        <img src="tut/nr/img/select_user.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">8</span>オプションの表示</div>
+        <div><strong>「Show more options」</strong>をタップして、金額の選択肢を広げます。</div>
+        <img src="tut/nr/img/show_more_options.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">9</span>Starsの数量選択</div>
+        <div><strong>「350 stars」</strong>を選択します。</div>
+        <img src="tut/nr/img/select_350_stars.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">10</span>購入の完了</div>
+        <div>決済を承認し、Starsの購入・送金を完了させてください。</div>
+        <img src="tut/nr/img/purchase_complete.png" class="step-img">
+    </div>
+
+    <h2>2. インストール & アクティベート手順</h2>
+    <div class="step">
+        <div class="step-header"><span class="number">1</span>Discordサーバーへの参加</div>
+        <div>
+            購入が完了すると、専用のDiscordサーバーリンクが送られてきます。リンクからサーバーに参加してください。
+        </div>
+        <img src="tut/nr/img/nr_discord_join.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">2</span>Downloadチャンネルへ移動</div>
+        <div>
+            サーバー内の<strong>「Download」</strong>チャンネルに移動します。<br>
+            <a href="https://discord.com/channels/1417993909090648177/1465508857462784154" class="btn-link">Download チャンネルを開く</a>
+        </div>
+        <img src="tut/nr/img/goto_download_channel.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">3</span>apkファイルのダウンロード</div>
+        <div>
+            チャンネル内の一番下にある最新の<strong>apkファイル</strong>をタップしてダウンロードします。
+        </div>
+        <img src="tut/nr/img/download_apk.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">4</span>アプリのインストール</div>
+        <div>
+            ダウンロードが完了したapkファイルを開き、デバイスにインストールします。
+        </div>
+        <img src="tut/nr/img/install_apk.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">5</span>デバイスIDのコピー</div>
+        <div>
+            インストールしたアプリを起動すると認証画面が表示されます。<strong>「COPY COMMAND」</strong>をタップしてデバイスIDをコピーしてください。
+        </div>
+        <img src="tut/nr/img/copy_command.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">6</span>キーの申請</div>
+        <div>
+            <strong>「ask-for-key」</strong>チャンネルに移動し、コピーしたデバイスIDをペーストして <strong>@abcd</strong> をメンションして送信します。<br>
+            <a href="https://discord.com/channels/1417993909090648177/1439554420043157586" class="btn-link">ask-for-key チャンネルを開く</a>
+        </div>
+        <img src="tut/nr/img/paste_device_id.png" class="step-img">
+    </div>
+
+    <div class="step">
+        <div class="step-header"><span class="number">7</span>アクティベーション完了</div>
+        <div>
+            管理人がオンライン時に、発行されたキーと送信されたデバイスIDを基にアカウントのアクティベートを行います。しばらくお待ちください！
+        </div>
+        <img src="tut/nr/img/activation_success.png" class="step-img">
+    </div>
+</div>
+
+</body>
+</html>
