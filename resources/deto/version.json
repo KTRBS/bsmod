@@ -9,5 +9,10 @@
     "authors": [
         { "name": "Detomoni", "id": "moni" }
     ],
+    "androidoldver": {
+        "v1": "https://t.me/PrivateBSDownload/1111",
+        "v3": "https://t.me/PrivateBSDownload/1126",
+        "v4": "https://t.me/PrivateBSDownload/1138"
+    },
     "telegram": "https://t.me/detobrawl"
 }
