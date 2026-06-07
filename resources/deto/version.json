@@ -1,1 +1,13 @@
-
+{
+    "name": "Deto Brawl",
+    "version": "69.420",
+    "lastUpdated": "2026-06-07",
+    "iossupport": "unavailable",
+    "androidsupport": "available",
+    "iosDownloadUrl": "",
+    "androidDownloadUrl": "https://t.me/detobrawl/76",
+    "authors": [
+        { "name": "Detomoni", "id": "moni" }
+    ],
+    "telegram": "https://t.me/detobrawl"
+}
