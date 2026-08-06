@@ -12,5 +12,12 @@
         "link": "https://ktr.brawlmods.com/mods?id=batus",
         "icon": "resources/batus/icon.png",
         "ss1": "resources/batus/ss1.png"
+   },
+   {
+        "name": "Cao Dong Brawl",
+        "codename": "cao",
+        "link": "https://ktr.brawlmods.com/mods?id=cao",
+        "icon": "resources/cao/icon.png",
+        "ss1": "resources/cao/ss1.png"
     }
 ]
