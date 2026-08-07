@@ -9,12 +9,12 @@
     "iosoldver": {},
     "androidoldver": {},
     "authors": [
-        { "name": "漩涡太空否", "id": "test1234" }
+        { "name": "漩涡太空否", "id": "quanwo" }
     ],
     "meta": {
         "ja": { "title": "cao dong brawl", "desc": "cao dong brawl" },
-        "en": { "title": "cao dong brawl", "desc": "This mod is built on Surge Office, with character modifications, all text removed, and the music remixed. " }   
+        "en": { "title": "cao dong brawl", "desc": "test" }   
     },
-    "telegram": "t.me/mgsocool",
+    "telegram": "",
     "discord": ""
 }
