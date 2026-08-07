@@ -1,7 +1,7 @@
 {
     "name": "Cao Dong brawl",
     "version": "28.189",
-    "lastUpdated": "2026-01-18",
+    "lastUpdated": "May 26, 2025",
     "iossupport": "unavailable",
     "androidsupport": "available",
     "iosDownloadUrl": "",
@@ -13,7 +13,7 @@
     ],
     "meta": {
         "ja": { "title": "cao dong brawl", "desc": "cao dong brawl" },
-        "en": { "title": "cao dong brawl", "desc": "cao dong brawl" }   
+        "en": { "title": "cao dong brawl", "desc": "This mod is built on Surge Office, with character modifications, all text removed, and the music remixed. " }   
     },
     "telegram": "t.me/mgsocool",
     "discord": ""
