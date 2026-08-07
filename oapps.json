@@ -19,5 +19,12 @@
         "link": "https://ktr.brawlmods.com/mods?id=cao",
         "icon": "resources/cao/icon.png",
         "ss1": "resources/cao/ss1.png"
-    }
+    },
+    {
+        "name": "Rainbow Brawl",
+        "codename": "rib",
+        "link": "https://ktr.brawlmods.com/mods?id=rib",
+        "icon": "resources/rib/icon.png",
+        "ss1": "resources/rib/ss1.png"
+    },
 ]
