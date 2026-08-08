@@ -13,7 +13,7 @@
     <style>
         :root { --ios-blue: #007aff; --ios-gray: #8e8e93; --ios-bg: #ffffff; --card-bg: #ffffff; --search-bg: rgba(142, 142, 147, 0.12); --text-color: #000000; --line: rgba(0,0,0,0.1); --tab-bg: rgba(255, 255, 255, 0.85); }
         @media (prefers-color-scheme: dark) { :root { --ios-bg: #000000; --card-bg: #1c1c1e; --search-bg: rgba(255, 255, 255, 0.12); --text-color: #ffffff; --line: rgba(255,255,255,0.15); --tab-bg: rgba(20, 20, 20, 0.85); } }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif; background-color: var(--ios-bg); color: var(--text-color); margin: 0; padding: 0 16px 70px 16px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; width: 100vw; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif; background-color: var(--ios-bg); color: var(--text-color); margin: 0; padding: 0 16px 90px 16px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; width: 100vw; box-sizing: border-box; }
         .hidden { display: none !important; }
         
         /* ヘッダー・言語切り替え */
@@ -29,6 +29,9 @@
 
         /* 詐欺注意喚起バナー */
         .scam-warning { background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.3); color: #ff3b30; padding: 10px 14px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; margin: 15px 0 5px 0; line-height: 1.4; }
+
+        /* Telegram 水色テキスト */
+        .telegram-footer { text-align: center; margin: 25px 0 10px 0; font-size: 0.85rem; font-weight: 700; color: #32ade6; }
 
         .date-str { color: var(--ios-gray); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
         h1 { font-size: 1.8rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
@@ -122,6 +125,9 @@
                 <div id="offline-list"></div>
             </div>
         </div>
+
+        <!-- ご指定の水色テキスト -->
+        <div class="telegram-footer">official telegram: @Kazarex</div>
     </div>
     
     <div id="page-search" class="hidden">
@@ -155,7 +161,6 @@
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         let allData = [], prodData = [], offlineData = [], isLoaded = false;
 
-        // 多言語翻訳データの定義
         const i18n = {
             en: {
                 today: "Today", search: "Search", devs: "Developers",
@@ -183,7 +188,6 @@
             }
         };
 
-        // 初期言語判定（中国語、日本語、その他は英語）
         function getInitialLang() {
             const lang = navigator.language || navigator.userLanguage;
             if (lang.startsWith('ja')) return 'ja';
@@ -209,10 +213,8 @@
             document.getElementById('tab-search-txt').textContent = t.search;
             document.getElementById('tab-dev-txt').textContent = t.devs;
 
-            // 日付の表示更新
             updateDateString();
 
-            // レンダリング済み要素の再描画
             if (isLoaded) {
                 renderToday();
                 renderAdBanner();
