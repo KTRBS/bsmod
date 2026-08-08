@@ -138,7 +138,7 @@
 
         <div class="ss-container" id="js-ss-container"></div>
         
-        <h2 style="font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px;">Information</h2>
+        <h2 style="font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px;" id="ui-info-heading">Information</h2>
         <div id="js-info-content" style="line-height: 1.6; color: var(--secondary-text);">Loading...</div>
         
         <div id="js-sns-area" style="margin-bottom: 25px;"></div>
@@ -169,14 +169,23 @@
 
         const config = { isDebug: true };
 
-        let currentLang = navigator.language.includes('ja') ? 'ja' : 'en';
+        // 言語判定（日本語、中国語、それ以外は英語）
+        function getInitialLang() {
+            const lang = navigator.language || navigator.userLanguage;
+            if (lang.startsWith('ja')) return 'ja';
+            if (lang.startsWith('zh')) return 'zh';
+            return 'en';
+        }
+
+        let currentLang = getInitialLang();
         const params = new URLSearchParams(window.location.search);
         const codename = params.get('id');
         const targetVer = params.get('v');
 
         const uiText = {
-            ja: { available: "利用可能", updated: "最終更新: ", download: "ダウンロード", unsupported: "非対応", moreBy: "{name}の他のアプリ", suggested: "おすすめ", get: "入手" },
-            en: { available: "Available", updated: "Last Updated: ", download: "DOWNLOAD", unsupported: "Unsupported", moreBy: "More by {name}", suggested: "You Might Also Like", get: "Get" }
+            ja: { available: "利用可能", updated: "最終更新: ", download: "ダウンロード", unsupported: "非対応", moreBy: "{name}の他のアプリ", suggested: "おすすめ", get: "入手", info: "情報", share: "共有" },
+            zh: { available: "可用", updated: "最后更新: ", download: "下载", unsupported: "不支持", moreBy: "{name} 的更多应用", suggested: "为您推荐", get: "获取", info: "信息", share: "分享" },
+            en: { available: "Available", updated: "Last Updated: ", download: "DOWNLOAD", unsupported: "Unsupported", moreBy: "More by {name}", suggested: "You Might Also Like", get: "Get", info: "Information", share: "Share" }
         };
 
         if (config.isDebug) {
@@ -184,7 +193,11 @@
             btn.id = 'debug-lang-tool';
             btn.textContent = `Lang: ${currentLang.toUpperCase()}`;
             btn.onclick = () => { 
-                currentLang = (currentLang === 'ja') ? 'en' : 'ja'; 
+                // ja -> zh -> en -> ja の順で切り替え
+                if (currentLang === 'ja') currentLang = 'zh';
+                else if (currentLang === 'zh') currentLang = 'en';
+                else currentLang = 'ja';
+
                 btn.textContent = `Lang: ${currentLang.toUpperCase()}`;
                 initPage();
             };
@@ -204,6 +217,9 @@
             const resDir = `../resources/${codename}`;
             const t = uiText[currentLang];
             
+            // 静的なUIテキストの適用
+            document.getElementById('ui-info-heading').textContent = t.info;
+
             try {
                 const vRes = await fetch(`${resDir}/version.json?${new Date().getTime()}`);
                 const vData = await vRes.json();
@@ -338,7 +354,7 @@
                     shareBtn.style.border = 'none';
                     shareBtn.style.width = '100%';
                     shareBtn.style.cursor = 'pointer';
-                    shareBtn.textContent = currentLang === 'ja' ? '共有' : 'Share';
+                    shareBtn.textContent = t.share;
                     shareBtn.onclick = () => {
                         navigator.share({
                             title: document.title,
@@ -354,10 +370,16 @@
                 if (vData.discord) contactArea.innerHTML += `<a href="${vData.discord}" target="_blank" class="contact-btn discord"><span>Discord Server</span><span class="arrow">›</span></a>`;
                 if (vData.telegram) contactArea.innerHTML += `<a href="${vData.telegram}" target="_blank" class="contact-btn telegram"><span>Telegram Channel</span><span class="arrow">›</span></a>`;
 
-                // Information 読み込み
+                // Information 読み込み（対応する言語のファイル -> 中国語の場合は英語等へのフォールバック対応）
                 const infoContentEl = document.getElementById('js-info-content');
                 const getInfoHtml = async () => {
-                    const paths = [`${resDir}/info_${currentLang}_${device}.html`, `${resDir}/info_${currentLang}.html`];
+                    const paths = [
+                        `${resDir}/info_${currentLang}_${device}.html`, 
+                        `${resDir}/info_${currentLang}.html`,
+                        // 中国語がない場合は英語にフォールバック
+                        `${resDir}/info_en_${device}.html`,
+                        `${resDir}/info_en.html`
+                    ];
                     for (const path of paths) {
                         try {
                             const res = await fetch(path);
@@ -374,9 +396,7 @@
                 if (infoHtml && infoHtml.trim()) {
                     infoContentEl.innerHTML = infoHtml;
                 } else {
-                    const fallback = await fetch(`${resDir}/info_en_pc.html`);
-                    if(fallback.ok) infoContentEl.innerHTML = await fallback.text();
-                    else infoContentEl.innerHTML = `<p style="color:var(--secondary-text); font-size:0.85rem; font-style:italic;">No information yet.</p>`;
+                    infoContentEl.innerHTML = `<p style="color:var(--secondary-text); font-size:0.85rem; font-style:italic;">No information yet.</p>`;
                 }
 
                 // アプリリスト群の処理 (More by / Suggested)
