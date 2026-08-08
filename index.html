@@ -13,10 +13,23 @@
     <style>
         :root { --ios-blue: #007aff; --ios-gray: #8e8e93; --ios-bg: #ffffff; --card-bg: #ffffff; --search-bg: rgba(142, 142, 147, 0.12); --text-color: #000000; --line: rgba(0,0,0,0.1); --tab-bg: rgba(255, 255, 255, 0.85); }
         @media (prefers-color-scheme: dark) { :root { --ios-bg: #000000; --card-bg: #1c1c1e; --search-bg: rgba(255, 255, 255, 0.12); --text-color: #ffffff; --line: rgba(255,255,255,0.15); --tab-bg: rgba(20, 20, 20, 0.85); } }
-        /* font-family の優先順位を Apple製品優先 -> 次点にInter へ変更 */
         body { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif; background-color: var(--ios-bg); color: var(--text-color); margin: 0; padding: 0 16px 70px 16px; -webkit-tap-highlight-color: transparent; overflow-x: hidden; width: 100vw; box-sizing: border-box; }
         .hidden { display: none !important; }
-        header { padding: 20px 0 5px 0; }
+        
+        /* ヘッダー・言語切り替え */
+        header { padding: 20px 0 5px 0; display: flex; justify-content: space-between; align-items: flex-end; position: relative; }
+        .header-left { flex: 1; min-width: 0; }
+        .lang-selector-wrapper { position: relative; margin-bottom: 2px; }
+        .lang-btn { background: var(--search-bg); border: 1px solid var(--line); color: var(--text-color); padding: 5px 12px; border-radius: 14px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .lang-menu { position: absolute; right: 0; top: 100%; margin-top: 5px; background: var(--card-bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: none; z-index: 120; min-width: 120px; overflow: hidden; }
+        .lang-menu.show { display: block; }
+        .lang-item { display: block; width: 100%; padding: 10px 14px; text-align: left; background: none; border: none; border-bottom: 0.5px solid var(--line); color: var(--text-color); font-size: 0.9rem; font-weight: 600; cursor: pointer; box-sizing: border-box; }
+        .lang-item:last-child { border-bottom: none; }
+        .lang-item:hover { background: rgba(0,122,255,0.1); }
+
+        /* 詐欺注意喚起バナー */
+        .scam-warning { background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.3); color: #ff3b30; padding: 10px 14px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; margin: 15px 0 5px 0; line-height: 1.4; }
+
         .date-str { color: var(--ios-gray); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
         h1 { font-size: 1.8rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
         
@@ -54,7 +67,7 @@
         .get-btn { background: #f0f0f7; color: var(--ios-blue); font-weight: 800; padding: 5px 14px; border-radius: 15px; font-size: 0.78rem; width: 100%; box-sizing: border-box; text-align: center; }
         @media (prefers-color-scheme: dark) { .get-btn { background: #3a3a3c; } }
 
-        /* 検索結果・スクリーンショット（復元） */
+        /* 検索結果・スクリーンショット */
         #search-results { display: grid; grid-template-columns: 1fr; gap: 30px; }
         @media (orientation: landscape) or (min-width: 768px) { #search-results { grid-template-columns: 1fr 1fr; } }
         .search-result-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; width: 100%; box-sizing: border-box; overflow: hidden; }
@@ -77,24 +90,42 @@
 </head>
 <body>
     <div id="page-today">
-        <header><p class="date-str" id="display-date"></p><h1>Today</h1></header>
-        <div id="page-today-container" class="grid-container">
+        <header>
+            <div class="header-left">
+                <p class="date-str" id="display-date"></p>
+                <h1 id="ui-today-title">Today</h1>
+            </div>
+            <div class="lang-selector-wrapper">
+                <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu(event)">🌐 Lang ▾</button>
+                <div class="lang-menu" id="lang-menu">
+                    <button class="lang-item" onclick="changeLang('en')">English</button>
+                    <button class="lang-item" onclick="changeLang('ja')">日本語</button>
+                    <button class="lang-item" onclick="changeLang('zh')">简体中文</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="scam-warning" id="ui-scam-warning">
+            如果有人在QQ群里声称自己是本网站的拥有者，请注意那是骗子！ / もしQQグループ内でこのウェブサイトのオーナーだと言っている人がいる場合、それは詐欺師です！ / If someone in a QQ group claims to be the owner of this website, beware that they are a scammer!
+        </div>
+
+        <div id="page-today-container" class="grid-container" style="margin-top: 10px;">
             <div class="today-card">
-                <div class="card-header-title">Play These Mods</div>
+                <div class="card-header-title" id="ui-play-mods">Play These Mods</div>
                 <div id="today-list"></div>
             </div>
 
             <div id="ad-banner-area"></div>
 
             <div class="today-card" id="offline-mods-card">
-                <div class="card-header-title">Offline Mods</div>
+                <div class="card-header-title" id="ui-offline-mods">Offline Mods</div>
                 <div id="offline-list"></div>
             </div>
         </div>
     </div>
     
     <div id="page-search" class="hidden">
-        <header><h1>Search</h1></header>
+        <header><h1 id="ui-search-title">Search</h1></header>
         <div class="search-wrapper">
             <svg class="search-icon-svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             <input type="text" id="searchInput" placeholder="Apps, Mods, and more" oninput="runSearch()">
@@ -103,19 +134,19 @@
     </div>
 
     <div id="page-developers" class="hidden">
-        <header><h1>Developers</h1></header>
+        <header><h1 id="ui-dev-title">Developers</h1></header>
         <div class="today-card" style="margin-top:10px;"><div id="developers-list"></div></div>
     </div>
     
     <nav class="tab-bar">
         <a href="javascript:void(0)" class="tab-item active" onclick="showTab('today')">
-            <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Today
+            <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg><span id="tab-today-txt">Today</span>
         </a>
         <a href="javascript:void(0)" class="tab-item" onclick="showTab('search')">
-            <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>Search
+            <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><span id="tab-search-txt">Search</span>
         </a>
         <a href="javascript:void(0)" class="tab-item" onclick="showTab('developers')">
-            <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Devs
+            <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span id="tab-dev-txt">Devs</span>
         </a>
     </nav>
 
@@ -123,6 +154,94 @@
         const CONFIG = { isMaintenance: "off", showDevs: true };
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         let allData = [], prodData = [], offlineData = [], isLoaded = false;
+
+        // 多言語翻訳データの定義
+        const i18n = {
+            en: {
+                today: "Today", search: "Search", devs: "Developers",
+                playMods: "Play These Mods", offlineMods: "Offline Mods",
+                searchPlaceholder: "Apps, Mods, and more",
+                scamWarning: "If someone in a QQ group claims to be the owner of this website, beware that they are a scammer!",
+                supported: "SUPPORTED", unsupported: "UNSUPPORTED", get: "GET", iap: "In-App Purchases",
+                viewAll: "View all mods by {name}"
+            },
+            ja: {
+                today: "Today", search: "Search", devs: "Developers",
+                playMods: "Play These Mods", offlineMods: "Offline Mods",
+                searchPlaceholder: "アプリ、Modなどを検索",
+                scamWarning: "もしQQグループ内でこのウェブサイトのオーナーだと言っている人がいる場合、それは詐欺師です！",
+                supported: "SUPPORTED", unsupported: "UNSUPPORTED", get: "GET", iap: "アプリ内課金",
+                viewAll: "{name} のすべてのModを表示"
+            },
+            zh: {
+                today: "今天", search: "搜索", devs: "开发者",
+                playMods: "热门模组", offlineMods: "离线模组",
+                searchPlaceholder: "搜索应用、模组等",
+                scamWarning: "如果有人在QQ群里声称自己是本网站的拥有者，请注意那是骗子！",
+                supported: "支持", unsupported: "不支持", get: "获取", iap: "应用内购买",
+                viewAll: "查看 {name} 的所有模组"
+            }
+        };
+
+        // 初期言語判定（中国語、日本語、その他は英語）
+        function getInitialLang() {
+            const lang = navigator.language || navigator.userLanguage;
+            if (lang.startsWith('ja')) return 'ja';
+            if (lang.startsWith('zh')) return 'zh';
+            return 'en';
+        }
+
+        let currentLang = getInitialLang();
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            const t = i18n[lang];
+
+            document.getElementById('ui-today-title').textContent = t.today;
+            document.getElementById('ui-search-title').textContent = t.search;
+            document.getElementById('ui-dev-title').textContent = t.devs;
+            document.getElementById('ui-play-mods').textContent = t.playMods;
+            document.getElementById('ui-offline-mods').textContent = t.offlineMods;
+            document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+            document.getElementById('ui-scam-warning').textContent = t.scamWarning;
+
+            document.getElementById('tab-today-txt').textContent = t.today;
+            document.getElementById('tab-search-txt').textContent = t.search;
+            document.getElementById('tab-dev-txt').textContent = t.devs;
+
+            // 日付の表示更新
+            updateDateString();
+
+            // レンダリング済み要素の再描画
+            if (isLoaded) {
+                renderToday();
+                renderAdBanner();
+                renderOfflineMods();
+                if (CONFIG.showDevs) renderDevelopers();
+            }
+        }
+
+        function updateDateString() {
+            let locale = 'en-US';
+            if (currentLang === 'ja') locale = 'ja-JP';
+            if (currentLang === 'zh') locale = 'zh-CN';
+            document.getElementById('display-date').textContent = new Date().toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' });
+        }
+
+        function toggleLangMenu(e) {
+            e.stopPropagation();
+            document.getElementById('lang-menu').classList.toggle('show');
+        }
+
+        function changeLang(lang) {
+            setLanguage(lang);
+            document.getElementById('lang-menu').classList.remove('show');
+        }
+
+        window.onclick = () => {
+            const menu = document.getElementById('lang-menu');
+            if (menu) menu.classList.remove('show');
+        };
 
         function showTab(name) {
             document.getElementById('page-today').classList.toggle('hidden', name !== 'today');
@@ -136,30 +255,31 @@
         }
 
         function createActionHtml(isSupported) {
+            const t = i18n[currentLang];
             const supportColor = isSupported ? "var(--ios-gray)" : "#ff3b30";
-            const supportText = isSupported ? "SUPPORTED" : "UNSUPPORTED";
-            return `<div class="action-container"><div class="support-status" style="color: ${supportColor};">${supportText}</div><div class="get-btn">GET</div></div>`;
+            const supportText = isSupported ? t.supported : t.unsupported;
+            return `<div class="action-container"><div class="support-status" style="color: ${supportColor};">${supportText}</div><div class="get-btn">${t.get}</div></div>`;
         }
 
         function formatVersion(v) { if (!v) return ""; return "v" + v.toString().trim().replace(/^[vV]+/, ""); }
 
         async function fetchAppDetails(app) {
-            let ver = "", desc = "Play now", supported = true;
+            let ver = "", desc = currentLang === 'zh' ? "立即游玩" : (currentLang === 'ja' ? "今すぐプレイ" : "Play now"), supported = true;
             if (app.codename) {
                 try {
                     const v = await fetch(`./resources/${app.codename}/version.json`).then(r => r.json());
                     ver = formatVersion(v.version);
                     if (isIOS) supported = (app.type === 'ipa' || v.iossupport === 'available');
                     else supported = (app.type !== 'ipa' && v.androidsupport !== 'unavailable');
-                    const isJa = navigator.language.includes('ja');
-                    desc = (v.meta && v.meta[isJa ? 'ja' : 'en']?.desc) || v.description || "Play now";
+                    
+                    desc = (v.meta && v.meta[currentLang]?.desc) || v.meta?.en?.desc || v.description || desc;
                 } catch(e) {}
             }
             return { ver, desc, supported };
         }
 
         async function init() {
-            document.getElementById('display-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+            setLanguage(currentLang);
             const ts = new Date().getTime();
             try {
                 const [apps, oapps, iapps, prod] = await Promise.all([
@@ -187,6 +307,7 @@
             const details = await fetchAppDetails(picked);
             const iconPath = picked.icon ? `./${picked.icon}` : `./resources/${picked.codename}/icon.png`;
             const ssPath = `./${picked.ss1}` || `./resources/${picked.codename}/ss1.png`;
+            const t = i18n[currentLang];
 
             area.innerHTML = `
                 <a href="${picked.link}" class="ad-banner-card">
@@ -199,8 +320,8 @@
                                 <p class="ad-desc">${details.desc}</p>
                             </div>
                             <div class="ad-get-wrapper">
-                                <div class="ad-get-btn">GET</div>
-                                <span class="ad-iap">In-App Purchases</span>
+                                <div class="ad-get-btn">${t.get}</div>
+                                <span class="ad-iap">${t.iap}</span>
                             </div>
                         </div>
                     </div>
@@ -279,11 +400,13 @@
             }
             const list = document.getElementById('developers-list');
             list.innerHTML = "";
+            const t = i18n[currentLang];
             Object.values(devMap).sort((a,b) => b.count - a.count).forEach(dev => {
                 const row = document.createElement('a');
                 row.href = `/dev/?id=${dev.id}`;
                 row.className = 'mod-row';
-                row.innerHTML = `<div class="mod-icon dev-icon-placeholder"><svg width="24" height="24" fill="var(--ios-gray)" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><div class="mod-info"><div class="mod-name-container"><div class="mod-name">${dev.name} <span style="font-weight:normal; color:var(--ios-gray);">(${dev.count})</span></div></div><div class="mod-sub">View all mods by ${dev.name}</div></div><div style="color: var(--ios-gray); padding-right: 5px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9.29 15.88L13.17 12 9.29 8.12c-.39-.39-.39-1.02 0-1.41.39-.39 1.02-.39 1.41 0l4.59 4.59c.39.39.39 1.02 0 1.41l-4.59 4.59c-.39.39-1.02.39-1.41 0-.38-.39-.39-1.03 0-1.42z"/></svg></div>`;
+                const subText = t.viewAll.replace('{name}', dev.name);
+                row.innerHTML = `<div class="mod-icon dev-icon-placeholder"><svg width="24" height="24" fill="var(--ios-gray)" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><div class="mod-info"><div class="mod-name-container"><div class="mod-name">${dev.name} <span style="font-weight:normal; color:var(--ios-gray);">(${dev.count})</span></div></div><div class="mod-sub">${subText}</div></div><div style="color: var(--ios-gray); padding-right: 5px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9.29 15.88L13.17 12 9.29 8.12c-.39-.39-.39-1.02 0-1.41.39-.39 1.02-.39 1.41 0l4.59 4.59c.39.39.39 1.02 0 1.41l-4.59 4.59c-.39.39-1.02.39-1.41 0-.38-.39-.39-1.03 0-1.42z"/></svg></div>`;
                 list.appendChild(row);
             });
         }
