@@ -26,5 +26,12 @@
         "link": "https://ktr.brawlmods.com/mods?id=rib",
         "icon": "resources/rib/icon.png",
         "ss1": "resources/rib/ss1.png"
+    },
+    {
+        "name": Phonk Brawl",
+        "codename": "phonk",
+        "link": "https://ktr.brawlmods.com/mods?id=phonk",
+        "icon": "resources/phonk/icon.png",
+        "ss1": "resources/phonk/ss1.png"
     }
 ]
