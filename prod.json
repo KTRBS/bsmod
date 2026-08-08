@@ -7,21 +7,5 @@
         "ss1": "resources/tale/ss1.png",
         "ios": "false"
         
-    },
-    {
-        "name": "Null Rythm",
-        "codename": "rythm",
-        "link": "https://ktr.brawlmods.com/mods?id=rythm",
-        "icon": "resources/rythm/icon.png",
-        "ss1": "resources/rythm/ss1.png",
-        "ios": "false"
-    },
-    {
-        "name": "BSRE",
-        "codename": "bsre",
-        "link": "https://ktr.brawlmods.com/mods?id=bsre",
-        "icon": "resources/bsre/icon.png",
-        "ss1": "resources/bsre/ss1.png",
-        "ios": "false"
-    }    
+    } 
 ]
