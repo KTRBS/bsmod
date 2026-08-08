@@ -1,1 +1,20 @@
-
+{
+    "name": "Phonk brawl",
+    "version": "28.189",
+    "lastUpdated": "Aug 23, 2025",
+    "iossupport": "unavailable",
+    "androidsupport": "available",
+    "iosDownloadUrl": "",
+    "androidDownloadUrl": "https://t.me/OfflineBS/41",
+    "iosoldver": {},
+    "androidoldver": {},
+    "authors": [
+        { "name": "梦归", "id": "meng" }
+    ],
+    "meta": {
+        "ja": { "title": "phonk brawl", "desc": "" },
+        "en": { "title": "phonk brawl", "desc": "music edited" }   
+    },
+    "telegram": "t.me/phonkbrawlmenggui",
+    "discord": ""
+}
