@@ -1,6 +1,8 @@
 {
   "displayName": "梦归",
   "apps": [
-    { "id": "cao", "mode": "offline", "name": "Cao Dong Brawl", "subtitle": "This mod is built on Surge Office, with character modifications, all text removed, and the music remixed." }
+    { "id": "cao", "mode": "offline", "name": "Cao Dong Brawl", "subtitle": "This mod is built on Surge Office, with character modifications, all text removed, and the music remixed." },
+    { "id": "phonk", "mode": "offline", "name": "Phonk Brawl", "subtitle": "" }
+  
   ]
 }
