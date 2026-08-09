@@ -27,8 +27,9 @@
         .lang-item:last-child { border-bottom: none; }
         .lang-item:hover { background: rgba(0,122,255,0.1); }
 
-        /* 詐欺注意喚起バナー */
-        .scam-warning { background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.3); color: #ff3b30; padding: 10px 14px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; margin: 15px 0 5px 0; line-height: 1.4; }
+        /* 詐欺注意喚起バナー（中国語のみ表示） */
+        .scam-warning { background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.3); color: #ff3b30; padding: 10px 14px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; margin: 15px 0 5px 0; line-height: 1.4; display: none; }
+        .scam-warning.show { display: block; }
 
         /* Telegram 水色テキスト */
         .telegram-footer { text-align: center; margin: 25px 0 10px 0; font-size: 0.85rem; font-weight: 700; color: #32ade6; }
@@ -109,7 +110,8 @@
         </header>
 
         <div class="scam-warning" id="ui-scam-warning">
-            如果有人在QQ群里声称自己是本网站的拥有者，请注意那是骗子！ / もしQQグループ内でこのウェブサイトのオーナーだと言っている人がいる場合、それは詐欺師です！ / If someone in a QQ group claims to be the owner of this website, beware that they are a scammer!
+            如果有人在QQ群里声称自己是本网站的拥有者，请注意那是骗子！<br>
+            官方助手QQ: 3921151480
         </div>
 
         <div id="page-today-container" class="grid-container" style="margin-top: 10px;">
@@ -126,7 +128,6 @@
             </div>
         </div>
 
-        <!-- ご指定の水色テキスト -->
         <div class="telegram-footer">official telegram: @Kazarex</div>
     </div>
     
@@ -166,7 +167,6 @@
                 today: "Today", search: "Search", devs: "Developers",
                 playMods: "Play These Mods", offlineMods: "Offline Mods",
                 searchPlaceholder: "Apps, Mods, and more",
-                scamWarning: "If someone in a QQ group claims to be the owner of this website, beware that they are a scammer!",
                 supported: "SUPPORTED", unsupported: "UNSUPPORTED", get: "GET", iap: "In-App Purchases",
                 viewAll: "View all mods by {name}"
             },
@@ -174,7 +174,6 @@
                 today: "Today", search: "Search", devs: "Developers",
                 playMods: "Play These Mods", offlineMods: "Offline Mods",
                 searchPlaceholder: "アプリ、Modなどを検索",
-                scamWarning: "もしQQグループ内でこのウェブサイトのオーナーだと言っている人がいる場合、それは詐欺師です！",
                 supported: "SUPPORTED", unsupported: "UNSUPPORTED", get: "GET", iap: "アプリ内課金",
                 viewAll: "{name} のすべてのModを表示"
             },
@@ -182,7 +181,6 @@
                 today: "今天", search: "搜索", devs: "开发者",
                 playMods: "热门模组", offlineMods: "离线模组",
                 searchPlaceholder: "搜索应用、模组等",
-                scamWarning: "如果有人在QQ群里声称自己是本网站的拥有者，请注意那是骗子！",
                 supported: "支持", unsupported: "不支持", get: "获取", iap: "应用内购买",
                 viewAll: "查看 {name} 的所有模组"
             }
@@ -207,7 +205,14 @@
             document.getElementById('ui-play-mods').textContent = t.playMods;
             document.getElementById('ui-offline-mods').textContent = t.offlineMods;
             document.getElementById('searchInput').placeholder = t.searchPlaceholder;
-            document.getElementById('ui-scam-warning').textContent = t.scamWarning;
+
+            // 中国語（zh）に設定されている時だけQQの警告を表示
+            const scamWarningEl = document.getElementById('ui-scam-warning');
+            if (lang === 'zh') {
+                scamWarningEl.classList.add('show');
+            } else {
+                scamWarningEl.classList.remove('show');
+            }
 
             document.getElementById('tab-today-txt').textContent = t.today;
             document.getElementById('tab-search-txt').textContent = t.search;
