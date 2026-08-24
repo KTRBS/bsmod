@@ -1,9 +1,10 @@
 name: Generate Mod Pages
 
 on:
+  workflow_dispatch: # ← これを追加すると手動実行ボタンが出ます
   push:
     branches:
-      - main # または master（使用しているデフォルトブランチ名）
+      - main
     paths:
       - 'resources/**'
       - 'template.html'
