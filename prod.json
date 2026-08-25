@@ -5,7 +5,15 @@
         "link": "https://ktr.brawlmods.com/mods/tale",
         "icon": "resources/tale/icon.png",
         "ss1": "resources/tale/ss1.png",
-        "ios": "false"
+        "ios": "true"
         
+    },
+    {
+        "name": "BSRE",
+        "codename": "tale",
+        "link": "https://ktr.brawlmods.com/mods/bsre",
+        "icon": "resources/bsre/icon.png",
+        "ss1": "resources/bsre/ss1.png",
+        "ios": "true"   
     } 
 ]
