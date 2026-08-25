@@ -1,10 +1,10 @@
 {
     "name": "BSRE",
-    "version": "67",
-    "lastUpdated": "2026-05-28",
+    "version": "68",
+    "lastUpdated": "2026-08-25",
     "iossupport": "available",
-    "androidsupport": "available",
-    "iosDownloadUrl": "",
+    "androidsupport": "unavailable",
+    "iosDownloadUrl": "https://t.me/ProdMods1/23",
     "androidDownloadUrl": "",
     "authors": [
         { "name": "remote ", "id": "remote" }
