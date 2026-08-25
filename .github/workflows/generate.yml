@@ -20,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24' # ← '20' から '24' に変更
+          node-version: '24'
 
       - name: Run generate.js
         run: node generate.js
@@ -28,5 +28,5 @@ jobs:
       - name: Commit and Push generated pages
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "auto: Generate mod pages [skip ci]"
-          file_pattern: 'mods/**'
+          commit_message: "auto: Generate mod pages and sitemap [skip ci]"
+          file_pattern: 'mods/** sitemap.xml'
