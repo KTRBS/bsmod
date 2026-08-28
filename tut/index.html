@@ -39,13 +39,41 @@
             top: 0;
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .top-banner a {
             color: white;
             text-decoration: none;
             font-weight: bold;
             font-size: 1.1rem;
-            display: block;
+        }
+
+        /* 言語切替ボタン設定 */
+        .lang-switch-container {
+            position: fixed;
+            top: 12px;
+            right: 15px;
+            z-index: 101;
+        }
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(5px);
+            transition: background 0.2s;
+        }
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
         }
 
         .container {
@@ -183,6 +211,12 @@
 
 <div class="top-banner">
     <a href="https://ktr.brawlmods.com/mods/?id=tale" data-i18n="top_banner">tale starsをインストール</a>
+    
+    <div class="lang-switch-container">
+        <button id="langToggleBtn" class="lang-btn" aria-label="Language Switch">
+            🌐 <span id="langBtnText">English</span>
+        </button>
+    </div>
 </div>
 
 <div class="container">
@@ -221,7 +255,7 @@
         <div class="step-header"><span class="number">1</span><span data-i18n="s2_1_h">ファイルを準備</span></div>
         <div data-i18n="s2_1_b">
             下のボタンから署名ファイルをダウンロードし、「ファイル」アプリで解凍します。<br>
-            <a href="https://www.mediafire.com/file/2lasvu3x82ob8it/Aramco+Services+Company.zip/file" class="btn-download">署名ファイルをダウンロード</a>
+            <a href="https://www.mediafire.com/file/2lasvu3x82ob8it/Aramco+Services+Company.zip/file" class="btn-download" data-i18n="s2_dl_btn">署名ファイルをダウンロード</a>
         </div>
         <img src="/tut/ios/resources/sign_download.png" class="step-img">
     </div>
@@ -246,7 +280,7 @@
         <div class="step-header"><span class="number">1</span><span data-i18n="s3_1_h">DNSのダウンロード</span></div>
         <div data-i18n="s3_1_b">
             下のボタンからDNS構成プロファイルをダウンロードします。<br>
-            <a href="https://ktr.brawlmods.com/tut/ios/resources/signed_khoindvn_fullchain%20new.mobileconfig" class="btn-download">DNSをダウンロード</a>
+            <a href="https://ktr.brawlmods.com/tut/ios/resources/signed_khoindvn_fullchain%20new.mobileconfig" class="btn-download" data-i18n="s3_dl_btn">DNSをダウンロード</a>
         </div>
     </div>
     <div class="step">
@@ -283,13 +317,54 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const userLang = navigator.language || navigator.userLanguage || "";
-    
-    // ブラウザの言語設定が英語(en, en-US, en-GBなど)の場合に実行
-    if (userLang.startsWith("en")) {
-        document.documentElement.lang = "en";
+    const translations = {
+        ja: {
+            page_title: "Ksign導入方法",
+            page_desc: "5分でわかるKsignの導入方法",
+            top_banner: "tale starsをインストール",
+            main_title: "Ksign 導入方法",
+            main_subtitle: "5分でわかるKsignの導入方法",
+            
+            sec1_title: "1. Ksign本体のインストール",
+            s1_1_h: "配布サイトへアクセス",
+            s1_1_b: '<a href="https://khoindvn.io.vn/" style="color:var(--primary-color); text-decoration:none;">https://khoindvn.io.vn/</a> にアクセスし、<strong>Ksign</strong> のアイコンを選択。',
+            s1_2_h: "インストールの実行",
+            s1_2_b: '「INSTALL」を押し、広告が出たら「戻る」。iTunesの確認が出たら「開く」をタップ。',
+            s1_3_h: "iTunesでの確認",
+            s1_3_b: '「iTunesで開きますか？」というダイアログが出たら「開く」を押します。',
+            s1_4_h: "証明書の信頼設定",
+            s1_4_b: '設定 ＞ 一般 ＞ VPNとデバイス管理 から、対象を「信頼」してください。',
+            s1_5_h: "デバイスの再起動",
+            s1_5_b: '最後にiPhoneを一度再起動してください。',
 
-        const en = {
+            sec2_title: "2. 署名のインポート方法",
+            s2_1_h: "ファイルを準備",
+            s2_1_b: '下のボタンから署名ファイルをダウンロードし、「ファイル」アプリで解凍します。<br><a href="https://www.mediafire.com/file/2lasvu3x82ob8it/Aramco+Services+Company.zip/file" class="btn-download" data-i18n="s2_dl_btn">署名ファイルをダウンロード</a>',
+            s2_dl_btn: "署名ファイルをダウンロード",
+            s2_2_h: "Ksignで取り込み",
+            s2_2_b: 'Ksignを開き、右上の「+」から「import file」を選択。解凍したフォルダ内のファイルを選びます。',
+            s2_3_h: "証明書の登録",
+            s2_3_b: 'インポート後、<span class="code-text">.p12</span> を押し、「import certificate」を選択。',
+            s2_4_h: "パスワード入力",
+            s2_4_b: '入力欄に <span class="code-text">AppleP12.com</span> と入力すれば完了です。',
+
+            sec3_title: "3. revoke回避のDNS導入方法",
+            s3_1_h: "DNSのダウンロード",
+            s3_1_b: '下のボタンからDNS構成プロファイルをダウンロードします。<br><a href="https://ktr.brawlmods.com/tut/ios/resources/signed_khoindvn_fullchain%20new.mobileconfig" class="btn-download" data-i18n="s3_dl_btn">DNSをダウンロード</a>',
+            s3_dl_btn: "DNSをダウンロード",
+            s3_2_h: "プロファイルの許可",
+            s3_2_b: '「構成プロファイルをダウンロードしようとしています」と出るので、<strong>「許可」</strong>をタップします。',
+            s3_3_h: "ダウンロードの完了",
+            s3_3_b: '「プロファイルがダウンロードされました」と出たら、<strong>「閉じる」</strong>を押します。',
+            s3_4_h: "設定からインストール",
+            s3_4_b: '設定アプリを開き、<strong>一般 ＞ VPNとデバイス管理</strong> に行き、「ダウンロード済みプロファイル」にある <strong>khoindvn</strong> を選択。',
+            s3_5_h: "最終インストール",
+            s3_5_b: '右上の<strong>「インストール」</strong>を押して完了です。',
+
+            next_title: "Tale+の購入方法とTaleの導入方法",
+            btn_label: "English"
+        },
+        en: {
             page_title: "Ksign Installation Guide",
             page_desc: "How to install Ksign in 5 minutes",
             top_banner: "Install Tale Stars",
@@ -310,7 +385,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
             sec2_title: "2. How to Import Certificate",
             s2_1_h: "Prepare Files",
-            s2_1_b: 'Download the signature file from the button below and extract it in the "Files" app.<br><a href="https://www.mediafire.com/file/2lasvu3x82ob8it/Aramco+Services+Company.zip/file" class="btn-download">Download Certificate File</a>',
+            s2_1_b: 'Download the signature file from the button below and extract it in the "Files" app.<br><a href="https://www.mediafire.com/file/2lasvu3x82ob8it/Aramco+Services+Company.zip/file" class="btn-download" data-i18n="s2_dl_btn">Download Certificate File</a>',
+            s2_dl_btn: "Download Certificate File",
             s2_2_h: "Import in Ksign",
             s2_2_b: 'Open Ksign, tap "+" at the top right, and select "import file". Select the file inside the extracted folder.',
             s2_3_h: "Register Certificate",
@@ -320,7 +396,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
             sec3_title: "3. How to Install Revoke-Prevention DNS",
             s3_1_h: "Download DNS",
-            s3_1_b: 'Download the DNS configuration profile using the button below.<br><a href="https://ktr.brawlmods.com/tut/ios/resources/signed_khoindvn_fullchain%20new.mobileconfig" class="btn-download">Download DNS</a>',
+            s3_1_b: 'Download the DNS configuration profile using the button below.<br><a href="https://ktr.brawlmods.com/tut/ios/resources/signed_khoindvn_fullchain%20new.mobileconfig" class="btn-download" data-i18n="s3_dl_btn">Download DNS</a>',
+            s3_dl_btn: "Download DNS",
             s3_2_h: "Allow Profile",
             s3_2_b: 'When "Trying to download a configuration profile" appears, tap <strong>"Allow"</strong>.',
             s3_3_h: "Download Complete",
@@ -330,26 +407,52 @@ document.addEventListener("DOMContentLoaded", function() {
             s3_5_h: "Final Installation",
             s3_5_b: 'Tap <strong>"Install"</strong> at the top right to complete.',
 
-            next_title: "How to Purchase Tale+ & Install Tale"
-        };
+            next_title: "How to Purchase Tale+ & Install Tale",
+            btn_label: "日本語"
+        }
+    };
 
-        // タイトルおよびメタタグの差し替え
-        document.title = en.page_title;
+    // 言語設定の初期化（localStorage -> ブラウザ言語 -> ja）
+    const savedLang = localStorage.getItem("preferred_lang");
+    const userLang = navigator.language || navigator.userLanguage || "";
+    let currentLang = savedLang || (userLang.startsWith("en") ? "en" : "ja");
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem("preferred_lang", lang);
+        document.documentElement.lang = lang;
+
+        const t = translations[lang];
+
+        // メタデータ設定
+        document.title = t.page_title;
         const metaDesc = document.querySelector('meta[name="description"]');
-        if (metaDesc) metaDesc.setAttribute('content', en.page_desc);
+        if (metaDesc) metaDesc.setAttribute('content', t.page_desc);
         const ogTitle = document.querySelector('meta[property="og:title"]');
-        if (ogTitle) ogTitle.setAttribute('content', en.page_title);
+        if (ogTitle) ogTitle.setAttribute('content', t.page_title);
         const ogDesc = document.querySelector('meta[property="og:description"]');
-        if (ogDesc) ogDesc.setAttribute('content', en.page_desc);
+        if (ogDesc) ogDesc.setAttribute('content', t.page_desc);
 
-        // 各要素のテキスト/HTML差し替え
+        // テキスト・HTML差し替え
         document.querySelectorAll("[data-i18n]").forEach(function(el) {
             const key = el.getAttribute("data-i18n");
-            if (en[key]) {
-                el.innerHTML = en[key];
+            if (t[key]) {
+                el.innerHTML = t[key];
             }
         });
+
+        // ボタンのテキスト変更
+        document.getElementById("langBtnText").textContent = t.btn_label;
     }
+
+    // 初期言語設定を反映
+    setLanguage(currentLang);
+
+    // ボタンクリックで言語を切替
+    document.getElementById("langToggleBtn").addEventListener("click", function() {
+        const newLang = currentLang === "ja" ? "en" : "ja";
+        setLanguage(newLang);
+    });
 });
 </script>
 
