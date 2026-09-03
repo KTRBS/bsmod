@@ -90,6 +90,24 @@
         .tab-icon-svg { width: 22px; height: 22px; fill: var(--ios-gray); margin-bottom: 2px; }
         .active .tab-icon-svg { fill: var(--ios-blue); }
         .dev-icon-placeholder { display: flex; align-items: center; justify-content: center; background: var(--search-bg); border-radius: 50%; }
+
+        /* 広告掲載募集カード */
+        .ads-promo-card { cursor: pointer; border: none; padding: 0; font: inherit; text-align: inherit; }
+        .ads-promo-card .ad-bg { background: linear-gradient(135deg, #ff9500, #ff2d55); }
+        .ads-promo-card .ad-icon { display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.25); }
+
+        /* コンタクトカード用オーバーレイ */
+        .contact-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+        .contact-overlay.show { opacity: 1; pointer-events: auto; }
+        .contact-card { background: var(--card-bg); color: var(--text-color); border-radius: 20px; padding: 28px 24px; width: 100%; max-width: 320px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; transform: scale(0.9); transition: transform 0.25s ease; }
+        .contact-overlay.show .contact-card { transform: scale(1); }
+        .contact-card-icon { width: 56px; height: 56px; margin: 0 auto 14px auto; border-radius: 16px; background: linear-gradient(135deg, #ff9500, #ff2d55); display: flex; align-items: center; justify-content: center; }
+        .contact-card h2 { font-size: 1.2rem; font-weight: 800; margin: 0 0 16px 0; }
+        .contact-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 4px; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
+        .contact-row:last-of-type { border-bottom: none; }
+        .contact-row span:first-child { color: var(--ios-gray); font-weight: 600; }
+        .contact-row span:last-child { font-weight: 700; }
+        .contact-close-btn { margin-top: 18px; width: 100%; background: var(--ios-blue); color: #fff; border: none; padding: 11px; border-radius: 14px; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -121,7 +139,25 @@
                 <div id="today-list"></div>
             </div>
 
-            <div id="ad-banner-area"></div>
+            <button type="button" id="ads-promo-card" class="ad-banner-card ads-promo-card" onclick="showContactCard()">
+                <div class="ad-bg"></div>
+                <div class="ad-content">
+                    <div class="ad-icon">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 15H4V8h16v11z"/></svg>
+                    </div>
+                    <div class="ad-text-box">
+                        <div class="ad-info">
+                            <p class="ad-title" id="ui-ads-title">Wanna post your ads?</p>
+                            <p class="ad-desc" id="ui-ads-desc">Get in touch and reach many users.</p>
+                        </div>
+                        <div class="ad-get-wrapper">
+                            <div class="ad-get-btn" id="ui-ads-btn">Contact</div>
+                        </div>
+                    </div>
+                </div>
+            </button>
+
+            <div id="ad-banner-area" class="hidden"></div>
 
             <div class="today-card" id="offline-mods-card">
                 <div class="card-header-title" id="ui-offline-mods">Offline Mods</div>
@@ -158,10 +194,27 @@
         </a>
     </nav>
 
+    <div id="contact-overlay" class="contact-overlay" onclick="hideContactCard()">
+        <div class="contact-card" onclick="event.stopPropagation()">
+            <div class="contact-card-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 15H4V8h16v11z"/></svg>
+            </div>
+            <h2 id="ui-contact-title">Contact me!</h2>
+            <div class="contact-row"><span>WeChat</span><span>@KTR_BS</span></div>
+            <div class="contact-row"><span>Telegram</span><span>@Kazarex</span></div>
+            <div class="contact-row"><span>Discord</span><span>@KTRBS</span></div>
+            <button type="button" class="contact-close-btn" id="ui-contact-close" onclick="hideContactCard()">Close</button>
+        </div>
+    </div>
+
     <script>
         const CONFIG = { isMaintenance: "off", showDevs: true };
+        // true: 「広告募集」カード（Wanna post your ads?）を表示
+        // false: ads.json から広告を読み込んでローテーション表示
+        let askforads = true;
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         let allData = [], prodData = [], offlineData = [], isLoaded = false;
+        let adsData = [], adRotationIndex = 0, adRotationTimer = null;
 
         const i18n = {
             en: {
@@ -169,21 +222,27 @@
                 playMods: "Play These Mods", offlineMods: "Offline Mods",
                 searchPlaceholder: "Apps, Mods, and more",
                 supported: "SUPPORTED", unsupported: "UNSUPPORTED", get: "GET", iap: "In-App Purchases",
-                viewAll: "View all mods by {name}"
+                viewAll: "View all mods by {name}",
+                adsTitle: "Wanna post your ads?", adsDesc: "Get in touch and reach many users.", adsBtn: "Contact",
+                contactTitle: "Contact me!", contactClose: "Close"
             },
             ja: {
                 today: "Today", search: "Search", devs: "Developers",
                 playMods: "Play These Mods", offlineMods: "Offline Mods",
                 searchPlaceholder: "アプリ、Modなどを検索",
                 supported: "SUPPORTED", unsupported: "UNSUPPORTED", get: "GET", iap: "アプリ内課金",
-                viewAll: "{name} のすべてのModを表示"
+                viewAll: "{name} のすべてのModを表示",
+                adsTitle: "広告を掲載しませんか？", adsDesc: "お問い合わせいただければ、多くのユーザーにリーチできます。", adsBtn: "問い合わせる",
+                contactTitle: "お問い合わせはこちら！", contactClose: "閉じる"
             },
             zh: {
                 today: "今天", search: "搜索", devs: "开发者",
                 playMods: "热门模组", offlineMods: "离线模组",
                 searchPlaceholder: "搜索应用、模组等",
                 supported: "支持", unsupported: "不支持", get: "获取", iap: "应用内购买",
-                viewAll: "查看 {name} 的所有模组"
+                viewAll: "查看 {name} 的所有模组",
+                adsTitle: "想投放广告吗？", adsDesc: "联系我们，触达成千上万的用户。", adsBtn: "联系我们",
+                contactTitle: "联系我！", contactClose: "关闭"
             }
         };
 
@@ -207,6 +266,12 @@
             document.getElementById('ui-offline-mods').textContent = t.offlineMods;
             document.getElementById('searchInput').placeholder = t.searchPlaceholder;
 
+            document.getElementById('ui-ads-title').textContent = t.adsTitle;
+            document.getElementById('ui-ads-desc').textContent = t.adsDesc;
+            document.getElementById('ui-ads-btn').textContent = t.adsBtn;
+            document.getElementById('ui-contact-title').textContent = t.contactTitle;
+            document.getElementById('ui-contact-close').textContent = t.contactClose;
+
             // 中国語（zh）に設定されている時だけQQの警告を表示
             const scamWarningEl = document.getElementById('ui-scam-warning');
             if (lang === 'zh') {
@@ -223,7 +288,7 @@
 
             if (isLoaded) {
                 renderToday();
-                renderAdBanner();
+                updateAdSlot();
                 renderOfflineMods();
                 if (CONFIG.showDevs) renderDevelopers();
             }
@@ -262,6 +327,14 @@
             window.scrollTo(0,0);
         }
 
+        function showContactCard() {
+            document.getElementById('contact-overlay').classList.add('show');
+        }
+
+        function hideContactCard() {
+            document.getElementById('contact-overlay').classList.remove('show');
+        }
+
         function createActionHtml(isSupported) {
             const t = i18n[currentLang];
             const supportColor = isSupported ? "var(--ios-gray)" : "#ff3b30";
@@ -290,51 +363,87 @@
             setLanguage(currentLang);
             const ts = new Date().getTime();
             try {
-                const [apps, oapps, iapps, prod] = await Promise.all([
+                const [apps, oapps, iapps, prod, ads] = await Promise.all([
                     fetch(`./apps.json?${ts}`).then(r => r.json()).catch(() => []),
                     fetch(`./oapps.json?${ts}`).then(r => r.json()).catch(() => []),
                     fetch(`./iapps.json?${ts}`).then(r => r.json()).catch(() => []),
-                    fetch(`./prod.json?${ts}`).then(r => r.json()).catch(() => [])
+                    fetch(`./prod.json?${ts}`).then(r => r.json()).catch(() => []),
+                    fetch(`./ads.json?${ts}`).then(r => r.json()).catch(() => [])
                 ]);
                 prodData = CONFIG.isMaintenance === "on" ? [] : prod.map(a => ({...a, type:'prod'}));
                 offlineData = apps.map(a => ({...a, type:'offline'}));
                 allData = [...offlineData, ...oapps.map(a => ({...a, type:'online'})), ...iapps.map(a => ({...a, type:'ipa'})), ...prodData];
+                adsData = Array.isArray(ads) ? ads : [];
                 isLoaded = true;
                 renderToday();
-                renderAdBanner();
+                updateAdSlot();
                 renderOfflineMods();
                 if (CONFIG.showDevs) renderDevelopers();
             } catch (e) { console.error(e); }
         }
 
-        async function renderAdBanner() {
+        function getAdMeta(ad) {
+            const meta = (ad.meta && (ad.meta[currentLang] || ad.meta.en)) || {};
+            return { title: meta.title || ad.name || "", desc: meta.desc || "" };
+        }
+
+        function renderAdBanner() {
             const area = document.getElementById('ad-banner-area');
-            const candidates = allData.filter(a => a.codename && a.ss1);
-            if (!candidates.length) return;
-            const picked = candidates[Math.floor(Math.random() * candidates.length)];
-            const details = await fetchAppDetails(picked);
-            const iconPath = picked.icon ? `./${picked.icon}` : `./resources/${picked.codename}/icon.png`;
-            const ssPath = `./${picked.ss1}` || `./resources/${picked.codename}/ss1.png`;
+            if (!adsData.length) { area.innerHTML = ""; return; }
+            const ad = adsData[adRotationIndex % adsData.length];
+            const meta = getAdMeta(ad);
+            const iconPath = ad.icon ? `./${ad.icon}` : "";
+            const bgPath = ad.background ? `./${ad.background}` : "";
             const t = i18n[currentLang];
 
             area.innerHTML = `
-                <a href="${picked.link}" class="ad-banner-card">
-                    <div class="ad-bg" style="background-image: url('${ssPath}')"></div>
+                <a href="${ad.link}" class="ad-banner-card" target="_blank" rel="noopener noreferrer">
+                    <div class="ad-bg" style="background-image: url('${bgPath}')"></div>
                     <div class="ad-content">
-                        <img src="${iconPath}" class="ad-icon" onerror="this.style.opacity='0'">
+                        ${iconPath ? `<img src="${iconPath}" class="ad-icon" onerror="this.style.opacity='0'">` : ""}
                         <div class="ad-text-box">
                             <div class="ad-info">
-                                <p class="ad-title">${picked.name} - ${details.ver}</p>
-                                <p class="ad-desc">${details.desc}</p>
+                                <p class="ad-title">${meta.title}</p>
+                                <p class="ad-desc">${meta.desc}</p>
                             </div>
                             <div class="ad-get-wrapper">
                                 <div class="ad-get-btn">${t.get}</div>
-                                <span class="ad-iap">${t.iap}</span>
                             </div>
                         </div>
                     </div>
                 </a>
             `;
+        }
+
+        function stopAdRotation() {
+            if (adRotationTimer) { clearInterval(adRotationTimer); adRotationTimer = null; }
+        }
+
+        function startAdRotation() {
+            stopAdRotation();
+            if (adsData.length > 1) {
+                adRotationTimer = setInterval(() => {
+                    adRotationIndex = (adRotationIndex + 1) % adsData.length;
+                    renderAdBanner();
+                }, 6000);
+            }
+        }
+
+        // askforads = true  -> 「広告募集」カードを表示（Wanna post your ads?）
+        // askforads = false -> ads.json の広告をこのスロットに表示し、複数あればローテーション
+        function updateAdSlot() {
+            const promoCard = document.getElementById('ads-promo-card');
+            const bannerArea = document.getElementById('ad-banner-area');
+            if (askforads) {
+                promoCard.classList.remove('hidden');
+                bannerArea.classList.add('hidden');
+                stopAdRotation();
+            } else {
+                promoCard.classList.add('hidden');
+                bannerArea.classList.remove('hidden');
+                renderAdBanner();
+                startAdRotation();
+            }
         }
 
         async function renderToday() {
