@@ -211,7 +211,7 @@
         const CONFIG = { isMaintenance: "off", showDevs: true };
         // true: 「広告募集」カード（Wanna post your ads?）を表示
         // false: ads.json から広告を読み込んでローテーション表示
-        let askforads = true;
+        let askforads = false;
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         let allData = [], prodData = [], offlineData = [], isLoaded = false;
         let adsData = [], adRotationIndex = 0, adRotationTimer = null;
