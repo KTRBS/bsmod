@@ -1,0 +1,24 @@
+[
+    {
+        "id": "sample-ad-1",
+        "link": "https://example.com",
+        "icon": "ads/sample-ad-1/icon.png",
+        "background": "ads/sample-ad-1/bg.jpg",
+        "meta": {
+            "en": { "title": "Example Sponsor", "desc": "Boost your app's reach with a featured slot here." },
+            "ja": { "title": "サンプル広告主", "desc": "ここに掲載してアプリの認知度をアップ！" },
+            "zh": { "title": "示例广告主", "desc": "在这里投放广告，提升你的应用曝光度。" }
+        }
+    },
+    {
+        "id": "sample-ad-2",
+        "link": "https://example.com/another",
+        "icon": "ads/sample-ad-2/icon.png",
+        "background": "ads/sample-ad-2/bg.jpg",
+        "meta": {
+            "en": { "title": "Another Sponsor", "desc": "Your product could be featured right here." },
+            "ja": { "title": "別の広告主", "desc": "あなたの商品もここに掲載できます。" },
+            "zh": { "title": "另一位广告主", "desc": "你的产品也可以出现在这里。" }
+        }
+    }
+]
