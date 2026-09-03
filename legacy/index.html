@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>APK List</title>
+    
+    <!-- Open Graph / Discord Embed Meta Tags -->
+    <meta property="og:title" content="APK List">
+    <meta property="og:description" content="Download over 800 offline mods created on S.B client from ktr.brawlmods.com">
+    <meta property="theme-color" content="#007bff">
+
     <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -165,10 +171,10 @@ function filterByTag(tag) {
     try {
         const timestamp = new Date().getTime();
         const responses = await Promise.all([
-            fetch(`apps.json?${timestamp}`).then(res => res.json()),
-            fetch(`oapps.json?${timestamp}`).then(res => res.json()),
-            fetch(`iapps.json?${timestamp}`).then(res => res.json()),
-            fetch(`prod.json?${timestamp}`).then(res => res.json())
+            fetch(`../apps.json?${timestamp}`).then(res => res.json()),
+            fetch(`../oapps.json?${timestamp}`).then(res => res.json()),
+            fetch(`../iapps.json?${timestamp}`).then(res => res.json()),
+            fetch(`../prod.json?${timestamp}`).then(res => res.json())
         ]);
 
         let [appsData, oappsData, iappsData, prodData] = responses;
