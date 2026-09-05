@@ -517,7 +517,18 @@
                 updateAdSlot();
                 renderOfflineMods();
                 if (CONFIG.showDevs) renderDevelopers();
+                applyQueryParam();
             } catch (e) { console.error(e); }
+        }
+
+        function applyQueryParam() {
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get('query');
+            if (q) {
+                document.getElementById('searchInput').value = q;
+                showTab('search');
+                runSearch();
+            }
         }
 
         function getAdMeta(ad) {
