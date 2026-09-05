@@ -37,8 +37,10 @@
         .lang-item.active .lang-check { opacity: 1; }
 
         /* 詐欺注意喚起バナー（中国語のみ表示） */
-        .scam-warning { background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.3); color: #ff3b30; padding: 10px 14px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; margin: 15px 0 5px 0; line-height: 1.4; display: none; }
-        .scam-warning.show { display: block; }
+        .qq-banner { display: none; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #12B7F5, #1296db); color: #ffffff; padding: 8px 14px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; margin: 15px 0 5px 0; text-decoration: none; box-shadow: 0 6px 16px rgba(18, 183, 245, 0.35); transition: transform 0.15s ease; text-align: center; }
+        .qq-banner:active { transform: scale(0.97); }
+        .qq-banner.show { display: flex; }
+        .qq-banner svg { width: 17px; height: 17px; fill: #ffffff; flex-shrink: 0; }
 
         /* Discord招待バナー（全言語共通で表示） */
         .invite-banners-row { display: flex; gap: 10px; margin: 15px 0 5px 0; }
@@ -151,11 +153,10 @@
             </div>
         </header>
 
-        <div class="scam-warning" id="ui-scam-warning">
-            如果有人在QQ群里声称自己是本网站的拥有者，请注意那是骗子！<br>
-            官方QQ群: 1053166642<br>
-            官方助手QQ: 3921151480
-        </div>
+        <a href="https://qm.qq.com/q/a3GfEnRdPa" target="_blank" rel="noopener noreferrer" class="qq-banner" id="ui-qq-banner">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.73 1.44 5.16 3.7 6.78-.12.9-.46 2.16-1.3 3.42-.14.2 0 .46.24.46.14 0 .26-.04.36-.1 1.6-.86 2.98-1.9 3.68-2.5.94.2 1.94.32 2.98.32 5.52 0 10-3.94 10-8.88S17.52 2 12 2z"/></svg>
+            <span>点击链接加入群聊【荒野乱斗offine魔改】</span>
+        </a>
 
         <div class="invite-banners-row">
             <a href="https://discord.gg/4yPvHXy5FU" target="_blank" rel="noopener noreferrer" class="invite-banner discord-banner">
@@ -354,12 +355,12 @@
                 item.classList.toggle('active', item.dataset.lang === lang);
             });
 
-            // 中国語（zh）に設定されている時だけQQの警告を表示
-            const scamWarningEl = document.getElementById('ui-scam-warning');
+            // 中国語（zh）に設定されている時だけQQグループ招待バナーを表示
+            const qqBannerEl = document.getElementById('ui-qq-banner');
             if (lang === 'zh') {
-                scamWarningEl.classList.add('show');
+                qqBannerEl.classList.add('show');
             } else {
-                scamWarningEl.classList.remove('show');
+                qqBannerEl.classList.remove('show');
             }
 
             document.getElementById('tab-today-txt').textContent = t.today;
