@@ -105,11 +105,12 @@
         
         /* タブバー */
         .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 48px; padding-bottom: env(safe-area-inset-bottom); background: var(--tab-bg); backdrop-filter: blur(25px); border-top: 0.5px solid var(--line); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 9px; width: 33.33%; padding-top: 4px; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; color: var(--ios-gray); text-decoration: none; font-size: 9px; width: 25%; padding-top: 4px; }
         .tab-item.active { color: var(--ios-blue); }
         .tab-icon-svg { width: 22px; height: 22px; fill: var(--ios-gray); margin-bottom: 2px; }
         .active .tab-icon-svg { fill: var(--ios-blue); }
         .dev-icon-placeholder { display: flex; align-items: center; justify-content: center; background: var(--search-bg); border-radius: 50%; }
+        .index-frame { width: 100%; height: calc(100vh - 220px); min-height: 420px; border: none; border-radius: 14px; background: var(--card-bg); margin-top: 10px; }
 
         /* 広告掲載募集カード */
         .ads-promo-card { cursor: pointer; border: none; padding: 0; font: inherit; text-align: inherit; }
@@ -203,6 +204,11 @@
 
         <div class="telegram-footer">official telegram: @Kazarex</div>
     </div>
+
+    <div id="page-index" class="hidden">
+        <header><h1 id="ui-index-title">Index</h1></header>
+        <iframe class="index-frame" src="/legacy/index.html"></iframe>
+    </div>
     
     <div id="page-search" class="hidden">
         <header><h1 id="ui-search-title">Search</h1></header>
@@ -221,6 +227,9 @@
     <nav class="tab-bar">
         <a href="javascript:void(0)" class="tab-item active" onclick="showTab('today')">
             <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg><span id="tab-today-txt">Today</span>
+        </a>
+        <a href="javascript:void(0)" class="tab-item" onclick="showTab('index')">
+            <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z"/></svg><span id="tab-index-txt">Index</span>
         </a>
         <a href="javascript:void(0)" class="tab-item" onclick="showTab('search')">
             <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><span id="tab-search-txt">Search</span>
@@ -254,10 +263,7 @@
 
         const i18n = {
             en: {
-                today: "Today", search: "Search", devs: "Developers",
-                playMods: "Play These Mods", offlineMods: "Offline Mods",
-                searchPlaceholder: "Apps, Mods, and more",
-                supported: "SUPPORTED", unsupported: "UNSUPPORTED", get: "GET", iap: "In-App Purchases",
+                today: "Today", search: "Search", devs: "Developers", index: "Index",
                 viewAll: "View all mods by {name}",
                 adsTitle: "Wanna post your ads?", adsDesc: "Get in touch and reach many users.", adsBtn: "Contact",
                 contactTitle: "Contact me!", contactClose: "Close",
@@ -265,7 +271,7 @@
                 telegramJoin: "Join Telegram"
             },
             ja: {
-                today: "Today", search: "Search", devs: "Developers",
+                today: "Today", search: "Search", devs: "Developers", index: "インデックス",
                 playMods: "Play These Mods", offlineMods: "Offline Mods",
                 searchPlaceholder: "アプリ、Modなどを検索",
                 supported: "SUPPORTED", unsupported: "UNSUPPORTED", get: "GET", iap: "アプリ内課金",
@@ -276,7 +282,7 @@
                 telegramJoin: "Telegramに参加"
             },
             zh: {
-                today: "今天", search: "搜索", devs: "开发者",
+                today: "今天", search: "搜索", devs: "开发者", index: "索引",
                 playMods: "热门模组", offlineMods: "离线模组",
                 searchPlaceholder: "搜索应用、模组等",
                 supported: "支持", unsupported: "不支持", get: "获取", iap: "应用内购买",
@@ -287,7 +293,7 @@
                 telegramJoin: "加入 Telegram 讨论组"
             },
             ko: {
-                today: "오늘", search: "검색", devs: "개발자",
+                today: "오늘", search: "검색", devs: "개발자", index: "색인",
                 playMods: "인기 모드", offlineMods: "오프라인 모드",
                 searchPlaceholder: "앱, 모드 등 검색",
                 supported: "지원됨", unsupported: "미지원", get: "받기", iap: "인앱 구매",
@@ -298,7 +304,7 @@
                 telegramJoin: "Telegram 토론방 참여"
             },
             ru: {
-                today: "Сегодня", search: "Поиск", devs: "Разработчики",
+                today: "Сегодня", search: "Поиск", devs: "Разработчики", index: "Индекс",
                 playMods: "Играть в эти моды", offlineMods: "Офлайн-моды",
                 searchPlaceholder: "Приложения, моды и другое",
                 supported: "ПОДДЕРЖИВАЕТСЯ", unsupported: "НЕ ПОДДЕРЖИВАЕТСЯ", get: "Получить", iap: "Покупки в приложении",
@@ -334,6 +340,7 @@
             const t = i18n[lang];
 
             document.getElementById('ui-today-title').textContent = t.today;
+            document.getElementById('ui-index-title').textContent = t.index;
             document.getElementById('ui-search-title').textContent = t.search;
             document.getElementById('ui-dev-title').textContent = t.devs;
             document.getElementById('ui-play-mods').textContent = t.playMods;
@@ -364,6 +371,7 @@
             }
 
             document.getElementById('tab-today-txt').textContent = t.today;
+            document.getElementById('tab-index-txt').textContent = t.index;
             document.getElementById('tab-search-txt').textContent = t.search;
             document.getElementById('tab-dev-txt').textContent = t.devs;
 
@@ -407,6 +415,7 @@
 
         function showTab(name) {
             document.getElementById('page-today').classList.toggle('hidden', name !== 'today');
+            document.getElementById('page-index').classList.toggle('hidden', name !== 'index');
             document.getElementById('page-search').classList.toggle('hidden', name !== 'search');
             document.getElementById('page-developers').classList.toggle('hidden', name !== 'developers');
             document.querySelectorAll('.tab-item').forEach(el => {
