@@ -146,6 +146,7 @@
                     <button class="lang-item" data-lang="ja" onclick="changeLang('ja')"><span class="lang-flag">🇯🇵</span><span class="lang-name">日本語</span><svg class="lang-check" viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></button>
                     <button class="lang-item" data-lang="zh" onclick="changeLang('zh')"><span class="lang-flag">🇨🇳</span><span class="lang-name">简体中文</span><svg class="lang-check" viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></button>
                     <button class="lang-item" data-lang="ko" onclick="changeLang('ko')"><span class="lang-flag">🇰🇷</span><span class="lang-name">한국어</span><svg class="lang-check" viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></button>
+                    <button class="lang-item" data-lang="ru" onclick="changeLang('ru')"><span class="lang-flag">🇷🇺</span><span class="lang-name">Русский</span><svg class="lang-check" viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></button>
                 </div>
             </div>
         </header>
@@ -294,6 +295,17 @@
                 contactTitle: "문의하기!", contactClose: "닫기",
                 discordJoin: "Discord 참여하기",
                 telegramJoin: "Telegram 토론방 참여"
+            },
+            ru: {
+                today: "Сегодня", search: "Поиск", devs: "Разработчики",
+                playMods: "Играть в эти моды", offlineMods: "Офлайн-моды",
+                searchPlaceholder: "Приложения, моды и другое",
+                supported: "ПОДДЕРЖИВАЕТСЯ", unsupported: "НЕ ПОДДЕРЖИВАЕТСЯ", get: "Получить", iap: "Покупки в приложении",
+                viewAll: "Показать все моды {name}",
+                adsTitle: "Хотите разместить рекламу?", adsDesc: "Свяжитесь с нами, чтобы охватить множество пользователей.", adsBtn: "Связаться",
+                contactTitle: "Связаться со мной!", contactClose: "Закрыть",
+                discordJoin: "Discord",
+                telegramJoin: "Telegram"
             }
         };
 
@@ -301,7 +313,8 @@
             en: { flag: "🇺🇸", label: "EN" },
             ja: { flag: "🇯🇵", label: "JA" },
             zh: { flag: "🇨🇳", label: "中文" },
-            ko: { flag: "🇰🇷", label: "KR" }
+            ko: { flag: "🇰🇷", label: "KR" },
+            ru: { flag: "🇷🇺", label: "RU" }
         };
 
         function getInitialLang() {
@@ -309,6 +322,7 @@
             if (lang.startsWith('ja')) return 'ja';
             if (lang.startsWith('zh')) return 'zh';
             if (lang.startsWith('ko')) return 'ko';
+            if (lang.startsWith('ru')) return 'ru';
             return 'en';
         }
 
@@ -367,6 +381,7 @@
             if (currentLang === 'ja') locale = 'ja-JP';
             if (currentLang === 'zh') locale = 'zh-CN';
             if (currentLang === 'ko') locale = 'ko-KR';
+            if (currentLang === 'ru') locale = 'ru-RU';
             document.getElementById('display-date').textContent = new Date().toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' });
         }
 
