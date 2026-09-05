@@ -110,7 +110,7 @@
         .tab-icon-svg { width: 22px; height: 22px; fill: var(--ios-gray); margin-bottom: 2px; }
         .active .tab-icon-svg { fill: var(--ios-blue); }
         .dev-icon-placeholder { display: flex; align-items: center; justify-content: center; background: var(--search-bg); border-radius: 50%; }
-        .index-frame { width: 100%; height: calc(100vh - 220px); min-height: 420px; border: none; border-radius: 14px; background: var(--card-bg); margin-top: 10px; }
+        .index-frame { position: fixed; top: 0; left: 0; right: 0; width: 100%; height: calc(100vh - 48px - env(safe-area-inset-bottom)); border: none; background: var(--card-bg); z-index: 1; }
 
         /* Indexタブ用の吹き出しツールチップ */
         .index-tooltip { position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(6px) scale(0.9); background: #ff9500; color: #fff; font-size: 0.72rem; font-weight: 700; padding: 8px 12px; border-radius: 12px; white-space: nowrap; box-shadow: 0 8px 20px rgba(255, 149, 0, 0.45); opacity: 0; pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease; z-index: 1001; }
@@ -211,7 +211,6 @@
     </div>
 
     <div id="page-index" class="hidden">
-        <header><h1 id="ui-index-title">Index</h1></header>
         <iframe class="index-frame" src="/legacy/index.html"></iframe>
     </div>
     
@@ -356,7 +355,6 @@
             const t = i18n[lang];
 
             document.getElementById('ui-today-title').textContent = t.today;
-            document.getElementById('ui-index-title').textContent = t.index;
             document.getElementById('ui-search-title').textContent = t.search;
             document.getElementById('ui-dev-title').textContent = t.devs;
             document.getElementById('ui-play-mods').textContent = t.playMods;
