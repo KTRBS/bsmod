@@ -18,27 +18,64 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-TMWFXQQD');</script>
 <!-- End Google Tag Manager -->
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #212529;
+            --card-bg: #ffffff;
+            --card-shadow: rgba(0, 0, 0, 0.1);
+            --input-bg: #ffffff;
+            --input-border: #ccc;
+            --muted-text: #666;
+            --no-results-text: #999;
+        }
+
+        body[data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e8e8e8;
+            --card-bg: #1e1e1e;
+            --card-shadow: rgba(0, 0, 0, 0.4);
+            --input-bg: #2a2a2a;
+            --input-border: #444;
+            --muted-text: #aaa;
+            --no-results-text: #888;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: background 0.2s ease, color 0.2s ease;
+        }
         .container { max-width: 600px; margin: 20px auto; padding: 10px; }
-        input { width: 94%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
+        input[type="text"] {
+            width: 94%;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+        }
         .app-list { display: flex; flex-direction: column; gap: 5px; }
         .app-card {
-            display: flex; align-items: center; background: #fff; padding: 10px;
-            border-radius: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex; align-items: center; background: var(--card-bg); padding: 10px;
+            border-radius: 10px; box-shadow: 0px 2px 5px var(--card-shadow);
             margin-bottom: 5px;
         }
         .app-info { text-align: left; flex-grow: 1; }
-        .app-info h3 { margin: 0; font-size: 16px; }
-        .app-info p { margin: 5px 0; color: #666; font-size: 14px; }
+        .app-info h3 { margin: 0; font-size: 16px; color: var(--text-color); }
+        .app-info p { margin: 5px 0; color: var(--muted-text); font-size: 14px; }
         .download-btn {
             padding: 5px 10px; background: #007bff; color: white; text-decoration: none;
             border-radius: 5px; font-size: 14px;
         }
-        .no-results { color: #999; margin-top: 10px; font-size: 14px; }
+        .no-results { color: var(--no-results-text); margin-top: 10px; font-size: 14px; }
         
     .app-description {
     font-size: 14px;
-    color: #555;
+    color: var(--muted-text);
     margin-top: 5px;
     word-wrap: break-word;
     }
@@ -61,44 +98,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         white-space: nowrap;  
     }
 
-        .partner-link-container {
-            margin-top: 20px;
-        }
-        .partner-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .discord-container {
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-        .discord-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #5865F2;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        
-        .telegram-container {
-            margin-top: 40px;
-        }
-        .telegram-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
         .hidden { display: none; }
 
         @media (min-width: 768px) {
@@ -117,13 +116,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     </style>
     <meta name='admaven-placement' content=BqdU4rdYE>
 </head>
-<body>
+<body data-theme="light">
     <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TMWFXQQD"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
     <div class="container">
         <h1>APK List</h1>
+
         <div class="checkbox-container">
             <input type="checkbox" id="toggleMods">
             <label for="toggleMods"> Hide mod list</label>
@@ -144,20 +144,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p class="no-results hidden" id="noResults">No matching results</p>
     </div>
 
-    <!-- Partner link section -->
-    <div class="partner-link-container">
-        <a href="https://brawlmods.natesworks.com/" target="_blank" class="partner-link">Partner</a>
-    </div>
-
-    <!-- Discord Server Link -->
-    <div class="discord-container">
-        <a href="https://discord.com/invite/fwdX8jZBsX" target="_blank" class="discord-link">Discord Server</a>
-    </div>
-    
-    <div class="telegram-container">
-        <a href="https://t.me/AllModsBrawlStars" target="_blank" class="telegram-link">Telegram Channel</a>
-    </div>
-    
     <div class="app-list" id="appList">
 </div>
 
@@ -167,6 +153,19 @@ function filterByTag(tag) {
     searchBox.value = tag;
     searchBox.dispatchEvent(new Event('input'));
 }
+
+(function initTheme() {
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.body.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+
+    // OSの設定変更にもリアルタイムで追従
+    if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            document.body.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        });
+    }
+})();
+
         async function loadApps() {
     try {
         const timestamp = new Date().getTime();
@@ -182,16 +181,16 @@ function filterByTag(tag) {
         appsData = appsData.map(app => ({
             ...app,
             description: app.description !== undefined
-                ? `<span style="color: black;">offline</span> - ${app.description}`
-                : `<span style="color: black;">offline</span>`,
+                ? `<span style="color: #28a745;">offline</span> - ${app.description}`
+                : `<span style="color: #28a745;">offline</span>`,
             status: "offline"
         }));
 
         oappsData = oappsData.map(app => ({
             ...app,
             description: app.description !== undefined
-                ? `<span style="color: green;">online</span> - ${app.description}`
-                : `<span style="color: green;">online</span>`,
+                ? `<span style="color: #17a2b8;">online</span> - ${app.description}`
+                : `<span style="color: #17a2b8;">online</span>`,
             status: "online"
         }));
 
@@ -205,7 +204,7 @@ function filterByTag(tag) {
 
         prodData = prodData.map(app => ({
             ...app,
-            description: `<span style="color: red;">PROD</span> - ${app.description || ''}`,
+            description: `<span style="color: #dc3545;">PROD</span> - ${app.description || ''}`,
             status: "prod"
         }));
 
