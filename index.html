@@ -112,6 +112,11 @@
         .dev-icon-placeholder { display: flex; align-items: center; justify-content: center; background: var(--search-bg); border-radius: 50%; }
         .index-frame { width: 100%; height: calc(100vh - 220px); min-height: 420px; border: none; border-radius: 14px; background: var(--card-bg); margin-top: 10px; }
 
+        /* Indexタブ用の吹き出しツールチップ */
+        .index-tooltip { position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(6px) scale(0.9); background: #ff9500; color: #fff; font-size: 0.72rem; font-weight: 700; padding: 8px 12px; border-radius: 12px; white-space: nowrap; box-shadow: 0 8px 20px rgba(255, 149, 0, 0.45); opacity: 0; pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease; z-index: 1001; }
+        .index-tooltip::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border-width: 6px; border-style: solid; border-color: #ff9500 transparent transparent transparent; }
+        .index-tooltip.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0) scale(1); }
+
         /* 広告掲載募集カード */
         .ads-promo-card { cursor: pointer; border: none; padding: 0; font: inherit; text-align: inherit; }
         .ads-promo-card .ad-bg { background: linear-gradient(135deg, #ff9500, #ff2d55); }
@@ -228,7 +233,10 @@
         <a href="javascript:void(0)" class="tab-item active" onclick="showTab('today')">
             <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg><span id="tab-today-txt">Today</span>
         </a>
-        <a href="javascript:void(0)" class="tab-item" onclick="showTab('index')">
+        <a href="javascript:void(0)" class="tab-item" onclick="showTab('index')" style="position: relative;">
+            <div class="index-tooltip" id="index-tooltip" onclick="event.stopPropagation(); dismissIndexTooltip();">
+                <span id="ui-index-tooltip-text">Show all mods here!</span>
+            </div>
             <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z"/></svg><span id="tab-index-txt">Index</span>
         </a>
         <a href="javascript:void(0)" class="tab-item" onclick="showTab('search')">
@@ -268,7 +276,8 @@
                 adsTitle: "Wanna post your ads?", adsDesc: "Get in touch and reach many users.", adsBtn: "Contact",
                 contactTitle: "Contact me!", contactClose: "Close",
                 discordJoin: "Join our Discord",
-                telegramJoin: "Join Telegram"
+                telegramJoin: "Join Telegram",
+                indexTooltip: "See all mods here!"
             },
             ja: {
                 today: "Today", search: "Search", devs: "Developers", index: "インデックス",
@@ -279,7 +288,8 @@
                 adsTitle: "広告を掲載しませんか？", adsDesc: "お問い合わせいただければ、多くのユーザーにリーチできます。", adsBtn: "問い合わせる",
                 contactTitle: "お問い合わせはこちら！", contactClose: "閉じる",
                 discordJoin: "Discordに参加",
-                telegramJoin: "Telegramに参加"
+                telegramJoin: "Telegramに参加",
+                indexTooltip: "全部のModはここでチェック！"
             },
             zh: {
                 today: "今天", search: "搜索", devs: "开发者", index: "索引",
@@ -290,7 +300,8 @@
                 adsTitle: "想投放广告吗？", adsDesc: "联系我们，触达成千上万的用户。", adsBtn: "联系我们",
                 contactTitle: "联系我！", contactClose: "关闭",
                 discordJoin: "加入我们的 Discord",
-                telegramJoin: "加入 Telegram 讨论组"
+                telegramJoin: "加入 Telegram 讨论组",
+                indexTooltip: "所有模组都在这里！"
             },
             ko: {
                 today: "오늘", search: "검색", devs: "개발자", index: "색인",
@@ -301,7 +312,8 @@
                 adsTitle: "광고를 게재하고 싶으신가요?", adsDesc: "문의해 주시면 많은 사용자에게 노출됩니다.", adsBtn: "문의하기",
                 contactTitle: "문의하기!", contactClose: "닫기",
                 discordJoin: "Discord 참여하기",
-                telegramJoin: "Telegram 토론방 참여"
+                telegramJoin: "Telegram 토론방 참여",
+                indexTooltip: "모든 모드를 여기서 확인하세요!"
             },
             ru: {
                 today: "Сегодня", search: "Поиск", devs: "Разработчики", index: "Индекс",
@@ -312,7 +324,8 @@
                 adsTitle: "Хотите разместить рекламу?", adsDesc: "Свяжитесь с нами, чтобы охватить множество пользователей.", adsBtn: "Связаться",
                 contactTitle: "Связаться со мной!", contactClose: "Закрыть",
                 discordJoin: "Discord",
-                telegramJoin: "Telegram"
+                telegramJoin: "Telegram",
+                indexTooltip: "Все моды здесь!"
             }
         };
 
@@ -354,6 +367,7 @@
             document.getElementById('ui-contact-close').textContent = t.contactClose;
             document.getElementById('ui-discord-banner-text').textContent = t.discordJoin;
             document.getElementById('ui-telegram-banner-text').textContent = t.telegramJoin;
+            document.getElementById('ui-index-tooltip-text').textContent = t.indexTooltip;
 
             const meta = langMeta[lang];
             document.getElementById('lang-btn-flag').textContent = meta.flag;
@@ -413,6 +427,22 @@
             if (btn) btn.classList.remove('open');
         };
 
+        let indexTooltipDismissed = false;
+
+        function showIndexTooltip() {
+            if (indexTooltipDismissed) return;
+            document.getElementById('index-tooltip').classList.add('show');
+        }
+
+        function hideIndexTooltip() {
+            document.getElementById('index-tooltip').classList.remove('show');
+        }
+
+        function dismissIndexTooltip() {
+            indexTooltipDismissed = true;
+            hideIndexTooltip();
+        }
+
         function showTab(name) {
             document.getElementById('page-today').classList.toggle('hidden', name !== 'today');
             document.getElementById('page-index').classList.toggle('hidden', name !== 'index');
@@ -422,6 +452,12 @@
                 el.classList.remove('active');
                 if (el.getAttribute('onclick').includes(`'${name}'`)) el.classList.add('active');
             });
+            if (name === 'today') {
+                showIndexTooltip();
+            } else {
+                hideIndexTooltip();
+                if (name === 'index') dismissIndexTooltip();
+            }
             window.scrollTo(0,0);
         }
 
@@ -459,6 +495,7 @@
 
         async function init() {
             setLanguage(currentLang);
+            showIndexTooltip();
             const ts = new Date().getTime();
             try {
                 const [apps, oapps, iapps, prod, ads] = await Promise.all([
