@@ -20,16 +20,30 @@
         header { padding: 20px 0 5px 0; display: flex; justify-content: space-between; align-items: flex-end; position: relative; }
         .header-left { flex: 1; min-width: 0; }
         .lang-selector-wrapper { position: relative; margin-bottom: 2px; }
-        .lang-btn { background: var(--search-bg); border: 1px solid var(--line); color: var(--text-color); padding: 5px 12px; border-radius: 14px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-        .lang-menu { position: absolute; right: 0; top: 100%; margin-top: 5px; background: var(--card-bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: none; z-index: 120; min-width: 120px; overflow: hidden; }
-        .lang-menu.show { display: block; }
-        .lang-item { display: block; width: 100%; padding: 10px 14px; text-align: left; background: none; border: none; border-bottom: 0.5px solid var(--line); color: var(--text-color); font-size: 0.9rem; font-weight: 600; cursor: pointer; box-sizing: border-box; }
+        .lang-btn { background: var(--search-bg); border: 1px solid var(--line); color: var(--text-color); padding: 6px 12px 6px 10px; border-radius: 18px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.2s ease, transform 0.15s ease; }
+        .lang-btn:active { transform: scale(0.95); }
+        .lang-btn .lang-btn-flag { font-size: 1rem; line-height: 1; }
+        .lang-btn .lang-chevron { width: 11px; height: 11px; fill: var(--ios-gray); transition: transform 0.25s ease; margin-left: 1px; }
+        .lang-btn.open .lang-chevron { transform: rotate(180deg); }
+        .lang-menu { position: absolute; right: 0; top: calc(100% + 8px); background: var(--card-bg); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 14px 34px rgba(0,0,0,0.2); z-index: 120; min-width: 168px; overflow: hidden; opacity: 0; transform: translateY(-6px) scale(0.96); pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; }
+        .lang-menu.show { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+        .lang-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 14px; text-align: left; background: none; border: none; border-bottom: 0.5px solid var(--line); color: var(--text-color); font-size: 0.88rem; font-weight: 600; cursor: pointer; box-sizing: border-box; transition: background 0.15s ease; }
         .lang-item:last-child { border-bottom: none; }
         .lang-item:hover { background: rgba(0,122,255,0.1); }
+        .lang-item.active { color: var(--ios-blue); background: rgba(0,122,255,0.08); }
+        .lang-item .lang-flag { font-size: 1.05rem; line-height: 1; }
+        .lang-item .lang-name { flex: 1; }
+        .lang-item .lang-check { width: 15px; height: 15px; fill: var(--ios-blue); opacity: 0; flex-shrink: 0; }
+        .lang-item.active .lang-check { opacity: 1; }
 
         /* 詐欺注意喚起バナー（中国語のみ表示） */
         .scam-warning { background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.3); color: #ff3b30; padding: 10px 14px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; margin: 15px 0 5px 0; line-height: 1.4; display: none; }
         .scam-warning.show { display: block; }
+
+        /* Discord招待バナー（全言語共通で表示） */
+        .discord-banner { display: flex; align-items: center; justify-content: center; gap: 9px; background: #5865F2; color: #ffffff; padding: 11px 14px; border-radius: 14px; font-size: 0.85rem; font-weight: 800; margin: 15px 0 5px 0; text-decoration: none; box-shadow: 0 6px 16px rgba(88, 101, 242, 0.35); transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .discord-banner:active { transform: scale(0.97); }
+        .discord-banner svg { width: 20px; height: 20px; fill: #ffffff; flex-shrink: 0; }
 
         /* Telegram 水色テキスト */
         .telegram-footer { text-align: center; margin: 25px 0 10px 0; font-size: 0.85rem; font-weight: 700; color: #32ade6; }
@@ -118,11 +132,16 @@
                 <h1 id="ui-today-title">Today</h1>
             </div>
             <div class="lang-selector-wrapper">
-                <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu(event)">🌐 Lang ▾</button>
+                <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu(event)">
+                    <span class="lang-btn-flag" id="lang-btn-flag">🌐</span>
+                    <span id="lang-btn-label">EN</span>
+                    <svg class="lang-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                </button>
                 <div class="lang-menu" id="lang-menu">
-                    <button class="lang-item" onclick="changeLang('en')">English</button>
-                    <button class="lang-item" onclick="changeLang('ja')">日本語</button>
-                    <button class="lang-item" onclick="changeLang('zh')">简体中文</button>
+                    <button class="lang-item" data-lang="en" onclick="changeLang('en')"><span class="lang-flag">🇺🇸</span><span class="lang-name">English</span><svg class="lang-check" viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></button>
+                    <button class="lang-item" data-lang="ja" onclick="changeLang('ja')"><span class="lang-flag">🇯🇵</span><span class="lang-name">日本語</span><svg class="lang-check" viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></button>
+                    <button class="lang-item" data-lang="zh" onclick="changeLang('zh')"><span class="lang-flag">🇨🇳</span><span class="lang-name">简体中文</span><svg class="lang-check" viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></button>
+                    <button class="lang-item" data-lang="ko" onclick="changeLang('ko')"><span class="lang-flag">🇰🇷</span><span class="lang-name">한국어</span><svg class="lang-check" viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></button>
                 </div>
             </div>
         </header>
@@ -132,6 +151,11 @@
             官方QQ群: 1053166642<br>
             官方助手QQ: 3921151480
         </div>
+
+        <a href="https://discord.gg/4yPvHXy5FU" target="_blank" rel="noopener noreferrer" class="discord-banner">
+            <svg viewBox="0 0 24 24"><path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.127c-.598.35-1.22.645-1.873.893a.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.673-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.331c-1.183 0-2.157-1.086-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.332-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.086-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.332-.946 2.418-2.157 2.418z"/></svg>
+            <span id="ui-discord-banner-text">Join our Discord</span>
+        </a>
 
         <div id="page-today-container" class="grid-container" style="margin-top: 10px;">
             <div class="today-card">
@@ -211,7 +235,7 @@
         const CONFIG = { isMaintenance: "off", showDevs: true };
         // true: 「広告募集」カード（Wanna post your ads?）を表示
         // false: ads.json から広告を読み込んでローテーション表示
-        let askforads = false;
+        let askforads = true;
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         let allData = [], prodData = [], offlineData = [], isLoaded = false;
         let adsData = [], adRotationIndex = 0, adRotationTimer = null;
@@ -224,7 +248,8 @@
                 supported: "SUPPORTED", unsupported: "UNSUPPORTED", get: "GET", iap: "In-App Purchases",
                 viewAll: "View all mods by {name}",
                 adsTitle: "Wanna post your ads?", adsDesc: "Get in touch and reach many users.", adsBtn: "Contact",
-                contactTitle: "Contact me!", contactClose: "Close"
+                contactTitle: "Contact me!", contactClose: "Close",
+                discordJoin: "Join our Discord"
             },
             ja: {
                 today: "Today", search: "Search", devs: "Developers",
@@ -233,7 +258,8 @@
                 supported: "SUPPORTED", unsupported: "UNSUPPORTED", get: "GET", iap: "アプリ内課金",
                 viewAll: "{name} のすべてのModを表示",
                 adsTitle: "広告を掲載しませんか？", adsDesc: "お問い合わせいただければ、多くのユーザーにリーチできます。", adsBtn: "問い合わせる",
-                contactTitle: "お問い合わせはこちら！", contactClose: "閉じる"
+                contactTitle: "お問い合わせはこちら！", contactClose: "閉じる",
+                discordJoin: "Discordに参加"
             },
             zh: {
                 today: "今天", search: "搜索", devs: "开发者",
@@ -242,14 +268,33 @@
                 supported: "支持", unsupported: "不支持", get: "获取", iap: "应用内购买",
                 viewAll: "查看 {name} 的所有模组",
                 adsTitle: "想投放广告吗？", adsDesc: "联系我们，触达成千上万的用户。", adsBtn: "联系我们",
-                contactTitle: "联系我！", contactClose: "关闭"
+                contactTitle: "联系我！", contactClose: "关闭",
+                discordJoin: "加入我们的 Discord"
+            },
+            ko: {
+                today: "오늘", search: "검색", devs: "개발자",
+                playMods: "인기 모드", offlineMods: "오프라인 모드",
+                searchPlaceholder: "앱, 모드 등 검색",
+                supported: "지원됨", unsupported: "미지원", get: "받기", iap: "인앱 구매",
+                viewAll: "{name}의 모든 모드 보기",
+                adsTitle: "광고를 게재하고 싶으신가요?", adsDesc: "문의해 주시면 많은 사용자에게 노출됩니다.", adsBtn: "문의하기",
+                contactTitle: "문의하기!", contactClose: "닫기",
+                discordJoin: "Discord 참여하기"
             }
+        };
+
+        const langMeta = {
+            en: { flag: "🇺🇸", label: "EN" },
+            ja: { flag: "🇯🇵", label: "JA" },
+            zh: { flag: "🇨🇳", label: "中文" },
+            ko: { flag: "🇰🇷", label: "KR" }
         };
 
         function getInitialLang() {
             const lang = navigator.language || navigator.userLanguage;
             if (lang.startsWith('ja')) return 'ja';
             if (lang.startsWith('zh')) return 'zh';
+            if (lang.startsWith('ko')) return 'ko';
             return 'en';
         }
 
@@ -271,6 +316,14 @@
             document.getElementById('ui-ads-btn').textContent = t.adsBtn;
             document.getElementById('ui-contact-title').textContent = t.contactTitle;
             document.getElementById('ui-contact-close').textContent = t.contactClose;
+            document.getElementById('ui-discord-banner-text').textContent = t.discordJoin;
+
+            const meta = langMeta[lang];
+            document.getElementById('lang-btn-flag').textContent = meta.flag;
+            document.getElementById('lang-btn-label').textContent = meta.label;
+            document.querySelectorAll('.lang-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.lang === lang);
+            });
 
             // 中国語（zh）に設定されている時だけQQの警告を表示
             const scamWarningEl = document.getElementById('ui-scam-warning');
@@ -298,22 +351,27 @@
             let locale = 'en-US';
             if (currentLang === 'ja') locale = 'ja-JP';
             if (currentLang === 'zh') locale = 'zh-CN';
+            if (currentLang === 'ko') locale = 'ko-KR';
             document.getElementById('display-date').textContent = new Date().toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' });
         }
 
         function toggleLangMenu(e) {
             e.stopPropagation();
             document.getElementById('lang-menu').classList.toggle('show');
+            document.getElementById('lang-btn').classList.toggle('open');
         }
 
         function changeLang(lang) {
             setLanguage(lang);
             document.getElementById('lang-menu').classList.remove('show');
+            document.getElementById('lang-btn').classList.remove('open');
         }
 
         window.onclick = () => {
             const menu = document.getElementById('lang-menu');
+            const btn = document.getElementById('lang-btn');
             if (menu) menu.classList.remove('show');
+            if (btn) btn.classList.remove('open');
         };
 
         function showTab(name) {
