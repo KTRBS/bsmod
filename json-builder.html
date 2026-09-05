@@ -509,6 +509,44 @@
       btn_telegram: "@kazarex 에게 전송",
       hint: "Telegram이 열리고 메시지 입력창에 JSON이 자동으로 채워집니다. 전송 전에 내용을 확인하세요.",
       lang_label: "언어"
+    },
+    zh: {
+      title: "Manifest Builder",
+      subtitle: "填写表单后，右侧会实时生成 config.json。完成后可以导出，也可以直接发送给 @kazarex。",
+      sec_basic: "基本信息",
+      sec_support: "发布状态与下载",
+      sec_ios_old: "历史版本 - iOS（iosoldver）",
+      sec_android_old: "历史版本 - Android（androidoldver）",
+      sec_authors: "作者",
+      sec_meta: "翻译（meta）",
+      sec_community: "社区",
+      lbl_name: "Mod 名称（name）",
+      lbl_version: "版本",
+      lbl_lastUpdated: "最后更新时间",
+      lbl_iossupport: "iOS 支持状态（iossupport）",
+      lbl_androidsupport: "Android 支持状态（androidsupport）",
+      lbl_iosUrl: "iOS 下载链接",
+      lbl_androidUrl: "Android 下载链接",
+      lbl_telegram: "Telegram",
+      lbl_discord: "Discord",
+      add_ios_old: "+ 添加历史版本",
+      add_android_old: "+ 添加历史版本",
+      add_author: "+ 添加作者",
+      add_meta: "+ 添加语言",
+      ph_label_ios: "例如: v59b2a",
+      ph_label_android: "例如: v44beta1",
+      ph_url: "https://t.me/...",
+      ph_name: "显示名称",
+      ph_id: "ID",
+      ph_lang: "语言代码 (ja)",
+      ph_title: "标题",
+      ph_desc: "描述",
+      btn_copy: "复制",
+      btn_copied: "已复制",
+      btn_download: "下载",
+      btn_telegram: "发送给 @kazarex",
+      hint: "将打开 Telegram，并在消息框中自动填入 JSON。发送前请检查内容。",
+      lang_label: "语言"
     }
   };
 
@@ -700,14 +738,31 @@
     document.documentElement.lang = currentLang;
   }
 
-  document.getElementById('uiLangSelect').addEventListener('change', (e) => {
-    currentLang = e.target.value;
+  function onUiLangChange(e){
+    const val = e.target.value;
+    if(!translations[val]) return;
+    currentLang = val;
     applyStaticI18n();
     renderAllLists();
     updatePreview();
-  });
+  }
+  document.getElementById('uiLangSelect').addEventListener('change', onUiLangChange);
+  document.getElementById('uiLangSelect').addEventListener('input', onUiLangChange);
 
+  function detectBrowserLang(){
+    const supported = ['ja','en','ru','ko','zh'];
+    const candidates = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'en'];
+    for(const raw of candidates){
+      const code = raw.toLowerCase().split('-')[0];
+      if(supported.includes(code)) return code;
+    }
+    return 'en';
+  }
+
+  currentLang = detectBrowserLang();
+  document.getElementById('uiLangSelect').value = currentLang;
   applyStaticI18n();
+  renderAllLists();
   updatePreview();
 </script>
 
