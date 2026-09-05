@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manifest Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #12141a;
+    --panel: #191c24;
+    --panel-alt: #20242f;
+    --line: #2b303c;
+    --text: #e9e8e4;
+    --muted: #8b90a0;
+    --amber: #f2a93b;
+    --teal: #5ec8bd;
+    --rose: #e08787;
+    --rose-strong: #e06b6b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,label,.tab,.btn,.field-label{font-family:'Space Grotesk',system-ui,sans-serif;}
+  header{
+    padding:32px 32px 20px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+  header .htext{max-width:560px;}
+  header h1{
+    margin:0 0 6px;
+    font-size:26px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  header p{
+    margin:0;
+    color:var(--muted);
+    font-size:14px;
+  }
+  .lang-picker{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    min-width:150px;
+  }
+  .lang-picker .field-label{margin-bottom:0;}
+  .layout{
+    display:grid;
+    grid-template-columns: minmax(320px, 480px) 1fr;
+    gap:0;
+    align-items:start;
+  }
+  @media (max-width: 900px){
+    .layout{grid-template-columns: 1fr;}
+    .preview-col{position:static !important; order:2;}
+    .form-col{order:1;}
+  }
+  .form-col{
+    padding:28px 32px 60px;
+    border-right:1px solid var(--line);
+    max-height:calc(100vh - 110px);
+    overflow-y:auto;
+  }
+  @media (max-width:900px){ .form-col{max-height:none; border-right:none; border-bottom:1px solid var(--line);} }
+
+  section.group{
+    margin-bottom:34px;
+  }
+  section.group h2{
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:0.02em;
+    color:var(--amber);
+    margin:0 0 14px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--line);
+  }
+  .row{display:flex; gap:12px; margin-bottom:12px;}
+  .row > div{flex:1; min-width:0;}
+  .field-label{
+    display:block;
+    font-size:12px;
+    font-weight:500;
+    color:var(--muted);
+    margin-bottom:5px;
+  }
+  input[type=text], input[type=date], input[type=url], select{
+    width:100%;
+    background:var(--panel-alt);
+    border:1px solid var(--line);
+    color:var(--text);
+    padding:9px 10px;
+    border-radius:6px;
+    font-size:13.5px;
+    font-family:'Inter',sans-serif;
+  }
+  input:focus, select:focus{
+    outline:none;
+    border-color:var(--teal);
+  }
+  .dyn-row{
+    display:flex;
+    gap:8px;
+    margin-bottom:8px;
+    align-items:flex-end;
+  }
+  .dyn-row > div{flex:1; min-width:0;}
+  .icon-btn{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--rose);
+    width:36px;
+    height:36px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:16px;
+    line-height:1;
+    flex-shrink:0;
+  }
+  .icon-btn:hover{border-color:var(--rose-strong); background:rgba(224,107,107,0.08);}
+  .add-btn{
+    background:transparent;
+    border:1px dashed var(--line);
+    color:var(--teal);
+    padding:8px 12px;
+    border-radius:6px;
+    font-size:12.5px;
+    font-weight:500;
+    cursor:pointer;
+    width:100%;
+    margin-top:4px;
+  }
+  .add-btn:hover{border-color:var(--teal); background:rgba(94,200,189,0.06);}
+
+  .preview-col{
+    position:sticky;
+    top:0;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    background:var(--panel);
+  }
+  .tabbar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:14px 20px;
+    border-bottom:1px solid var(--line);
+  }
+  .dot{width:9px; height:9px; border-radius:50%;}
+  .tab{
+    margin-left:6px;
+    font-size:13px;
+    color:var(--muted);
+    font-weight:500;
+  }
+  pre#jsonOut{
+    flex:1;
+    margin:0;
+    padding:22px 24px;
+    overflow:auto;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    line-height:1.65;
+    white-space:pre;
+  }
+  .k{color:var(--teal);}
+  .s{color:var(--amber);}
+  .n{color:var(--rose);}
+  .p{color:var(--muted);}
+
+  .export-bar{
+    border-top:1px solid var(--line);
+    padding:16px 20px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .export-row{display:flex; gap:10px;}
+  .btn{
+    flex:1;
+    padding:11px 14px;
+    border-radius:7px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    border:1px solid var(--line);
+    background:var(--panel-alt);
+    color:var(--text);
+  }
+  .btn:hover{border-color:var(--teal);}
+  .btn.primary{
+    background:var(--amber);
+    color:#1a1305;
+    border-color:var(--amber);
+  }
+  .btn.primary:hover{filter:brightness(1.06);}
+  .btn.telegram{
+    background:#1c3a4d;
+    border-color:#2c5972;
+    color:#8fd3ff;
+  }
+  .btn.telegram:hover{border-color:#8fd3ff;}
+  .hint{font-size:11.5px; color:var(--muted); margin:0;}
+  .copied{color:var(--teal); font-weight:600;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="htext">
+    <h1 data-i18n="title">Manifest Builder</h1>
+    <p data-i18n="subtitle"></p>
+  </div>
+  <div class="lang-picker">
+    <label class="field-label" data-i18n="lang_label">Language</label>
+    <select id="uiLangSelect">
+      <option value="ja">日本語</option>
+      <option value="en">English</option>
+      <option value="ru">Русский</option>
+      <option value="ko">한국어</option>
+      <option value="zh">中文</option>
+    </select>
+  </div>
+</header>
+
+<div class="layout">
+  <div class="form-col">
+
+    <section class="group">
+      <h2 data-i18n="sec_basic"></h2>
+      <div class="row">
+        <div>
+          <label class="field-label" data-i18n="lbl_name"></label>
+          <input type="text" id="f_name" placeholder="NBS Offline">
+        </div>
+        <div>
+          <label class="field-label" data-i18n="lbl_version"></label>
+          <input type="text" id="f_version" placeholder="v59beta6">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label class="field-label" data-i18n="lbl_lastUpdated"></label>
+          <input type="date" id="f_lastUpdated">
+        </div>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2 data-i18n="sec_support"></h2>
+      <div class="row">
+        <div>
+          <label class="field-label" data-i18n="lbl_iossupport"></label>
+          <select id="f_iossupport">
+            <option value="available">available</option>
+            <option value="unavailable">unavailable</option>
+            <option value="coming soon">coming soon</option>
+            <option value="unknown">unknown</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" data-i18n="lbl_androidsupport"></label>
+          <select id="f_androidsupport">
+            <option value="available">available</option>
+            <option value="unavailable">unavailable</option>
+            <option value="coming soon">coming soon</option>
+            <option value="unknown">unknown</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label class="field-label" data-i18n="lbl_iosUrl"></label>
+          <input type="text" id="f_iosDownloadUrl" placeholder="https://...">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label class="field-label" data-i18n="lbl_androidUrl"></label>
+          <input type="text" id="f_androidDownloadUrl" placeholder="https://t.me/...">
+        </div>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2 data-i18n="sec_ios_old"></h2>
+      <div id="iosOldList"></div>
+      <button class="add-btn" id="addIosOld" type="button" data-i18n="add_ios_old"></button>
+    </section>
+
+    <section class="group">
+      <h2 data-i18n="sec_android_old"></h2>
+      <div id="androidOldList"></div>
+      <button class="add-btn" id="addAndroidOld" type="button" data-i18n="add_android_old"></button>
+    </section>
+
+    <section class="group">
+      <h2 data-i18n="sec_authors"></h2>
+      <div id="authorList"></div>
+      <button class="add-btn" id="addAuthor" type="button" data-i18n="add_author"></button>
+    </section>
+
+    <section class="group">
+      <h2 data-i18n="sec_meta"></h2>
+      <div id="metaList"></div>
+      <button class="add-btn" id="addMeta" type="button" data-i18n="add_meta"></button>
+    </section>
+
+    <section class="group">
+      <h2 data-i18n="sec_community"></h2>
+      <div class="row">
+        <div>
+          <label class="field-label" data-i18n="lbl_telegram"></label>
+          <input type="text" id="f_telegram" placeholder="https://t.me/...">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label class="field-label" data-i18n="lbl_discord"></label>
+          <input type="text" id="f_discord" placeholder="https://discord.gg/...">
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="preview-col">
+    <div class="tabbar">
+      <span class="dot" style="background:#e06b6b"></span>
+      <span class="dot" style="background:#f2a93b"></span>
+      <span class="dot" style="background:#5ec8bd"></span>
+      <span class="tab">config.json</span>
+    </div>
+    <pre id="jsonOut"></pre>
+    <div class="export-bar">
+      <div class="export-row">
+        <button class="btn" id="copyBtn" type="button" data-i18n="btn_copy"></button>
+        <button class="btn primary" id="downloadBtn" type="button" data-i18n="btn_download"></button>
+      </div>
+      <button class="btn telegram" id="telegramBtn" type="button" data-i18n="btn_telegram"></button>
+      <p class="hint" id="hintText" data-i18n="hint"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const translations = {
+    ja: {
+      title: "Manifest Builder",
+      subtitle: "フォームに入力すると右側に config.json がリアルタイムで組み立てられます。完成したら書き出すか、そのまま @kazarex に送信できます。",
+      sec_basic: "基本情報",
+      sec_support: "配信状況とダウンロード",
+      sec_ios_old: "過去バージョン - iOS（iosoldver）",
+      sec_android_old: "過去バージョン - Android（androidoldver）",
+      sec_authors: "作者（authors）",
+      sec_meta: "翻訳（meta）",
+      sec_community: "コミュニティ",
+      lbl_name: "Mod名（name）",
+      lbl_version: "バージョン（version）",
+      lbl_lastUpdated: "最終更新日（lastUpdated）",
+      lbl_iossupport: "iOS対応状況（iossupport）",
+      lbl_androidsupport: "Android対応状況（androidsupport）",
+      lbl_iosUrl: "iOSダウンロードURL",
+      lbl_androidUrl: "Androidダウンロード URL",
+      lbl_telegram: "Telegram",
+      lbl_discord: "Discord",
+      add_ios_old: "+ 過去バージョンを追加",
+      add_android_old: "+ 過去バージョンを追加",
+      add_author: "+ 作者を追加",
+      add_meta: "+ 言語を追加",
+      ph_label_ios: "例: v59b2a",
+      ph_label_android: "例: v44beta1",
+      ph_url: "https://t.me/...",
+      ph_name: "表示名",
+      ph_id: "ID",
+      ph_lang: "言語コード (ja)",
+      ph_title: "タイトル",
+      ph_desc: "説明文",
+      btn_copy: "コピー",
+      btn_copied: "コピーしました",
+      btn_download: "ダウンロード",
+      btn_telegram: "@kazarex に送信",
+      hint: "Telegramアプリが開き、メッセージ欄にJSONが入力された状態になります。内容を確認して送信してください。",
+      lang_label: "言語"
+    },
+    en: {
+      title: "Manifest Builder",
+      subtitle: "Fill in the form and config.json is assembled live on the right. Export it when you're done, or send it straight to @kazarex.",
+      sec_basic: "Basic Info",
+      sec_support: "Availability & Downloads",
+      sec_ios_old: "Old Versions - iOS (iosoldver)",
+      sec_android_old: "Old Versions - Android (androidoldver)",
+      sec_authors: "Authors",
+      sec_meta: "Translations (meta)",
+      sec_community: "Community",
+      lbl_name: "Mod name (name)",
+      lbl_version: "Version",
+      lbl_lastUpdated: "Last updated",
+      lbl_iossupport: "iOS support (iossupport)",
+      lbl_androidsupport: "Android support (androidsupport)",
+      lbl_iosUrl: "iOS download URL",
+      lbl_androidUrl: "Android download URL",
+      lbl_telegram: "Telegram",
+      lbl_discord: "Discord",
+      add_ios_old: "+ Add old version",
+      add_android_old: "+ Add old version",
+      add_author: "+ Add author",
+      add_meta: "+ Add language",
+      ph_label_ios: "e.g. v59b2a",
+      ph_label_android: "e.g. v44beta1",
+      ph_url: "https://t.me/...",
+      ph_name: "Display name",
+      ph_id: "ID",
+      ph_lang: "Language code (ja)",
+      ph_title: "Title",
+      ph_desc: "Description",
+      btn_copy: "Copy",
+      btn_copied: "Copied",
+      btn_download: "Download",
+      btn_telegram: "Send to @kazarex",
+      hint: "Opens Telegram with the JSON pre-filled in the message box. Review it before sending.",
+      lang_label: "Language"
+    },
+    ru: {
+      title: "Manifest Builder",
+      subtitle: "Заполните форму — config.json будет собираться в реальном времени справа. Экспортируйте готовый файл или отправьте его прямо в @kazarex.",
+      sec_basic: "Основная информация",
+      sec_support: "Доступность и загрузка",
+      sec_ios_old: "Старые версии - iOS (iosoldver)",
+      sec_android_old: "Старые версии - Android (androidoldver)",
+      sec_authors: "Авторы",
+      sec_meta: "Переводы (meta)",
+      sec_community: "Сообщество",
+      lbl_name: "Название мода (name)",
+      lbl_version: "Версия",
+      lbl_lastUpdated: "Последнее обновление",
+      lbl_iossupport: "Поддержка iOS (iossupport)",
+      lbl_androidsupport: "Поддержка Android (androidsupport)",
+      lbl_iosUrl: "Ссылка на загрузку iOS",
+      lbl_androidUrl: "Ссылка на загрузку Android",
+      lbl_telegram: "Telegram",
+      lbl_discord: "Discord",
+      add_ios_old: "+ Добавить версию",
+      add_android_old: "+ Добавить версию",
+      add_author: "+ Добавить автора",
+      add_meta: "+ Добавить язык",
+      ph_label_ios: "напр. v59b2a",
+      ph_label_android: "напр. v44beta1",
+      ph_url: "https://t.me/...",
+      ph_name: "Отображаемое имя",
+      ph_id: "ID",
+      ph_lang: "Код языка (ja)",
+      ph_title: "Заголовок",
+      ph_desc: "Описание",
+      btn_copy: "Скопировать",
+      btn_copied: "Скопировано",
+      btn_download: "Скачать",
+      btn_telegram: "Отправить @kazarex",
+      hint: "Откроется Telegram с готовым JSON в поле сообщения. Проверьте перед отправкой.",
+      lang_label: "Язык"
+    },
+    ko: {
+      title: "Manifest Builder",
+      subtitle: "폼을 채우면 오른쪽에서 config.json이 실시간으로 만들어집니다. 완성되면 내보내거나 바로 @kazarex 에게 전송할 수 있습니다.",
+      sec_basic: "기본 정보",
+      sec_support: "지원 현황 및 다운로드",
+      sec_ios_old: "이전 버전 - iOS (iosoldver)",
+      sec_android_old: "이전 버전 - Android (androidoldver)",
+      sec_authors: "제작자",
+      sec_meta: "번역 (meta)",
+      sec_community: "커뮤니티",
+      lbl_name: "Mod 이름 (name)",
+      lbl_version: "버전",
+      lbl_lastUpdated: "최종 업데이트",
+      lbl_iossupport: "iOS 지원 상태 (iossupport)",
+      lbl_androidsupport: "Android 지원 상태 (androidsupport)",
+      lbl_iosUrl: "iOS 다운로드 URL",
+      lbl_androidUrl: "Android 다운로드 URL",
+      lbl_telegram: "Telegram",
+      lbl_discord: "Discord",
+      add_ios_old: "+ 이전 버전 추가",
+      add_android_old: "+ 이전 버전 추가",
+      add_author: "+ 제작자 추가",
+      add_meta: "+ 언어 추가",
+      ph_label_ios: "예: v59b2a",
+      ph_label_android: "예: v44beta1",
+      ph_url: "https://t.me/...",
+      ph_name: "표시 이름",
+      ph_id: "ID",
+      ph_lang: "언어 코드 (ja)",
+      ph_title: "제목",
+      ph_desc: "설명",
+      btn_copy: "복사",
+      btn_copied: "복사됨",
+      btn_download: "다운로드",
+      btn_telegram: "@kazarex 에게 전송",
+      hint: "Telegram이 열리고 메시지 입력창에 JSON이 자동으로 채워집니다. 전송 전에 내용을 확인하세요.",
+      lang_label: "언어"
+    }
+  };
+
+  let currentLang = 'ja';
+  const t = (key) => translations[currentLang][key] || translations.ja[key] || '';
+
+  function iosOldFields(){ return [{key:'label',placeholder:t('ph_label_ios')},{key:'url',placeholder:t('ph_url')}]; }
+  function androidOldFields(){ return [{key:'label',placeholder:t('ph_label_android')},{key:'url',placeholder:t('ph_url')}]; }
+  function authorFields(){ return [{key:'name',placeholder:t('ph_name')},{key:'authorId',placeholder:t('ph_id')}]; }
+  function metaFieldsFn(){ return [{key:'lang',placeholder:t('ph_lang')},{key:'title',placeholder:t('ph_title')},{key:'desc',placeholder:t('ph_desc')}]; }
+
+  const iosOldVer = [];
+  const androidOldVer = [];
+  const authors = [];
+  const metaRows = [
+    { lang: 'ja', title: '', desc: '' },
+    { lang: 'en', title: '', desc: '' },
+    { lang: 'ru', title: '', desc: '' },
+    { lang: 'ko', title: '', desc: '' }
+  ];
+  let idCounter = 0;
+  const nextId = () => 'row' + (idCounter++);
+
+  function renderList(arr, containerId, fields, canRemove=true){
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    arr.forEach(item => {
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'dyn-row';
+      fields.forEach(f => {
+        const wrap = document.createElement('div');
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = f.placeholder;
+        input.value = item[f.key] || '';
+        input.addEventListener('input', (e) => {
+          item[f.key] = e.target.value;
+          updatePreview();
+        });
+        wrap.appendChild(input);
+        rowDiv.appendChild(wrap);
+      });
+      if(canRemove){
+        const btn = document.createElement('button');
+        btn.className = 'icon-btn';
+        btn.type = 'button';
+        btn.textContent = '×';
+        btn.addEventListener('click', () => {
+          removeRow(arr, item.id, containerId, fields, canRemove);
+        });
+        rowDiv.appendChild(btn);
+      }
+      container.appendChild(rowDiv);
+    });
+  }
+
+  function removeRow(arr, id, containerId, fields, canRemove){
+    const idx = arr.findIndex(r => r.id === id);
+    if(idx > -1) arr.splice(idx, 1);
+    renderList(arr, containerId, fields, canRemove);
+    updatePreview();
+  }
+
+  function addRow(arr, base, containerId, fields, canRemove=true){
+    arr.push({ id: nextId(), ...base });
+    renderList(arr, containerId, fields, canRemove);
+    updatePreview();
+  }
+
+  document.getElementById('addIosOld').addEventListener('click', () =>
+    addRow(iosOldVer, {label:'', url:''}, 'iosOldList', iosOldFields()));
+
+  document.getElementById('addAndroidOld').addEventListener('click', () =>
+    addRow(androidOldVer, {label:'', url:''}, 'androidOldList', androidOldFields()));
+
+  document.getElementById('addAuthor').addEventListener('click', () =>
+    addRow(authors, {name:'', authorId:''}, 'authorList', authorFields()));
+
+  document.getElementById('addMeta').addEventListener('click', () =>
+    addRow(metaRows, {lang:'', title:'', desc:''}, 'metaList', metaFieldsFn()));
+
+  function renderAllLists(){
+    renderList(iosOldVer, 'iosOldList', iosOldFields());
+    renderList(androidOldVer, 'androidOldList', androidOldFields());
+    renderList(authors, 'authorList', authorFields());
+    renderList(metaRows, 'metaList', metaFieldsFn(), false);
+  }
+  renderAllLists();
+
+  document.getElementById('f_lastUpdated').value = new Date().toISOString().slice(0,10);
+
+  ['f_name','f_version','f_lastUpdated','f_iossupport','f_androidsupport','f_iosDownloadUrl','f_androidDownloadUrl','f_telegram','f_discord']
+    .forEach(id => {
+      document.getElementById(id).addEventListener('input', updatePreview);
+      document.getElementById(id).addEventListener('change', updatePreview);
+    });
+
+  function buildObject(){
+    const val = id => document.getElementById(id).value.trim();
+
+    const iosOldObj = {};
+    iosOldVer.forEach(r => { if(r.label && r.url) iosOldObj[r.label] = r.url; });
+
+    const androidOldObj = {};
+    androidOldVer.forEach(r => { if(r.label && r.url) androidOldObj[r.label] = r.url; });
+
+    const authorsArr = authors
+      .filter(a => a.name || a.authorId)
+      .map(a => ({ name: a.name || '', id: a.authorId || '' }));
+
+    const metaObj = {};
+    metaRows.forEach(m => {
+      if(m.lang) metaObj[m.lang] = { title: m.title || '', desc: m.desc || '' };
+    });
+
+    return {
+      name: val('f_name'),
+      version: val('f_version'),
+      lastUpdated: val('f_lastUpdated'),
+      iossupport: val('f_iossupport'),
+      androidsupport: val('f_androidsupport'),
+      iosDownloadUrl: val('f_iosDownloadUrl'),
+      androidDownloadUrl: val('f_androidDownloadUrl'),
+      iosoldver: iosOldObj,
+      androidoldver: androidOldObj,
+      authors: authorsArr,
+      meta: metaObj,
+      telegram: val('f_telegram'),
+      discord: val('f_discord')
+    };
+  }
+
+  function highlight(json){
+    return json
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*")(\s*:)?/g, (match, p1, p2, colon) => {
+        if(colon){
+          return '<span class="k">' + p1 + '</span>' + colon;
+        }
+        return '<span class="s">' + p1 + '</span>';
+      })
+      .replace(/\b(true|false|null)\b/g, '<span class="n">$1</span>')
+      .replace(/([{}\[\],])/g, '<span class="p">$1</span>');
+  }
+
+  function updatePreview(){
+    const obj = buildObject();
+    const json = JSON.stringify(obj, null, 4);
+    document.getElementById('jsonOut').innerHTML = highlight(json);
+  }
+
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    const json = JSON.stringify(buildObject(), null, 4);
+    navigator.clipboard.writeText(json).then(() => {
+      const btn = document.getElementById('copyBtn');
+      const original = btn.textContent;
+      btn.textContent = t('btn_copied');
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = t('btn_copy'); btn.classList.remove('copied'); }, 1500);
+    });
+  });
+
+  document.getElementById('downloadBtn').addEventListener('click', () => {
+    const obj = buildObject();
+    const json = JSON.stringify(obj, null, 4);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const slug = (obj.name || 'config').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'config';
+    a.href = url;
+    a.download = slug + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('telegramBtn').addEventListener('click', () => {
+    const json = JSON.stringify(buildObject(), null, 4);
+    const encoded = encodeURIComponent(json);
+    window.open('https://t.me/kazarex?text=' + encoded, '_blank');
+  });
+
+  function applyStaticI18n(){
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      el.textContent = t(key);
+    });
+    document.documentElement.lang = currentLang;
+  }
+
+  document.getElementById('uiLangSelect').addEventListener('change', (e) => {
+    currentLang = e.target.value;
+    applyStaticI18n();
+    renderAllLists();
+    updatePreview();
+  });
+
+  applyStaticI18n();
+  updatePreview();
+</script>
+
+</body>
+</html>
