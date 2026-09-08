@@ -211,7 +211,7 @@
     </div>
 
     <div id="page-index" class="hidden">
-        <iframe class="index-frame" src="/legacy/index.html"></iframe>
+        <iframe class="index-frame" id="legacy-index-frame"></iframe>
     </div>
     
     <div id="page-search" class="hidden">
@@ -350,9 +350,20 @@
 
         let currentLang = getInitialLang();
 
+        function updateLegacyFrameLang(lang) {
+            const frame = document.getElementById('legacy-index-frame');
+            if (!frame) return;
+            const targetSrc = `/legacy/index.html?lang=${lang}`;
+            if (!frame.src.endsWith(targetSrc)) {
+                frame.src = targetSrc;
+            }
+        }
+
         function setLanguage(lang) {
             currentLang = lang;
             const t = i18n[lang];
+
+            updateLegacyFrameLang(lang);
 
             document.getElementById('ui-today-title').textContent = t.today;
             document.getElementById('ui-search-title').textContent = t.search;
