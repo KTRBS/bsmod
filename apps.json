@@ -1958,7 +1958,7 @@
         "name": "Multi Brawl Cl V37.9.apk",
         "link": "https://t.me/PrivateBSDownload/404"
     },
-   {
+    {
         "name": "Multi Brawl Classic",
         "codename": "mbcl",
         "link": "https://ktr.brawlmods.com/mods/id=mbcl",
@@ -1970,80 +1970,11 @@
         "link": "https://t.me/PrivateBSDownload/937"
     },
     {
-        "name": "Multi Brawl Og V35.apk",
-        "link": "https://t.me/PrivateBSDownload/401"
-    },
-    {
-        "name": "Multi Brawl Og V36.apk",
-        "link": "https://t.me/PrivateBSDownload/245"
-    },
-    {
-        "name": "Multi Brawl Og V37.410.apk",
-        "link": "https://t.me/PrivateBSDownload/7"
-    },
-    {
-        "name": "Multi Brawl Og V38.apk",
-        "link": "https://t.me/PrivateBSDownload/8"
-    },
-    {
-        "name": "Multi Brawl Og V39.9.apk",
-        "link": "https://t.me/PrivateBSDownload/402"
-    },
-    {
-        "name": "Multi Brawl Og V39.apk",
-        "link": "https://t.me/PrivateBSDownload/9"
-    },
-    {
-        "name": "Multi Brawl Og V40.apk",
-        "link": "https://t.me/PrivateBSDownload/56"
-    },
-    {
-        "name": "Multi Brawl Og V40.apk",
-        "link": "https://t.me/PrivateBSDownload/10"
-    },
-    {
-        "name": "Multi Brawl Og v43.apk",
-        "link": "https://t.me/PrivateBSDownload/12"
-    },
-    {
-        "name": "Multi Brawl Og v44.apk",
-        "link": "https://t.me/PrivateBSDownload/403"
-    },
-    {
-        "name": "Multi Brawl V33.apk",
-        "link": "https://t.me/PrivateBSDownload/278"
-    },
-    {
-        "name": "Multi Brawl V34.apk",
-        "link": "https://t.me/PrivateBSDownload/279"
-    },
-    {
-        "name": "Multi Brawl V4.apk",
-        "link": "https://t.me/PrivateBSDownload/1020"
-    },
-    {
-        "name": "Multi Brawl V4.apk",
-        "link": "https://t.me/PrivateBSDownload/1013"
-    },
-    {
-        "name": "Multi Brawl v45.601.apk",
-        "link": "https://t.me/PrivateBSDownload/116"
-    },
-    {
-        "name": "Multi Brawl v46.750.apk",
-        "link": "https://t.me/PrivateBSDownload/314"
-    },
-    {
-        "name": "Multi Brawl v47.022.apk",
-        "link": "https://t.me/PrivateBSDownload/1247"
-    },
-    {
-        "name": "Multi Brawl_CL 41.322.apk",
-        "link": "https://t.me/PrivateBSDownload/405"
-    },
-    {
-        "name": "Multi BrawlOG-41.321.apk",
-        "link": "https://t.me/PrivateBSDownload/117"
+        "name": "Multi Brawl Original",
+        "codename": "mbog",
+        "link": "https://ktr.brawlmods.com/mods/mbog",
+        "icon": "resources/mbog/icon.png",
+        "ss1": "resources/mbog/ss1.png"
     },
     {
         "name": "Multi Purple.apk",
