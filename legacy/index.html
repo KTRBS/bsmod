@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>APK List</title>
-    
+
     <!-- Open Graph / Discord Embed Meta Tags -->
     <meta property="og:title" content="APK List">
     <meta property="og:description" content="Download over 800 offline mods created on S.B client from ktr.brawlmods.com">
@@ -17,274 +17,309 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-TMWFXQQD');</script>
 <!-- End Google Tag Manager -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
-        :root {
-            --bg-color: #ffffff;
-            --text-color: #212529;
-            --card-bg: #ffffff;
-            --card-shadow: rgba(0, 0, 0, 0.1);
-            --input-bg: #ffffff;
-            --input-border: #ccc;
-            --muted-text: #666;
-            --no-results-text: #999;
-        }
+        :root { --ios-blue: #007aff; --ios-gray: #8e8e93; --ios-bg: #ffffff; --card-bg: #ffffff; --search-bg: rgba(142, 142, 147, 0.12); --text-color: #000000; --line: rgba(0,0,0,0.1); }
+        @media (prefers-color-scheme: dark) { :root { --ios-bg: #000000; --card-bg: #1c1c1e; --search-bg: rgba(255, 255, 255, 0.12); --text-color: #ffffff; --line: rgba(255,255,255,0.15); } }
 
-        body[data-theme="dark"] {
-            --bg-color: #121212;
-            --text-color: #e8e8e8;
-            --card-bg: #1e1e1e;
-            --card-shadow: rgba(0, 0, 0, 0.4);
-            --input-bg: #2a2a2a;
-            --input-border: #444;
-            --muted-text: #aaa;
-            --no-results-text: #888;
-        }
+        * { box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif; background-color: var(--ios-bg); color: var(--text-color); margin: 0; padding: 0 16px 24px 16px; -webkit-tap-highlight-color: transparent; }
 
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background: var(--bg-color);
-            color: var(--text-color);
-            transition: background 0.2s ease, color 0.2s ease;
-        }
-        .container { max-width: 600px; margin: 20px auto; padding: 10px; }
-        input[type="text"] {
-            width: 94%;
-            padding: 10px;
-            margin-bottom: 20px;
-            font-size: 16px;
-            background: var(--input-bg);
-            color: var(--text-color);
-            border: 1px solid var(--input-border);
-            border-radius: 6px;
-        }
-        .app-list { display: flex; flex-direction: column; gap: 5px; }
-        .app-card {
-            display: flex; align-items: center; background: var(--card-bg); padding: 10px;
-            border-radius: 10px; box-shadow: 0px 2px 5px var(--card-shadow);
-            margin-bottom: 5px;
-        }
-        .app-info { text-align: left; flex-grow: 1; }
-        .app-info h3 { margin: 0; font-size: 16px; color: var(--text-color); }
-        .app-info p { margin: 5px 0; color: var(--muted-text); font-size: 14px; }
-        .download-btn {
-            padding: 5px 10px; background: #007bff; color: white; text-decoration: none;
-            border-radius: 5px; font-size: 14px;
-        }
-        .no-results { color: var(--no-results-text); margin-top: 10px; font-size: 14px; }
-        
-    .app-description {
-    font-size: 14px;
-    color: var(--muted-text);
-    margin-top: 5px;
-    word-wrap: break-word;
-    }
-        
-    .checkbox-container {
-        display: inline-flex; 
-        align-items: center;  
-        gap: 2px;  
-        margin-bottom: 10px;
-    }
+        .page-wrap { max-width: 600px; margin: 0 auto; }
 
-    .checkbox-container input {
-        margin: 0;  
-        width: 16px;
-        height: 16px;
-    }
+        header { padding: 20px 0 5px 0; }
+        h1 { font-size: 1.8rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; text-align: left; }
 
-    .checkbox-container label {
-        font-size: 14px;
-        white-space: nowrap;  
-    }
+        .search-wrapper { position: relative; margin: 18px 0 12px 0; }
+        .search-icon-svg { position: absolute; left: 10px; top: 9px; width: 16px; height: 16px; fill: var(--ios-gray); }
+        .search-wrapper input { width: 100%; padding: 8px 10px 8px 35px; border-radius: 10px; border: none; background: var(--search-bg); font-size: 16px; color: var(--text-color); outline: none; box-sizing: border-box; }
 
-        .hidden { display: none; }
+        .toggle-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; font-size: 0.85rem; font-weight: 600; }
+        .ios-switch { position: relative; width: 42px; height: 25px; flex-shrink: 0; }
+        .ios-switch input { opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; position: absolute; z-index: 1; }
+        .ios-switch .slider { position: absolute; inset: 0; background: var(--search-bg); border-radius: 999px; transition: background 0.2s ease; }
+        .ios-switch .slider::before { content: ""; position: absolute; width: 21px; height: 21px; left: 2px; top: 2px; background: #ffffff; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.25); transition: transform 0.2s ease; }
+        .ios-switch input:checked ~ .slider { background: var(--ios-blue); }
+        .ios-switch input:checked ~ .slider::before { transform: translateX(17px); }
+
+        .filter-buttons { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
+        .filter-btn { background: var(--search-bg); border: 1px solid var(--line); color: var(--text-color); padding: 6px 14px; border-radius: 16px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+        .filter-btn:active { transform: scale(0.96); }
+
+        .stats { text-align: center; margin: 0 0 14px 0; }
+        .stats p { margin: 3px 0; color: var(--ios-gray); font-size: 0.8rem; }
+        .stats span { color: var(--text-color); font-weight: 700; }
+
+        .app-list { display: flex; flex-direction: column; gap: 8px; }
+
+        .apk-card { display: flex; align-items: center; text-decoration: none; color: inherit; background: var(--card-bg); padding: 10px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--line); }
+        .apk-icon { width: 52px; height: 52px; border-radius: 11px; object-fit: cover; flex-shrink: 0; background-color: var(--search-bg); }
+        .apk-info { flex: 1; min-width: 0; padding: 0 10px; overflow: hidden; }
+        .apk-name { font-size: 1rem; font-weight: 700; line-height: 1.2; word-break: break-word; }
+        .apk-desc { font-size: 0.8rem; color: var(--ios-gray); margin-top: 2px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .apk-get-btn { background: #f0f0f7; color: var(--ios-blue); font-weight: 800; padding: 6px 16px; border-radius: 15px; font-size: 0.78rem; flex-shrink: 0; white-space: nowrap; }
+        @media (prefers-color-scheme: dark) { .apk-get-btn { background: #3a3a3c; } }
+
+        .no-results { color: var(--ios-gray); margin-top: 14px; font-size: 0.85rem; text-align: center; }
+        .hidden { display: none !important; }
 
         @media (min-width: 768px) {
-            .container {
-                max-width: 1200px;
-            }
-            .app-list {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-            .app-card {
-                margin-bottom: 0;
-            }
+            .page-wrap { max-width: 900px; }
+            .app-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         }
     </style>
     <meta name='admaven-placement' content=BqdU4rdYE>
 </head>
-<body data-theme="light">
+<body>
     <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TMWFXQQD"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-    <div class="container">
-        <h1>APK List</h1>
 
-        <div class="checkbox-container">
-            <input type="checkbox" id="toggleMods">
-            <label for="toggleMods"> Hide mod list</label>
+    <div class="page-wrap">
+        <header>
+            <h1 id="ui-title">Index</h1>
+        </header>
+
+        <div class="search-wrapper">
+            <svg class="search-icon-svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" id="searchBox" placeholder="Search by name...">
         </div>
-        <input type="text" id="searchBox" placeholder="Search by name...">
-            
-<div class="filter-buttons">
-    <button onclick="filterByTag('offline')">Offline</button>
-    <button onclick="filterByTag('online')">Online</button>
-    <button onclick="filterByTag('ipa')">IPA</button>
-    <button onclick="filterByTag('prod')">PROD</button>
-</div>
-        <p id="totalMods">Total Mods: <span id="modCount">0</span></p>
-        <p id="lastUpdated">Last Updated: <span id="updateDate">2025-02-11</span></p>
-        <p id="resourcesUpdated">Resources Update: <span id="resourcesUpdateDate">2025-02-11</span></p>
-        <p id="searchResults" class="hidden">Search Results: <span id="searchCount">0</span></p>
+
+        <div class="toggle-row">
+            <span id="ui-hide-mods-label">Hide mod list</span>
+            <label class="ios-switch">
+                <input type="checkbox" id="toggleMods">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="filter-buttons">
+            <button class="filter-btn" id="ui-filter-offline" onclick="filterByTag('offline')">Offline</button>
+            <button class="filter-btn" id="ui-filter-online" onclick="filterByTag('online')">Online</button>
+            <button class="filter-btn" id="ui-filter-ipa" onclick="filterByTag('ipa')">IPA</button>
+            <button class="filter-btn" id="ui-filter-prod" onclick="filterByTag('prod')">PROD</button>
+        </div>
+
+        <div class="stats">
+            <p id="totalMods"><span id="ui-total-mods-label">Total Mods:</span> <span id="modCount">0</span></p>
+            <p id="resourcesUpdated"><span id="ui-resources-updated-label">Resources Update:</span> <span id="resourcesUpdateDate">2025-02-11</span></p>
+            <p id="searchResults" class="hidden"><span id="ui-search-results-label">Search Results:</span> <span id="searchCount">0</span></p>
+        </div>
+
         <div class="app-list" id="appList"></div>
         <p class="no-results hidden" id="noResults">No matching results</p>
     </div>
 
-    <div class="app-list" id="appList">
-</div>
-
     <script>
-function filterByTag(tag) {
-    const searchBox = document.getElementById('searchBox');
-    searchBox.value = tag;
-    searchBox.dispatchEvent(new Event('input'));
-}
+        const i18n = {
+            en: {
+                title: "Index", searchPlaceholder: "Search by name...", hideModList: "Hide mod list",
+                filterOffline: "Offline", filterOnline: "Online", filterIpa: "IPA", filterProd: "PROD",
+                totalModsLabel: "Total Mods:", resourcesUpdatedLabel: "Resources Update:",
+                searchResultsLabel: "Search Results:", noResults: "No matching results", get: "GET",
+                statusOffline: "offline", statusOnline: "online", statusIpa: "ipa", statusProd: "PROD"
+            },
+            ja: {
+                title: "Index", searchPlaceholder: "名前で検索...", hideModList: "Mod一覧を非表示",
+                filterOffline: "オフライン", filterOnline: "オンライン", filterIpa: "IPA", filterProd: "PROD",
+                totalModsLabel: "合計Mod数:", resourcesUpdatedLabel: "リソース更新:",
+                searchResultsLabel: "検索結果:", noResults: "一致する結果がありません", get: "GET",
+                statusOffline: "オフライン", statusOnline: "オンライン", statusIpa: "ipa", statusProd: "PROD"
+            },
+            zh: {
+                title: "索引", searchPlaceholder: "按名称搜索...", hideModList: "隐藏模组列表",
+                filterOffline: "离线", filterOnline: "在线", filterIpa: "IPA", filterProd: "PROD",
+                totalModsLabel: "模组总数:", resourcesUpdatedLabel: "资源更新:",
+                searchResultsLabel: "搜索结果:", noResults: "没有匹配的结果", get: "获取",
+                statusOffline: "离线", statusOnline: "在线", statusIpa: "ipa", statusProd: "PROD"
+            },
+            ko: {
+                title: "색인", searchPlaceholder: "이름으로 검색...", hideModList: "모드 목록 숨기기",
+                filterOffline: "오프라인", filterOnline: "온라인", filterIpa: "IPA", filterProd: "PROD",
+                totalModsLabel: "전체 모드:", resourcesUpdatedLabel: "리소스 업데이트:",
+                searchResultsLabel: "검색 결과:", noResults: "일치하는 결과가 없습니다", get: "받기",
+                statusOffline: "오프라인", statusOnline: "온라인", statusIpa: "ipa", statusProd: "PROD"
+            },
+            ru: {
+                title: "Индекс", searchPlaceholder: "Поиск по названию...", hideModList: "Скрыть список модов",
+                filterOffline: "Офлайн", filterOnline: "Онлайн", filterIpa: "IPA", filterProd: "PROD",
+                totalModsLabel: "Всего модов:", resourcesUpdatedLabel: "Обновление ресурсов:",
+                searchResultsLabel: "Результаты поиска:", noResults: "Совпадений не найдено", get: "Получить",
+                statusOffline: "офлайн", statusOnline: "онлайн", statusIpa: "ipa", statusProd: "PROD"
+            }
+        };
 
-(function initTheme() {
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.body.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+        function getInitialLang() {
+            const params = new URLSearchParams(window.location.search);
+            const paramLang = params.get('lang');
+            if (paramLang && i18n[paramLang]) return paramLang;
 
-    // OSの設定変更にもリアルタイムで追従
-    if (window.matchMedia) {
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-            document.body.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-        });
-    }
-})();
+            const lang = navigator.language || navigator.userLanguage;
+            if (lang.startsWith('ja')) return 'ja';
+            if (lang.startsWith('zh')) return 'zh';
+            if (lang.startsWith('ko')) return 'ko';
+            if (lang.startsWith('ru')) return 'ru';
+            return 'en';
+        }
+
+        let currentLang = getInitialLang();
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            const t = i18n[lang];
+            document.documentElement.lang = lang;
+
+            document.getElementById('ui-title').textContent = t.title;
+            document.getElementById('searchBox').placeholder = t.searchPlaceholder;
+            document.getElementById('ui-hide-mods-label').textContent = t.hideModList;
+            document.getElementById('ui-filter-offline').textContent = t.filterOffline;
+            document.getElementById('ui-filter-online').textContent = t.filterOnline;
+            document.getElementById('ui-filter-ipa').textContent = t.filterIpa;
+            document.getElementById('ui-filter-prod').textContent = t.filterProd;
+            document.getElementById('ui-total-mods-label').textContent = t.totalModsLabel;
+            document.getElementById('ui-resources-updated-label').textContent = t.resourcesUpdatedLabel;
+            document.getElementById('ui-search-results-label').textContent = t.searchResultsLabel;
+            document.getElementById('noResults').textContent = t.noResults;
+        }
+
+        function filterByTag(tag) {
+            const searchBox = document.getElementById('searchBox');
+            searchBox.value = tag;
+            searchBox.dispatchEvent(new Event('input'));
+        }
+
+        function makeIconHtml(app) {
+            const iconPath = app.icon ? `../${app.icon}` : (app.codename ? `../resources/${app.codename}/icon.png` : null);
+            if (!iconPath) return `<div class="apk-icon"></div>`;
+            return `<img src="${iconPath}" class="apk-icon" onerror="this.style.opacity='0'">`;
+        }
 
         async function loadApps() {
-    try {
-        const timestamp = new Date().getTime();
-        const responses = await Promise.all([
-            fetch(`../apps.json?${timestamp}`).then(res => res.json()),
-            fetch(`../oapps.json?${timestamp}`).then(res => res.json()),
-            fetch(`../iapps.json?${timestamp}`).then(res => res.json()),
-            fetch(`../prod.json?${timestamp}`).then(res => res.json())
-        ]);
+            try {
+                const t = i18n[currentLang];
+                const timestamp = new Date().getTime();
+                const responses = await Promise.all([
+                    fetch(`../apps.json?${timestamp}`).then(res => res.json()),
+                    fetch(`../oapps.json?${timestamp}`).then(res => res.json()),
+                    fetch(`../iapps.json?${timestamp}`).then(res => res.json()),
+                    fetch(`../prod.json?${timestamp}`).then(res => res.json())
+                ]);
 
-        let [appsData, oappsData, iappsData, prodData] = responses;
+                let [appsData, oappsData, iappsData, prodData] = responses;
 
-        appsData = appsData.map(app => ({
-            ...app,
-            description: app.description !== undefined
-                ? `<span style="color: #28a745;">offline</span> - ${app.description}`
-                : `<span style="color: #28a745;">offline</span>`,
-            status: "offline"
-        }));
+                appsData = appsData.map(app => ({
+                    ...app,
+                    description: app.description !== undefined
+                        ? `<span style="color: #28a745;">${t.statusOffline}</span> - ${app.description}`
+                        : `<span style="color: #28a745;">${t.statusOffline}</span>`,
+                    status: "offline"
+                }));
 
-        oappsData = oappsData.map(app => ({
-            ...app,
-            description: app.description !== undefined
-                ? `<span style="color: #17a2b8;">online</span> - ${app.description}`
-                : `<span style="color: #17a2b8;">online</span>`,
-            status: "online"
-        }));
+                oappsData = oappsData.map(app => ({
+                    ...app,
+                    description: app.description !== undefined
+                        ? `<span style="color: #17a2b8;">${t.statusOnline}</span> - ${app.description}`
+                        : `<span style="color: #17a2b8;">${t.statusOnline}</span>`,
+                    status: "online"
+                }));
 
-        iappsData = iappsData.map(app => ({
-            ...app,
-            description: app.description !== undefined
-                ? app.description
-                : "ipa",
-            status: "ipa"
-        }));
+                iappsData = iappsData.map(app => ({
+                    ...app,
+                    description: app.description !== undefined ? app.description : t.statusIpa,
+                    status: "ipa"
+                }));
 
-        prodData = prodData.map(app => ({
-            ...app,
-            description: `<span style="color: #dc3545;">PROD</span> - ${app.description || ''}`,
-            status: "prod"
-        }));
+                prodData = prodData.map(app => ({
+                    ...app,
+                    description: `<span style="color: #dc3545;">${t.statusProd}</span> - ${app.description || ''}`,
+                    status: "prod"
+                }));
 
-        const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData]
-            .sort((a, b) => a.name.localeCompare(b.name));
+                const allApps = [...appsData, ...oappsData, ...iappsData, ...prodData]
+                    .sort((a, b) => a.name.localeCompare(b.name));
 
-        const appList = document.getElementById('appList');
-        const searchBox = document.getElementById('searchBox');
-        const noResults = document.getElementById('noResults');
-        const searchResults = document.getElementById('searchResults');
-        const searchCount = document.getElementById('searchCount');
-        const toggleMods = document.getElementById('toggleMods');
-        const totalMods = document.getElementById('totalMods');
-        const lastUpdated = document.getElementById('lastUpdated');
-        const resourcesUpdated = document.getElementById('resourcesUpdated');
+                const appList = document.getElementById('appList');
+                const searchBox = document.getElementById('searchBox');
+                const noResults = document.getElementById('noResults');
+                const searchResults = document.getElementById('searchResults');
+                const searchCount = document.getElementById('searchCount');
+                const toggleMods = document.getElementById('toggleMods');
+                const totalMods = document.getElementById('totalMods');
+                const resourcesUpdated = document.getElementById('resourcesUpdated');
 
-        totalMods.querySelector('span').textContent = allApps.length;
+                totalMods.querySelector('#modCount').textContent = allApps.length;
 
-        function displayApps(filteredData) {
-            appList.innerHTML = "";
-            if (filteredData.length === 0) {
-                noResults.classList.remove("hidden");
-                return;
-            }
-            noResults.classList.add("hidden");
-            filteredData.forEach(app => {
-                const appCard = document.createElement('div');
-                appCard.classList.add('app-card');
-                appCard.innerHTML = `
-                    <div class="app-info">
-                        <h3>${app.name}</h3>
-                        <p class="app-description">${app.description || ''}</p>
-                    </div>
-                    <a href="${app.link}" target="_blank" class="download-btn">Download</a>
-                `;
-                appList.appendChild(appCard);
-            });
-        }
+                function displayApps(filteredData) {
+                    appList.innerHTML = "";
+                    if (filteredData.length === 0) {
+                        noResults.classList.remove("hidden");
+                        return;
+                    }
+                    noResults.classList.add("hidden");
+                    filteredData.forEach(app => {
+                        const card = document.createElement('a');
+                        card.href = app.link;
+                        card.target = "_blank";
+                        card.rel = "noopener noreferrer";
+                        card.className = "apk-card";
+                        card.innerHTML = `
+                            ${makeIconHtml(app)}
+                            <div class="apk-info">
+                                <div class="apk-name">${app.name}</div>
+                                <div class="apk-desc">${app.description || ''}</div>
+                            </div>
+                            <div class="apk-get-btn">${i18n[currentLang].get}</div>
+                        `;
+                        appList.appendChild(card);
+                    });
+                }
 
-        function resetView() {
-            totalMods.classList.remove("hidden");
-            lastUpdated.classList.remove("hidden");
-            resourcesUpdated.classList.remove("hidden");
-            searchResults.classList.add("hidden");
-        }
+                function resetView() {
+                    totalMods.classList.remove("hidden");
+                    resourcesUpdated.classList.remove("hidden");
+                    searchResults.classList.add("hidden");
+                }
 
-        searchBox.addEventListener('input', () => {
-            const searchTerm = searchBox.value.trim().toLowerCase();
-            if (searchTerm === "") {
-                resetView();
+                searchBox.addEventListener('input', () => {
+                    const searchTerm = searchBox.value.trim().toLowerCase();
+                    if (searchTerm === "") {
+                        resetView();
+                        displayApps(allApps);
+                        return;
+                    }
+
+                    const filteredData = allApps.filter(app =>
+                        app.name.toLowerCase().includes(searchTerm) ||
+                        app.status.toLowerCase() === searchTerm
+                    );
+
+                    displayApps(filteredData);
+                    searchResults.classList.remove("hidden");
+                    searchCount.textContent = filteredData.length;
+
+                    totalMods.classList.add("hidden");
+                    resourcesUpdated.classList.add("hidden");
+                });
+
+                toggleMods.addEventListener('change', () => {
+                    appList.style.display = toggleMods.checked ? 'none' : '';
+                });
+
                 displayApps(allApps);
-                return;
+            } catch (error) {
+                console.error('Error loading data:', error);
             }
+        }
 
-            const filteredData = allApps.filter(app =>
-                app.name.toLowerCase().includes(searchTerm) ||
-                app.status.toLowerCase() === searchTerm
-            );
-
-            displayApps(filteredData);
-            searchResults.classList.remove("hidden");
-            searchCount.textContent = filteredData.length;
-            
-            // 🔹 Total Mods & Updated Date を隠す
-            totalMods.classList.add("hidden");
-            lastUpdated.classList.add("hidden");
-            resourcesUpdated.classList.add("hidden");
-        });
-
-        toggleMods.addEventListener('change', () => {
-            appList.style.display = toggleMods.checked ? 'none' : 'block';
-        });
-
-        displayApps(allApps);
-    } catch (error) {
-        console.error('Error loading data:', error);
-    }
-}
-
-window.onload = loadApps;
+        window.onload = () => {
+            setLanguage(currentLang);
+            loadApps();
+        };
     </script>
 </body>
 </html>
