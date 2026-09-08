@@ -1958,17 +1958,12 @@
         "name": "Multi Brawl Cl V37.9.apk",
         "link": "https://t.me/PrivateBSDownload/404"
     },
-    {
-        "name": "Multi Brawl Cl V40.apk",
-        "link": "https://t.me/PrivateBSDownload/14"
-    },
-    {
-        "name": "Multi Brawl Cl V41.apk",
-        "link": "https://t.me/PrivateBSDownload/15"
-    },
-    {
-        "name": "Multi Brawl Cl v42.apk",
-        "link": "https://t.me/PrivateBSDownload/16"
+   {
+        "name": "Multi Brawl Classic",
+        "codename": "mbcl",
+        "link": "https://ktr.brawlmods.com/mods/id=mbcl",
+        "icon": "resources/mbcl/icon.png",
+        "ss1": "resources/mbcl/ss1.png"
     },
     {
         "name": "multi brawl mod by loltinub_revive.apk",
