@@ -1,11 +1,11 @@
 {
     "name": "Tale Stars",
-    "version": "68.263 [TS V10]",
-    "lastUpdated": "2026-07-27",
-    "iossupport": "available",
+    "version": "69 [TS V11]",
+    "lastUpdated": "2026-09-16",
+    "iossupport": "unavailable",
     "androidsupport": "available",
     "iosDownloadUrl": "",
-    "androidDownloadUrl": "https://t.me/ProdMods1/15",
+    "androidDownloadUrl": "https://t.me/ProdMods1/26",
     "authors": [
         { "name": "sqk", "id": "sqk" }
     ],
@@ -15,7 +15,7 @@
       "desc": "一番安定した特殊機能が3200円で使える。購入は概要欄から"
     },
     "en": {
-      "title": "Tale stars hackersh",
+      "title": "Tale stars jump",
       "desc": "know in brain. - iowene"
     }
   },
