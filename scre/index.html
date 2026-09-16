@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SCID Setup Guide</title>
+<style>
+  :root {
+    --bg: #0b0e14;
+    --panel: #131826;
+    --accent: #5eead4;
+    --accent2: #a78bfa;
+    --text: #e5e7eb;
+    --muted: #8b93a7;
+    --code-bg: #0d1117;
+    --border: #232a3b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: radial-gradient(circle at 20% 0%, #182236 0%, var(--bg) 45%);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    padding: 40px 16px 80px;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; }
+  header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  header h1 {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.5px;
+  }
+  header p { color: var(--muted); margin: 0; }
+  .step {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin-bottom: 22px;
+    position: relative;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  }
+  .step-num {
+    position: absolute;
+    top: -14px;
+    left: 22px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #0b0e14;
+    font-weight: 700;
+    font-size: 0.8rem;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .step h2 {
+    margin: 4px 0 12px;
+    font-size: 1.1rem;
+    color: var(--text);
+  }
+  .step p { color: var(--muted); margin: 6px 0 14px; font-size: 0.95rem; }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    font-size: 0.82rem;
+    color: #c9d1d9;
+  }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; }
+  .tag {
+    display: inline-block;
+    background: rgba(94,234,212,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(94,234,212,0.3);
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    margin-bottom: 10px;
+  }
+  .note {
+    border-left: 3px solid var(--accent2);
+    background: rgba(167,139,250,0.08);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-top: 12px;
+  }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 40px;
+  }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>SCID Setup Walkthrough</h1>
+  <p>A translated, step-by-step overview of the original notes</p>
+</header>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <span class="tag">Frida</span>
+  <h2>Patch the client's API URL</h2>
+  <p>Using Frida, patch the game binary so its hardcoded API URL (e.g. an <code>ingame.supercell.com</code>-style endpoint) points to your own domain instead. HTTPS is required, so a valid certificate for that domain is mandatory.</p>
+<pre><code>const base = Process.getModuleByName("libg.so");
+const SCIDPatcher = {
+    offsets: [0x0, 0x0, 0x0, 0x0, 0x0], // fill in the actual URL offsets
+    init() {
+        this.offsets.forEach(offset => {
+            Memory.protect(base.add(offset), 256, 'rwx');
+            base.add(offset).writeUtf8String("https://your-new-domain.com");
+        });
+    }
+};</code></pre>
+  <div class="note">The offsets in the original notes are placeholders — you'd need to locate the real string offsets in the binary yourself (e.g. via a disassembler).</div>
+</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <span class="tag">Certbot</span>
+  <h2>Issue a certificate for your domain</h2>
+  <p>Point your domain at your server, then request a certificate:</p>
+<pre><code>certbot --nginx -d yourdomain.com
+# or, on Apache:
+certbot --apache -d yourdomain.com</code></pre>
+</div>
+
+<div class="step">
+  <div class="step-num">3</div>
+  <span class="tag">nginx</span>
+  <h2>Reverse-proxy the domain to your local server</h2>
+  <p>Redirect plain HTTP to HTTPS, terminate TLS, and forward traffic to whatever local port your backend listens on (7777 in this example):</p>
+<pre><code>server {
+    listen 80;
+    listen [::]:80;
+    server_name yourdomain.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 127.0.0.1:8443 ssl;
+    server_name yourdomain.com;
+
+    ssl_certificate /path/to/cert/fullchain.pem;
+    ssl_certificate_key /path/to/cert/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+
+    location / {
+        proxy_pass http://127.0.0.1:7777;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection keep-alive;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-Port 443;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    error_log /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+}</code></pre>
+</div>
+
+<div class="step">
+  <div class="step-num">4</div>
+  <span class="tag">Python</span>
+  <h2>Stand up a basic HTTP listener</h2>
+  <p>Any language works — a minimal Python server that logs every request is enough to start observing traffic:</p>
+<pre><code>from http.server import BaseHTTPRequestHandler, HTTPServer
+
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        print("GET", self.path)
+        print(self.headers)
+        self.send_response(200)
+        self.end_headers()
+
+    def do_POST(self):
+        length = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(length)
+        print("POST", self.path)
+        print(self.headers)
+        print(body.decode(errors="ignore"))
+        self.send_response(200)
+        self.end_headers()
+
+HTTPServer(("0.0.0.0", 7777), Handler).serve_forever()</code></pre>
+</div>
+
+<div class="step">
+  <div class="step-num">5</div>
+  <span class="tag">Analysis</span>
+  <h2>Capture and reconstruct the protocol</h2>
+  <p>Run the listener and read whatever the client sends, piecing the protocol together request by request. Decompiling the game client's DEX files can help clarify what each endpoint is supposed to receive and return.</p>
+  <div class="note">The original note adds: it's worth populating placeholder assets on the server so it doesn't look empty, and points to a third-party asset repo for that purpose.</div>
+</div>
+
+<div class="step">
+  <div class="step-num">!</div>
+  <span class="tag">Key takeaway</span>
+  <h2>How this architecture works</h2>
+  <p>All game logic runs client-side; the server's only job is to answer with the right-shaped data. That's why intercepting and logging requests is enough to reverse-engineer the expected responses.</p>
+</div>
+
+<footer>
+  Translated &amp; formatted from the uploaded notes.
+</footer>
+
+</div>
+</body>
+</html>
