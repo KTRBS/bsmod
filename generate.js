@@ -40,17 +40,20 @@ fs.readdirSync(resourcesDir).forEach(codename => {
 
         // Read info_en.html if exists and append text
         const infoEnPath = path.join(modDir, 'info_en.html');
-        if (fs.existsSync(infoEnPath)) {
-            let infoHtml = fs.readFileSync(infoEnPath, 'utf-8');
-            let cleanText = infoHtml
-                .replace(/<[^>]*>?/gm, ' ')
-                .replace(/\s+/g, ' ')
-                .trim();
-            
-            if (cleanText) {
-                baseDesc += `\n\n${cleanText}`;
-            }
-        }
+if (fs.existsSync(infoEnPath)) {
+    let infoHtml = fs.readFileSync(infoEnPath, 'utf-8');
+    let cleanText = infoHtml
+        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, ' ')   // styleブロックを内容ごと削除
+        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, ' ') // scriptブロックも念のため削除
+        .replace(/<[^>]*>?/gm, ' ')                         // 残りのタグを剥がす
+        .replace(/\s+/g, ' ')
+        .trim();
+    
+    if (cleanText) {
+        baseDesc += `\n\n${cleanText}`;
+    }
+}
+
 
         // Truncate description to prevent Discord embed limit issues
         if (baseDesc.length > 300) {
