@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>STOP / THROW</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1b5cff;--ink:#0b1030;--card:#fff;--stop:#22c55e;--throw:#ef3b36;color-scheme:light}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Lilita One",system-ui,sans-serif;display:grid;place-items:center;padding:20px}
+main{width:100%;max-width:440px}
+h1{margin:0 0 16px;color:#fff;font-weight:400;font-size:clamp(44px,13vw,64px);line-height:1;letter-spacing:.01em;text-shadow:0 4px 0 var(--ink),4px 0 0 var(--ink),-4px 0 0 var(--ink),0 -4px 0 var(--ink),4px 4px 0 var(--ink),-4px 4px 0 var(--ink),4px -4px 0 var(--ink),-4px -4px 0 var(--ink)}
+form{background:var(--card);border:4px solid var(--ink);border-radius:16px;padding:20px;box-shadow:0 8px 0 var(--ink)}
+label{display:block;font-size:18px;margin-bottom:8px}
+.field{display:flex;align-items:center;border:3px solid var(--ink);border-radius:10px;padding:0 12px;background:#eef2ff}
+.field:focus-within{outline:3px solid #ffc800;outline-offset:2px}
+.field span{font-size:30px;margin-right:4px}
+input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:30px;letter-spacing:.06em;text-transform:uppercase;padding:10px 0;outline:none;color:var(--ink)}
+.hint{font-size:15px;margin:8px 0 16px;opacity:.65}
+.row{display:flex;gap:12px}
+button{flex:1;font:inherit;font-size:30px;color:#fff;padding:12px 8px;border:3px solid var(--ink);border-radius:12px;cursor:pointer;box-shadow:0 5px 0 var(--ink);transition:transform .08s,box-shadow .08s;text-shadow:0 2px 0 var(--ink),2px 0 0 var(--ink),-2px 0 0 var(--ink),0 -2px 0 var(--ink),2px 2px 0 var(--ink),-2px 2px 0 var(--ink),2px -2px 0 var(--ink),-2px -2px 0 var(--ink)}
+button:active:not(:disabled){transform:translateY(5px);box-shadow:0 0 0 var(--ink)}
+button:focus-visible{outline:3px solid var(--bg);outline-offset:2px}
+button:disabled{opacity:.5;cursor:wait}
+.stop{background:var(--stop)}
+.throw{background:var(--throw)}
+#status{margin:16px 0 0;min-height:1.4em;font-size:18px;line-height:1.35}
+#status.ok{color:#0a7a35}#status.err{color:#c4231e}
+@media (prefers-reduced-motion:reduce){button{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<h1>LOBBY<br>FUCKER</h1>
+<form id="f" novalidate>
+  <label for="tag">Player tag</label>
+  <div class="field"><span aria-hidden="true">#</span><input id="tag" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="2PP"></div>
+  <p class="hint">Allowed characters: 0 2 8 9 P Y L Q G R J C U V</p>
+  <div class="row">
+    <button type="submit" class="stop">STOP</button>
+    <button type="button" class="throw" data-action="opt-in">THROW</button>
+  </div>
+  <p id="status" role="status" aria-live="polite"></p>
+</form>
+</main>
+<script>
+(function(){
+  "use strict";
+  var API = "https://api.regear.cc/team-swarm/";
+  var VALID = /^[0289PYLQGRJCUV]+$/;
+  var form = document.getElementById("f"), input = document.getElementById("tag"),
+      status = document.getElementById("status"),
+      buttons = [].slice.call(form.querySelectorAll("button"));
+
+  function show(kind, msg){ status.className = kind || ""; status.textContent = msg || ""; }
+  function lock(v){ buttons.forEach(function(b){ b.disabled = v; }); }
+
+  function normalize(raw){
+    var t = raw.trim().toUpperCase().replace(/O/g, "0");
+    if (t.charAt(0) === "#") t = t.slice(1);
+    if (!t || !VALID.test(t)) return null;
+    return "#" + t.replace(/^0+(?=.)/, "");
+  }
+
+  function send(action){
+    var tag = normalize(input.value);
+    if (!tag){ show("err", "Enter a valid player tag. Allowed: 0 2 8 9 P Y L Q G R J C U V"); input.focus(); return; }
+    input.value = tag.slice(1);
+    lock(true);
+    show("", (action === "opt-out" ? "Stopping " : "Throwing ") + tag + "…");
+    fetch(API + action, {
+      method: "POST", mode: "cors",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({tag: tag})
+    }).then(function(r){
+      if (r.status === 204){
+        show("ok", action === "opt-out" ? tag + " is stopped. Takes effect from the next room." : tag + " is back in.");
+        return;
+      }
+      return r.json().catch(function(){ return null; }).then(function(b){
+        var msg;
+        if (r.status === 429){
+          var s = b && b.retry_after;
+          msg = "Too many requests. Try again in " + (s ? Math.ceil(s / 60) + " minute(s)" : "a bit") + ".";
+        } else if (b && b.error === "invalid_tag"){ msg = "The server rejected this tag.";
+        } else if (r.status === 403){ msg = "Blocked (403).";
+        } else if (r.status === 503){ msg = "Service temporarily unavailable. Try again shortly.";
+        } else { msg = "Something went wrong (" + r.status + ")."; }
+        show("err", msg);
+      });
+    }).catch(function(){
+      show("err", "Could not reach the API. Check your connection or CORS settings.");
+    }).then(function(){ lock(false); });
+  }
+
+  form.addEventListener("submit", function(e){ e.preventDefault(); send("opt-out"); });
+  form.querySelector("[data-action=opt-in]").addEventListener("click", function(){ send("opt-in"); });
+  input.addEventListener("input", function(){ if (status.textContent) show("", ""); });
+})();
+</script>
+</body>
+</html>
