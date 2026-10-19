@@ -1,0 +1,6 @@
+{
+  "displayName": "Dark",
+  "apps": [
+    { "id": "bsre", "mode": "prod", "name": "BSRE", "subtitle": "BSRE hacker😱" }
+  ]
+}
