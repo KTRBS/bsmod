@@ -7,7 +7,9 @@
     "iosDownloadUrl": "https://t.me/regeared_bot?startapp=dXBkOmlvczE",
     "androidDownloadUrl": "https://t.me/regeared_bot?startapp=dXBkOmFuZHJvaWQx",
     "authors": [
-        { "name": "remote ", "id": "remote" }
+        { "name": "remote ", "id": "remote" },
+        { "name": "crimson ", "id": "crimson" },
+        { "name": "Dark ", "id": "Dark" }
     ],
       "meta": {
     "ja": {
