@@ -1,9 +1,9 @@
 {
     "name": "Tale Stars",
-    "version": "69 [TS V11]",
+    "version": "70 [TS V12]",
     "lastUpdated": "2026-09-16",
-    "iossupport": "available",
-    "androidsupport": "available",
+    "iossupport": "unavailable",
+    "androidsupport": "unavailable",
     "iosDownloadUrl": "https://t.me/ProdMods1/29",
     "androidDownloadUrl": "https://t.me/ProdMods1/26",
     "authors": [
