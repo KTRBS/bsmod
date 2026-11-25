@@ -85,6 +85,13 @@
   </url>
 
   <url>
+    <loc>https://ktr.brawlmods.com/mods/nbs/</loc>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
     <loc>https://ktr.brawlmods.com/mods/phonk/</loc>
     <lastmod>2025-08-26</lastmod>
     <changefreq>monthly</changefreq>
